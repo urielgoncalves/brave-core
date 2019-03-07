@@ -33,8 +33,17 @@ typedef enum {
 } RequestType;
 string request_type_to_string(const RequestType type);
 
+typedef enum {
+  ScriptTypeClassic = 0,
+  ScriptTypeModule,
+  ScriptTypeExtension,
+  ScriptTypeUnknown
+} ScriptType;
+string script_type_to_string(const ScriptType type);
+
 typedef blink::DOMNodeId DOMNodeId;
 typedef uint32_t PageGraphId;
+typedef int ScriptId;
 
 }  // namespace brave_page_graph
 

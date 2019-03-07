@@ -3,24 +3,26 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include "brave/components/brave_page_graph/graph_item/edge/edge_node_create.h"
-#include <memory>
+#ifndef BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_NODE_PARSER_H_
+#define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_NODE_PARSER_H_
+
 #include <string>
-#include "brave/components/brave_page_graph/graph_item/edge/edge_node.h"
 #include "brave/components/brave_page_graph/graph_item/node.h"
 #include "brave/components/brave_page_graph/types.h"
 
-using ::std::shared_ptr;
 using ::std::string;
 
 namespace brave_page_graph {
 
-EdgeNodeCreate::EdgeNodeCreate(const PageGraphId id, shared_ptr<Node> in_node,
-  shared_ptr<Node> out_node) :
-    EdgeNode(id, in_node, out_node) {}
+class NodeParser : public Node {
+ public:
+  NodeParser() = delete;
+  NodeParser(const PageGraphId id);
+  explicit NodeParser(const NodeParser& node) = default;
+  ~NodeParser() = default;
+  string ItemName() const;
+};
 
-string EdgeNodeCreate::ItemName() const {
-  return "EdgeNodeCreate#" + id_;
-}
+}  // namespace brave_page_graph
 
-}  // brave_page_graph
+#endif BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_NODE_PARSER_H_

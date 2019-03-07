@@ -26,7 +26,7 @@ class EdgeStorage : public Edge {
   ~EdgeStorage() = default;
 
  protected:
- string ToStringBody() const;
+  string ToStringBody() const;
   const string key_;
 };
 

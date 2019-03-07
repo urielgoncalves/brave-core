@@ -36,4 +36,18 @@ string request_type_to_string(const RequestType type) {
   }
 }
 
+string script_type_to_string(const ScriptType type);
+  switch (type) {
+    case ScriptTypeClassic:
+      return "Classic";
+    case ScriptTypeModule:
+      return "Module";
+    case ScriptTypeExtension:
+      return "Extension";
+    case ScriptTypeUnknown:
+    default:
+      return "Unknown";
+  }
+}
+
 }  // namespace brave_page_graph

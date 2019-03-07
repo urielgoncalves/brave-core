@@ -5,22 +5,22 @@ GraphItem
     - outNode
     Attribute
       - name
-      Delete  ({Node_Parser, Node_Script} -> Node_HTML)
-      Set     ({Node_Parser, Node_Script} -> Node_HTML)
+      Delete  ({NodeParser, NodeScript} -> NodeHTML)
+      Set     ({NodeParser, NodeScript} -> NodeHTML)
         - value
     Node
-      Create  ({Node_Parser, Node_Script} -> Node_HTML)
-      Insert  ({Node_Parser, Node_Script} -> Node_HTML)
+      Create  ({NodeParser, NodeScript} -> NodeHTML)
+      Insert  ({NodeParser, NodeScript} -> NodeHTML)
         - parentNodeId
         - beforeNodeId
-      Remove  (Node_Script -> Node_HTML)
-    Call      (Node_Script -> {Node_WebAPI, Node_Shields})
+      Remove  (NodeScript -> NodeHTML)
+    Call      (NodeScript -> {NodeWebAPI, NodeShields})
       - methodName
       - arguments
-    Request   ({Node_Parser, Node_Script} -> {Node_Resource, Node_Shields})
+    Request   ({NodeParser, NodeScript} -> {Node_Resource, NodeShields})
       - url
       - type
-    Storage
+    Storage   ({NodeScript, NodeResource} -> NodeStorage)
       - key
       Set
         - value
@@ -39,7 +39,6 @@ GraphItem
     HTML
       - DOMNodeId
       - tagName
-      - prevSibling
     Script
       - scriptId
       WASM

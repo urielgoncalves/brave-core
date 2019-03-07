@@ -3,24 +3,29 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include "brave/components/brave_page_graph/graph_item/edge/edge_node_create.h"
-#include <memory>
+#include "brave/components/brave_page_graph/graph_item/node/node_script.h"
 #include <string>
-#include "brave/components/brave_page_graph/graph_item/edge/edge_node.h"
 #include "brave/components/brave_page_graph/graph_item/node.h"
 #include "brave/components/brave_page_graph/types.h"
 
-using ::std::shared_ptr;
 using ::std::string;
 
 namespace brave_page_graph {
 
-EdgeNodeCreate::EdgeNodeCreate(const PageGraphId id, shared_ptr<Node> in_node,
-  shared_ptr<Node> out_node) :
-    EdgeNode(id, in_node, out_node) {}
+NodeScript::NodeScript(const PageGraphId id, const ScriptId script_id,
+  const ScriptType type) :
+    Node(id),
+    script_id_(script_id),
+    type_(type) {}
 
-string EdgeNodeCreate::ItemName() const {
-  return "EdgeNodeCreate#" + id_;
+string NodeScript::ItemName() const {
+  return "NodeScript#" + id_;
+}
+
+string NodeScript::ToStringBody() const {
+  return ItemName() +
+    " [ScriptId:" + script_id_ +
+    ", Type:"  + script_type_to_string(type) + "]"; 
 }
 
 }  // brave_page_graph
