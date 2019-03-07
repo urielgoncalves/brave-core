@@ -1,0 +1,47 @@
+GraphItem
+  - id
+  Edge
+    - inNode
+    - outNode
+    Attribute
+      - name
+      Delete  ({Node_Parser, Node_Script} -> Node_HTML)
+      Set     ({Node_Parser, Node_Script} -> Node_HTML)
+        - value
+    Node
+      Create  ({Node_Parser, Node_Script} -> Node_HTML)
+      Insert  ({Node_Parser, Node_Script} -> Node_HTML)
+        - parentNodeId
+        - beforeNodeId
+      Remove  (Node_Script -> Node_HTML)
+    Call      (Node_Script -> {Node_WebAPI, Node_Shields})
+      - methodName
+      - arguments
+    Request   ({Node_Parser, Node_Script} -> {Node_Resource, Node_Shields})
+      - url
+      - type
+    Storage
+      - key
+      Set
+        - value
+      Delete
+      Read
+
+  Node
+    - parentNodes
+    - childNodes
+    Parser (singleton)
+    Storage (abstract)
+      CookieJar (singleton)
+      LocalStorage (singleton)
+    WebAPI (singleton)
+    Shields (singleton)
+    HTML
+      - DOMNodeId
+      - tagName
+      - prevSibling
+    Script
+      - scriptId
+      WASM
+      Classic
+    Resource

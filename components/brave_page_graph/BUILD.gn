@@ -1,0 +1,13 @@
+import("//brave/build/config.gni")
+import("//build/config/features.gni")
+
+source_set("brave_page_graph") {
+  sources = [
+
+  ]
+
+  deps = [
+    ":version_info",
+    "//chrome/common",
+  ]
+}
