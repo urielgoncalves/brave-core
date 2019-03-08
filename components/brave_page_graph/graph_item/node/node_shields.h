@@ -14,15 +14,19 @@ using ::std::string;
 
 namespace brave_page_graph {
 
-class NodeShields : public Node {
+class PageGraph;
+
+class NodeShields final : public Node {
+friend class PageGraph;
  public:
   NodeShields() = delete;
-  explicit NodeShields(const PageGraphId id);
-  explicit NodeShields(const NodeShields& node) = default;
-  ~NodeShields() = default;
-  string ItemName() const;
+  ~NodeShields() override;
+  string ItemName() const override;
+
+ protected:
+  NodeShields(const PageGraph* graph, const PageGraphId id);
 };
 
 }  // namespace brave_page_graph
 
-#endif BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_NODE_SHIELDS_H_
+#endif  // BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_NODE_SHIELDS_H_

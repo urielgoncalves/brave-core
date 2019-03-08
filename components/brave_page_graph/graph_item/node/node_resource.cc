@@ -7,21 +7,26 @@
 #include <string>
 #include "brave/components/brave_page_graph/graph_item/node.h"
 #include "brave/components/brave_page_graph/types.h"
+#include "brave/components/brave_page_graph/page_graph.h"
 
 using ::std::string;
+using ::std::to_string;
 
 namespace brave_page_graph {
 
-NodeResource::NodeResource(const PageGraphId id, const RequestType type) :
-    Node(id),
+NodeResource::NodeResource(const PageGraph *graph, const PageGraphId id,
+    const RequestType type) :
+    Node(graph, id),
     type_(type) {}
 
+NodeResource::~NodeResource() {}
+
 string NodeResource::ItemName() const {
-  return "NodeResource#" + id_;
+  return "NodeResource#" + to_string(id_);
 }
 
 string NodeResource::ToStringBody() const {
-  return ItemName() + " [RequestType:" + request_type_to_string(type) + "]";
+  return ItemName() + " [RequestType:" + request_type_to_string(type_) + "]";
 }
 
 }  // brave_page_graph

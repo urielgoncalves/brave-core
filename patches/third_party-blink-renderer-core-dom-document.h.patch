@@ -1,0 +1,34 @@
+diff --git a/third_party/blink/renderer/core/dom/document.h b/third_party/blink/renderer/core/dom/document.h
+index f0f751197c365f2f5bf02ac1a03dc87a80e7f045..a49e382bdfeaf21939d0e06e916e285913b89842 100644
+--- a/third_party/blink/renderer/core/dom/document.h
++++ b/third_party/blink/renderer/core/dom/document.h
+@@ -72,6 +72,7 @@
+ #include "third_party/blink/renderer/platform/wtf/bit_vector.h"
+ #include "third_party/blink/renderer/platform/wtf/casting.h"
+ #include "third_party/blink/renderer/platform/wtf/hash_set.h"
++#include "brave/components/brave_page_graph/page_graph.h"
+ 
+ namespace base {
+ class SingleThreadTaskRunner;
+@@ -1520,6 +1521,10 @@ class CORE_EXPORT Document : public ContainerNode,
+   // associated Web App Manifest, it will return false.
+   bool IsInWebAppScope() const;
+ 
++#if defined(BRAVE_PAGE_GRAPH_ENABLED)
++  brave_page_graph::PageGraph* GetPageGraph();
++#endif
++
+  protected:
+   void DidUpdateSecurityOrigin() final;
+ 
+@@ -1532,6 +1537,10 @@ class CORE_EXPORT Document : public ContainerNode,
+     return parser_sync_policy_;
+   }
+ 
++#if defined(BRAVE_PAGE_GRAPH_ENABLED)
++  Member<brave_page_graph::PageGraph> page_graph_;  
++#endif
++
+  private:
+   friend class IgnoreDestructiveWriteCountIncrementer;
+   friend class ThrowOnDynamicMarkupInsertionCountIncrementer;

@@ -14,15 +14,19 @@ using ::std::string;
 
 namespace brave_page_graph {
 
-class NodeStorageCookieJar : public NodeStorage {
+class PageGraph;
+
+class NodeStorageCookieJar final : public NodeStorage {
+friend class PageGraph;
  public:
   NodeStorageCookieJar() = delete;
-  explicit NodeStorageCookieJar(const PageGraphId id);
-  explicit NodeStorageCookieJar(const NodeStorageCookieJar& node) = default;
-  ~NodeStorageCookieJar() = default;
-  string ItemName() const;
+  ~NodeStorageCookieJar() override;
+  string ItemName() const override;
+
+ protected:
+  NodeStorageCookieJar(const PageGraph* graph, const PageGraphId id);
 };
 
 }  // namespace brave_page_graph
 
-#endif BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_NODE_STORAGE_COOKIEJAR_H_
+#endif  // BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_NODE_STORAGE_COOKIEJAR_H_

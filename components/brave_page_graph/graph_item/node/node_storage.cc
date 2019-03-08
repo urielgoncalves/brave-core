@@ -6,17 +6,15 @@
 #include "brave/components/brave_page_graph/graph_item/node/node_storage.h"
 #include <string>
 #include "brave/components/brave_page_graph/graph_item/node.h"
+#include "brave/components/brave_page_graph/page_graph.h"
 #include "brave/components/brave_page_graph/types.h"
 
 using ::std::string;
+using ::std::to_string;
 
 namespace brave_page_graph {
 
-NodeStorage::NodeStorage(const PageGraphId id) :
-    Node(id) {}
-
-string NodeStorage::ItemName() const {
-  return "NodeStorage#" + id_;
-}
+NodeStorage::NodeStorage(const PageGraph* graph, const PageGraphId id) :
+    Node(graph, id) {}
 
 }  // brave_page_graph

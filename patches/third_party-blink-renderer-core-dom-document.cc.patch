@@ -1,0 +1,29 @@
+diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink/renderer/core/dom/document.cc
+index e5d02bd5288267372a37bb4924d144abcf9a312c..93ef51388fce4d832b8ed34d1fc83df05551a166 100644
+--- a/third_party/blink/renderer/core/dom/document.cc
++++ b/third_party/blink/renderer/core/dom/document.cc
+@@ -770,6 +770,10 @@ Document::Document(const DocumentInit& initializer,
+ #ifndef NDEBUG
+   liveDocumentSet().insert(this);
+ #endif
++
++#if defined(BRAVE_PAGE_GRAPH_ENABLED)
++  page_graph_ = new brave_page_graph::PageGraph();
++#endif
+ }
+ 
+ Document::~Document() {
+@@ -782,6 +786,13 @@ Document::~Document() {
+   InstanceCounters::DecrementCounter(InstanceCounters::kDocumentCounter);
+ }
+ 
++#if defined(BRAVE_PAGE_GRAPH_ENABLED)
++brave_page_graph::PageGraph* Document::GetPageGraph() {
++  return page_graph_.Get();
++}
++#endif
++
++
+ Range* Document::CreateRangeAdjustedToTreeScope(const TreeScope& tree_scope,
+                                                 const Position& position) {
+   DCHECK(position.IsNotNull());

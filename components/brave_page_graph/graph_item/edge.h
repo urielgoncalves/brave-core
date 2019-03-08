@@ -6,37 +6,33 @@
 #ifndef BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_H_
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_H_
 
-#include <memory>
 #include <vector>
 #include "brave/components/brave_page_graph/graph_item.h"
 #include "brave/components/brave_page_graph/graph_item/node.h"
 #include "brave/components/brave_page_graph/types.h"
 
-using ::std::shared_ptr;
-using ::std::weak_ptr;
+using ::std::string;
 
 namespace brave_page_graph {
 
+class PageGraph;
 class Node;
 
 class Edge : public GraphItem {
+friend class PageGraph;
  public:
   Edge() = delete;
-  Edge(const PageGraphId id, shared_ptr<Node> in_node,
-    shared_ptr<Node> out_node);
-  explicit Edge(const Edge& edge) = default;
-  ~Edge() = default;
-
-  string ItemName() const;
 
  protected:
-  string ToStringBody() const;
-  string ToStringPrefix() const;
-  string ToStringSuffix() const;
-  const weak_ptr<Node> in_node_ptr_;
-  const weak_ptr<Node> out_node_ptr_;
+  Edge(const PageGraphId id, const Node* in_node, const Node* out_node);
+  string ToStringPrefix() const override;
+  string ToStringSuffix() const override;
+
+  // These pointers are not owning, the PageGraph instance owns them.
+  const Node* out_node_ptr_;
+  const Node* in_node_ptr_;
 };
 
 }  // namespace brave_page_graph
 
-#endif BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_H_
+#endif  // BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_H_

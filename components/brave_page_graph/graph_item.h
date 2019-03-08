@@ -16,21 +16,19 @@ namespace brave_page_graph {
 class GraphItem {
  public:
   GraphItem() = delete;
-  explicit GraphItem(PageGraphId id);
-  explicit GraphItem(const GraphItem& item) = default;
-  ~GraphItem() = default;
-
-  string ToString() const;
+  virtual ~GraphItem();
+  virtual string ToString() const;
   virtual string ItemName() const;
   PageGraphId GetId() const;
 
  protected:
-  string ToStringBody() const;
-  string ToStringPrefix() const;
-  string ToStringSuffix() const;
+  GraphItem(const PageGraphId id);
+  virtual string ToStringBody() const;
+  virtual string ToStringPrefix() const;
+  virtual string ToStringSuffix() const;
   const PageGraphId id_; 
 };
 
 }
 
-#endif BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_H_
+#endif  // BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_H_

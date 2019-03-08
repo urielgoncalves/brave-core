@@ -6,16 +6,12 @@
 #ifndef BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_TYPES_H_
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_TYPES_H_
 
-#include <memory>
 #include <string>
 #include <vector>
-#include "third_party/blink/renderer/platform/graphics/dom_node_id.h"
-#include "brave/components/brave_page_graph/graph_item/edge.h"
 
 using ::std::string;
 using ::std::unique_ptr;
 using ::std::vector;
-using ::std::weak_ptr;
 
 namespace brave_page_graph {
 
@@ -31,7 +27,7 @@ typedef enum {
   RequestTypeDocument,
   RequestTypeUnknown
 } RequestType;
-string request_type_to_string(const RequestType type);
+string request_type_to_string(const RequestType type) noexcept;
 
 typedef enum {
   ScriptTypeClassic = 0,
@@ -39,12 +35,13 @@ typedef enum {
   ScriptTypeExtension,
   ScriptTypeUnknown
 } ScriptType;
-string script_type_to_string(const ScriptType type);
+string script_type_to_string(const ScriptType type) noexcept;
 
-typedef blink::DOMNodeId DOMNodeId;
+typedef string MethodName;
+typedef int DOMNodeId;
 typedef uint32_t PageGraphId;
 typedef int ScriptId;
 
 }  // namespace brave_page_graph
 
-#endif BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_TYPES_H_
+#endif  // BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_TYPES_H_

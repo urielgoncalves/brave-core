@@ -7,25 +7,29 @@
 #include <string>
 #include "brave/components/brave_page_graph/graph_item/node.h"
 #include "brave/components/brave_page_graph/types.h"
+#include "brave/components/brave_page_graph/page_graph.h"
 
 using ::std::string;
+using ::std::to_string;
 
 namespace brave_page_graph {
 
-NodeScript::NodeScript(const PageGraphId id, const ScriptId script_id,
-  const ScriptType type) :
-    Node(id),
+NodeScript::NodeScript(const PageGraph* graph, const PageGraphId id,
+    const ScriptId script_id, const ScriptType type) :
+    Node(graph, id),
     script_id_(script_id),
     type_(type) {}
 
+NodeScript::~NodeScript() {}
+
 string NodeScript::ItemName() const {
-  return "NodeScript#" + id_;
+  return "NodeScript#" + to_string(id_);
 }
 
 string NodeScript::ToStringBody() const {
   return ItemName() +
-    " [ScriptId:" + script_id_ +
-    ", Type:"  + script_type_to_string(type) + "]"; 
+    " [ScriptId:" + to_string(script_id_) +
+    ", Type:"  + script_type_to_string(type_) + "]"; 
 }
 
 }  // brave_page_graph

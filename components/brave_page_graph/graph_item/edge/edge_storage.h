@@ -6,30 +6,30 @@
 #ifndef BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_STORAGE_H_
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_STORAGE_H_
 
-#include <memory>
 #include <string>
 #include "brave/components/brave_page_graph/graph_item/edge.h"
 #include "brave/components/brave_page_graph/graph_item/node.h"
 #include "brave/components/brave_page_graph/types.h"
 
-using ::std::shared_ptr;
 using ::std::string;
 
 namespace brave_page_graph {
 
+class PageGraph;
+
 class EdgeStorage : public Edge {
+friend class PageGraph;
  public:
   EdgeStorage() = delete;
-  EdgeStorage(const PageGraphId id, shared_ptr<Node> in_node,
-    shared_ptr<Node> out_node, const string& key);
-  explicit EdgeStorage(const EdgeStorage& edge) = default;
-  ~EdgeStorage() = default;
 
  protected:
-  string ToStringBody() const;
+  EdgeStorage(const PageGraphId id, const Node* in_node, const Node* out_node,
+    const string& key);
+  string ToStringBody() const override;
+
   const string key_;
 };
 
 }  // namespace brave_page_graph
 
-#endif BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_STORAGE_H_
+#endif  // BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_STORAGE_H_

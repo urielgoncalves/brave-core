@@ -12,33 +12,18 @@ using ::std::string;
 
 namespace brave_page_graph {
 
-Edge::Edge(const PageGraphId id, shared_ptr<Node> in_node,
-      shared_ptr<Node> out_node) :
+Edge::Edge(const PageGraphId id, const Node* in_node, const Node* out_node) :
     GraphItem(id) {
   in_node_ptr_ = in_node;
   out_node_ptr_ = out_node;
 }
 
-string Edge::ItemName() const {
-  return "Edge#" + ::std::to_string(id_);
-}
-
 string Edge::ToStringPrefix() const {
-  if (const auto& in_node_ = in_node_ptr_.lock()) {
-    return in_node_->ItemName() + " -> ";
-  }
-  return "(null) -> ";
-}
-
-string Edge::ToStringBody() const {
-  return ItemName();
+  return in_node_ptr_->ItemName() + " -> ";
 }
 
 string Edge::ToStringSuffix() const {
-  if (const auto& out_node_ = out_node_ptr_.lock()) {
-    return " -> " + out_node_->ItemName();
-  }
-  return " -> (null)";
+  return " -> " + out_node_ptr_->ItemName();
 }
 
 }  // namespace brave_page_graph

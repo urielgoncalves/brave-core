@@ -11,7 +11,7 @@ using ::std::string;
 
 namespace brave_page_graph {
 
-GraphItem::GraphItem(PageGraphId id) :
+GraphItem::GraphItem(const PageGraphId id) :
   id_(id) {}
 
 PageGraphId GraphItem::GetId() const {
@@ -29,7 +29,6 @@ string GraphItem::ToStringBody() const {
 string GraphItem::ToStringSuffix() const {
   return "?";
 }
-
 
 string GraphItem::ToString() const {
   return ToStringPrefix() + ToStringBody() + ToStringSuffix();

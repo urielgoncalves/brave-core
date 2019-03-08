@@ -4,13 +4,13 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "brave/components/brave_page_graph/types.h"
-#include "<string>"
+#include <string>
 
 using ::std::string;
 
 namespace brave_page_graph {
 
-string request_type_to_string(const RequestType type) {
+string request_type_to_string(const RequestType type) noexcept {
   switch (type) {
     case RequestTypeImage:
       return "Image";
@@ -36,7 +36,7 @@ string request_type_to_string(const RequestType type) {
   }
 }
 
-string script_type_to_string(const ScriptType type);
+string script_type_to_string(const ScriptType type) noexcept {
   switch (type) {
     case ScriptTypeClassic:
       return "Classic";

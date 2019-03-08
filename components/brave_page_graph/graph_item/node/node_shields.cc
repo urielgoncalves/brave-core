@@ -7,16 +7,20 @@
 #include <string>
 #include "brave/components/brave_page_graph/graph_item/node.h"
 #include "brave/components/brave_page_graph/types.h"
+#include "brave/components/brave_page_graph/page_graph.h"
 
 using ::std::string;
+using ::std::to_string;
 
 namespace brave_page_graph {
 
-NodeShields::NodeShields(const PageGraphId id) :
-    Node(id) {}
+NodeShields::NodeShields(const PageGraph* graph, const PageGraphId id) :
+    Node(graph, id) {}
+
+NodeShields::~NodeShields() {}
 
 string NodeShields::ItemName() const {
-  return "NodeShields#" + id_;
+  return "NodeShields#" + to_string(id_);
 }
 
 }  // brave_page_graph

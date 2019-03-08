@@ -14,15 +14,17 @@ using ::std::string;
 
 namespace brave_page_graph {
 
+class PageGraph;
+
 class NodeStorage : public Node {
+friend class PageGraph;
  public:
   NodeStorage() = delete;
-  explicit NodeStorage(const PageGraphId id);
-  explicit NodeStorage(const NodeStorage& node) = default;
-  ~NodeStorage() = default;
-  string ItemName() const;
+
+ protected:
+  NodeStorage(const PageGraph* graph, const PageGraphId id);
 };
 
 }  // namespace brave_page_graph
 
-#endif BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_NODE_STORAGE_H_
+#endif  // BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_NODE_STORAGE_H_

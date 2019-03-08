@@ -14,21 +14,23 @@ using ::std::string;
 
 namespace brave_page_graph {
 
-class NodeScript : public Node {
+class PageGraph;
+
+class NodeScript final : public virtual Node {
+friend class PageGraph;
  public:
   NodeScript() = delete;
-  NodeScript(const PageGraphId id, const ScriptId script_id,
-    const ScriptType type);
-  explicit NodeScript(const NodeScript& node) = default;
-  ~NodeScript() = default;
-  string ItemName() const;
+  ~NodeScript() override;
+  string ItemName() const override;
 
  protected:
-  string ToStringBody() const;
+   NodeScript(const PageGraph* graph, const PageGraphId id,
+    const ScriptId script_id, const ScriptType type);
+  string ToStringBody() const override;
   const ScriptId script_id_;
   const ScriptType type_;
 };
 
 }  // namespace brave_page_graph
 
-#endif BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_NODE_SCRIPT_H_
+#endif  // BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_NODE_SCRIPT_H_

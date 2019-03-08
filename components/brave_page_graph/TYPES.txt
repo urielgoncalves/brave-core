@@ -36,10 +36,10 @@ GraphItem
       LocalStorage (singleton)
     WebAPI (singleton)
     Shields (singleton)
-    HTML
+    HTML (fetchable by DOMNodeId)
       - DOMNodeId
       - tagName
-    Script
+    Script (fetchable by ScriptId)
       - scriptId
       WASM
       Classic

@@ -6,7 +6,7 @@
 #ifndef BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_H_
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_H_
 
-#include <memory>
+#include "brave/components/brave_page_graph/graph_item/node.h"
 #include <vector>
 #include <string>
 #include "brave/components/brave_page_graph/graph_item.h"
@@ -14,33 +14,35 @@
 #include "brave/components/brave_page_graph/types.h"
 
 using ::std::string;
-using ::std::shared_ptr;
-using ::std::unique_ptr;
 using ::std::vector;
 
 namespace brave_page_graph {
 
+class PageGraph;
 class Edge;
 
 class Node : public GraphItem {
+friend class PageGraph;
  public:
   Node() = delete;
-  explicit Node(const PageGraphId id);
-  explicit Node(const Node& node) = default;
-  ~Node() = default;
-
-  string ItemName() const;
-  void AddInEdge(shared_ptr<Edge> in_edge);
-  void AddOutEdge(shared_ptr<Edge> out_edge);
+  ~Node() override;
+  void AddInEdge(Edge* in_edge);
+  void AddOutEdge(Edge* out_edge);
 
  protected:
-  string ToStringBody() const;
-  string ToStringPrefix() const;
-  string ToStringSuffix() const;
-  unique_ptr<vector<weak_ptr<Edge>>> in_edges_ptr_;
-  unique_ptr<vector<weak_ptr<Edge>>> out_edges_ptr_;
+  Node(const PageGraph* graph, const PageGraphId id);
+  string ToStringPrefix() const override;
+  string ToStringSuffix() const override;
+
+  const PageGraph* graph_;
+  // Reminder to self:
+  //   out_edge -> node -> in_edge
+  // These vectors do not own their references.  All nodes in the entire
+  // graph are owned by the PageGraph instance.
+  vector<Edge*> in_edges_ptr_;
+  vector<Edge*> out_edges_ptr_;
 };
 
 }  // namespace brave_page_graph
 
-#endif BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_H_
+#endif  // BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_H_

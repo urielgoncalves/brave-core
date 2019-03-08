@@ -6,32 +6,31 @@
 #ifndef BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_ATTRIBUTE_DELETE_H_
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_ATTRIBUTE_DELETE_H_
 
-#include <memory>
 #include <string>
 #include "brave/components/brave_page_graph/graph_item/edge.h"
 #include "brave/components/brave_page_graph/graph_item/node.h"
 #include "brave/components/brave_page_graph/graph_item/edge/edge_attribute.h"
 #include "brave/components/brave_page_graph/types.h"
 
-using ::std::shared_ptr;
 using ::std::string;
 
 namespace brave_page_graph {
 
-class EdgeAttributeDelete : public EdgeAttribute {
+class PageGraph;
+
+class EdgeAttributeDelete final : public EdgeAttribute {
+friend class PageGraph;
  public:
   EdgeAttributeDelete() = delete;
-  EdgeAttributeDelete(const PageGraphId id, shared_ptr<Node> in_node,
-    shared_ptr<Node> out_node, const string& name);
-  explicit EdgeAttributeDelete(const EdgeAttributeDelete& attribute) = default;
-  ~EdgeAttributeDelete() = default;
-
-  string ItemName() const;
+  ~EdgeAttributeDelete() override;
+  string ItemName() const override;
 
  protected:
-  string ToStringBody() const;
+  EdgeAttributeDelete(const PageGraphId id, const Node* in_node,
+    const Node* out_node, const string& name);
+  string ToStringBody() const override;
 };
 
 }  // namespace brave_page_graph
 
-#endif BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_ATTRIBUTE_DELETE_H_
+#endif  // BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_ATTRIBUTE_DELETE_H_

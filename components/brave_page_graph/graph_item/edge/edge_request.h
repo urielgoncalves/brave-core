@@ -6,32 +6,33 @@
 #ifndef BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_CALL_H_
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_CALL_H_
 
-#include <memory>
 #include <string>
 #include "brave/components/brave_page_graph/graph_item/edge.h"
 #include "brave/components/brave_page_graph/graph_item/node.h"
 #include "brave/components/brave_page_graph/types.h"
 
-using ::std::shared_ptr;
 using ::std::string;
 
 namespace brave_page_graph {
 
-class EdgeRequest : public Edge {
+class PageGraph;
+
+class EdgeRequest final : public virtual Edge {
+friend class PageGraph;
  public:
   EdgeRequest() = delete;
-  EdgeRequest(const PageGraphId id, shared_ptr<Node> in_node,
-    shared_ptr<Node> out_node, const string& url, const RequestType type);
-  explicit EdgeRequest(const EdgeRequest& edge) = default;
-  ~EdgeRequest() = default;
-  string ItemName() const;
+  ~EdgeRequest() override;
+  string ItemName() const override;
 
  protected:
-  string ToStringBody() const;
+  EdgeRequest(const PageGraphId id, const Node* in_node,
+    const Node* out_node, const string& url, const RequestType type);
+  string ToStringBody() const override;
+
   const string url_;
   const RequestType type_;
 };
 
 }  // namespace brave_page_graph
 
-#endif BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_CALL_H_
+#endif  // BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_CALL_H_

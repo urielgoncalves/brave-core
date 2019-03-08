@@ -14,15 +14,22 @@ using ::std::string;
 
 namespace brave_page_graph {
 
-class NodeWebAPI : public Node {
+class PageGraph;
+
+class NodeWebAPI final : public Node {
+friend class PageGraph;
  public:
   NodeWebAPI() = delete;
-  explicit NodeWebAPI(const PageGraphId id);
-  explicit NodeWebAPI(const NodeWebAPI& node) = default;
-  ~NodeWebAPI() = default;
-  string ItemName() const;
+  ~NodeWebAPI() override;
+  string ItemName() const override;
+
+ protected:
+  NodeWebAPI(const PageGraph* graph, const PageGraphId id,
+    const MethodName method);
+  string ToStringBody() const override;
+  const MethodName method_name_;
 };
 
 }  // namespace brave_page_graph
 
-#endif BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_NODE_WEBAPI_H_
+#endif  // BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_NODE_WEBAPI_H_

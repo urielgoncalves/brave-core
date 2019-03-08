@@ -1,0 +1,15 @@
+diff --git a/third_party/blink/renderer/core/dom/container_node.cc b/third_party/blink/renderer/core/dom/container_node.cc
+index 59467cf7652fd71631886bd23ff78cd559b609f8..5e072485bf772bcbcb62422a16728cd5ab0ec79d 100644
+--- a/third_party/blink/renderer/core/dom/container_node.cc
++++ b/third_party/blink/renderer/core/dom/container_node.cc
+@@ -922,6 +922,10 @@ void ContainerNode::NotifyNodeInsertedInternal(
+   ScriptForbiddenScope forbid_script;
+ 
+   for (Node& node : NodeTraversal::InclusiveDescendantsOf(root)) {
++
++#if defined(BRAVE_PAGE_GRAPH_ENABLED)
++    node.GetDocument()->GetPageGraph()->RegisterHTMLNodeInserted(node.tagName);
++#endif
+     // As an optimization we don't notify leaf nodes when when inserting
+     // into detached subtrees that are not in a shadow tree.
+     if (!isConnected() && !IsInShadowTree() && !node.IsContainerNode())

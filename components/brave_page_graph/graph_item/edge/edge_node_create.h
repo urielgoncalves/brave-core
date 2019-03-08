@@ -6,26 +6,28 @@
 #ifndef BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_NODE_CREATE_H_
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_NODE_CREATE_H_
 
-#include <memory>
 #include <string>
 #include "brave/components/brave_page_graph/graph_item/edge/edge_node.h"
 #include "brave/components/brave_page_graph/types.h"
 
-using ::std::shared_ptr;
 using ::std::string;
 
 namespace brave_page_graph {
 
-class EdgeNodeCreate : public EdgeNode {
+class PageGraph;
+
+class EdgeNodeCreate final : public EdgeNode {
+friend class PageGraph;
  public:
   EdgeNodeCreate() = delete;
-  EdgeNodeCreate(const PageGraphId id, shared_ptr<Node> in_node,
-    shared_ptr<Node> out_node);
-  explicit EdgeNodeCreate(const EdgeNodeCreate& edge) = default;
-  ~EdgeNodeCreate() = default;
-  string ItemName() const;
+  ~EdgeNodeCreate() override;
+  string ItemName() const override;
+
+ protected:
+  EdgeNodeCreate(const PageGraphId id, const Node* in_node,
+    const Node* out_node);
 };
 
 }  // namespace brave_page_graph
 
-#endif BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_NODE_CREATE_H_
+#endif  // BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_NODE_CREATE_H_

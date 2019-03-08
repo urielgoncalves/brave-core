@@ -6,32 +6,33 @@
 #ifndef BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_NODE_INSERT_H_
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_NODE_INSERT_H_
 
-#include <memory>
 #include <string>
 #include "brave/components/brave_page_graph/graph_item/edge/edge_node.h"
 #include "brave/components/brave_page_graph/types.h"
 
-using ::std::shared_ptr;
 using ::std::string;
 
 namespace brave_page_graph {
 
-class EdgeNodeInsert : public EdgeNode {
+class PageGraph;
+
+class EdgeNodeInsert final : public EdgeNode {
+friend class PageGraph;
  public:
   EdgeNodeInsert() = delete;
-  EdgeNodeInsert(const PageGraphId id, shared_ptr<Node> in_node,
-    shared_ptr<Node> out_node, const DOMNodeId parent_id,
-    const DOMNodeId prior_sibling_id = NULL);
-  explicit EdgeNodeInsert(const EdgeNodeInsert& edge) = default;
-  ~EdgeNodeInsert() = default;
-  string ItemName() const;
+  ~EdgeNodeInsert() override;
+  string ItemName() const override;
 
  protected:
-  string ToStringBody() const;
+  EdgeNodeInsert(const PageGraphId id, const Node* in_node,
+    const Node* out_node, const DOMNodeId parent_id,
+    const DOMNodeId prior_sibling_id = 0);
+  string ToStringBody() const override;
+
   const DOMNodeId parent_id_;
   const DOMNodeId prior_sibling_id_;
 };
 
 }  // namespace brave_page_graph
 
-#endif BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_NODE_INSERT_H_
+#endif  // BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_NODE_INSERT_H_

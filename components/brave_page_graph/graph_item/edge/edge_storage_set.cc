@@ -4,29 +4,32 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "brave/components/brave_page_graph/graph_item/edge/edge_storage_set.h"
-#include <memory>
+
 #include <string>
 #include "brave/components/brave_page_graph/graph_item/edge/edge_storage.h"
 #include "brave/components/brave_page_graph/graph_item/node.h"
 #include "brave/components/brave_page_graph/types.h"
 
-using ::std::shared_ptr;
+
 using ::std::string;
+using ::std::to_string;
 
 namespace brave_page_graph {
 
 EdgeStorageSet::EdgeStorageSet(const PageGraphId id,
-  shared_ptr<Node> in_node, shared_ptr<Node> out_node, const string& key,
-  const string& value) :
+    const Node* in_node, const Node* out_node, const string& key,
+    const string& value) :
     EdgeStorage(id, in_node, out_node, key),
     value_(value) {}
 
+EdgeStorageSet::~EdgeStorageSet() {}
+
 string EdgeStorageSet::ItemName() const {
-  return "EdgeStorageSet#" + id_;
+  return "EdgeStorageSet#" + to_string(id_);
 }
 
 string EdgeStorageSet::ToStringBody() const {
-  return ItemName() + " [key:" + key + ", value:" + value_ + "]";
+  return ItemName() + " [key:" + key_ + ", value:" + value_ + "]";
 }
 
 }  // brave_page_graph

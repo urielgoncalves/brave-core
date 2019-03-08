@@ -4,57 +4,43 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "brave/components/brave_page_graph/graph_item/node.h"
-#include <memory>
 #include <sstream>
 #include "brave/components/brave_page_graph/graph_item/edge.h"
 #include "brave/components/brave_page_graph/graph_item.h"
 #include "brave/components/brave_page_graph/types.h"
 
-using ::std::shared_ptr;
-using ::std::weak_ptr;
 using ::std::stringstream;
 
 namespace brave_page_graph {
 
-Node::Node(const PageGraphId id) :
-  GraphItem(id) {}
+Node::Node(const PageGraph* graph, const PageGraphId id) :
+    GraphItem(id),
+    graph_(graph) {}
 
-string Node::ItemName() const {
-  return "Node#" + ::std::to_string(id_);
+Node::~Node() {}
+
+void Node::AddInEdge(Edge* in_edge) {
+  in_edges_ptr_.push_back(in_edge);
 }
 
-void Node::AddInEdge(shared_ptr<Edge> in_edge) {
-  weak_ptr<Edge> in_edge_ref = in_edge;
-  in_edges_ptr_->push_back(in_edge_ref);
-}
-
-void Node::AddOutEdge(shared_ptr<Edge> out_edge) {
-  weak_ptr<Edge> out_edge_ref = out_edge;
-  out_edges_ptr_->push_back(out_edge_ref);
+void Node::AddOutEdge(Edge* out_edge) {
+  out_edges_ptr_.push_back(out_edge);
 }
 
 string Node::ToStringPrefix() const {
   stringstream string_builder;
-  for (const auto& elm : *in_edges_ptr_) {
-    if (const auto& in_edge = elm.lock()) {
-      string_builder << in_edge->ItemName() << " -> \n";
-    }
+  for (const Edge* elm : in_edges_ptr_) {
+    string_builder << elm->ItemName() << " -> \n";
   }
   string_builder << "  ";
   return string_builder.str();
 }
 
-string Node::ToStringBody() const {
-  return ItemName();
-}
-
 string Node::ToStringSuffix() const {
   stringstream string_builder;
   string_builder << "\n";
-  for (const auto& elm : *out_edges_ptr_) {
-    if (const auto& out_edge = elm.lock()) {
-      string_builder << "     -> " << out_edge->ItemName() << "\n";
-    }
+  for (const Edge* elm : out_edges_ptr_) {
+    string_builder << "     -> " << elm->ItemName() << "\n";
   }
   return string_builder.str();
 }

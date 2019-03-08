@@ -12,28 +12,29 @@
 #include "brave/components/brave_page_graph/graph_item/edge/edge_attribute.h"
 #include "brave/components/brave_page_graph/types.h"
 
-using ::std::shared_ptr;
 using ::std::string;
 
 namespace brave_page_graph {
 
-class EdgeAttributeSet : public EdgeAttribute {
+class PageGraph;
+
+class EdgeAttributeSet final : public EdgeAttribute {
+friend class PageGraph;
  public:
   EdgeAttributeSet() = delete;
-  EdgeAttributeSet(const PageGraphId id, shared_ptr<Node> in_node,
-    shared_ptr<Node> out_node, const string& name, const string& value);
-  explicit EdgeAttributeSet(const EdgeAttributeSet& attribute) = default;
-  ~EdgeAttributeSet() = default;
-
-  string ItemName() const;
+  ~EdgeAttributeSet() override;
+  string ItemName() const override;
   string AttributeValue() const;
 
  protected:
-  string ToStringBody() const;
+  EdgeAttributeSet(const PageGraphId id, const Node* in_node,
+    const Node* out_node, const string& name, const string& value);
+  string ToStringBody() const override;
+
   const string name_;
   const string value_;
 };
 
 }  // namespace brave_page_graph
 
-#endif BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_ATTRIBUTE_SET_H_
+#endif  // BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_ATTRIBUTE_SET_H_

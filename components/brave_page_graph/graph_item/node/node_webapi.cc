@@ -6,17 +6,27 @@
 #include "brave/components/brave_page_graph/graph_item/node/node_webapi.h"
 #include <string>
 #include "brave/components/brave_page_graph/graph_item/node.h"
+#include "brave/components/brave_page_graph/page_graph.h"
 #include "brave/components/brave_page_graph/types.h"
 
 using ::std::string;
+using ::std::to_string;
 
 namespace brave_page_graph {
 
-NodeWebAPI::NodeWebAPI(const PageGraphId id) :
-    Node(id) {}
+NodeWebAPI::NodeWebAPI(const PageGraph* graph, const PageGraphId id,
+    const MethodName method) :
+    Node(graph, id),
+    method_name_(method) {}
+
+NodeWebAPI::~NodeWebAPI() {}
 
 string NodeWebAPI::ItemName() const {
-  return "NodeWebAPI#" + id_;
+  return "NodeWebAPI#" + to_string(id_);
+}
+
+string NodeWebAPI::ToStringBody() const {
+  return ItemName() + " [method:" + method_name_ + "]"; 
 }
 
 }  // brave_page_graph

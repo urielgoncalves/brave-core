@@ -4,25 +4,25 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "brave/components/brave_page_graph/graph_item/edge/edge_attribute_set.h"
-#include <memory>
 #include <string>
 #include "brave/components/brave_page_graph/graph_item/edge/edge_attribute.h"
 #include "brave/components/brave_page_graph/graph_item/node.h"
 #include "brave/components/brave_page_graph/types.h"
 
-using ::std::shared_ptr;
 using ::std::string;
 
 namespace brave_page_graph {
 
 EdgeAttributeSet::EdgeAttributeSet(const PageGraphId id,
-  shared_ptr<Node> in_node, shared_ptr<Node> out_node, const string& name,
-  const string& value) :
+    const Node* in_node, const Node* out_node, const string& name,
+    const string& value) :
     EdgeAttribute(id, in_node, out_node, name),
     value_(value) {}
 
+EdgeAttributeSet::~EdgeAttributeSet() {}
+
 string EdgeAttributeSet::ItemName() const {
-  return "EdgeAttributeSet#" + id_;
+  return "EdgeAttributeSet#" + ::std::to_string(id_);
 }
 
 string EdgeAttributeSet::AttributeValue() const {
