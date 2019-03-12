@@ -14,6 +14,8 @@ using ::std::string;
 
 namespace brave_page_graph {
 
+class NodeActor;
+class NodeHTML;
 class PageGraph;
 
 class EdgeNodeCreate final : public EdgeNode {
@@ -24,8 +26,8 @@ friend class PageGraph;
   string ItemName() const override;
 
  protected:
-  EdgeNodeCreate(const PageGraphId id, const Node* in_node,
-    const Node* out_node);
+  EdgeNodeCreate(const PageGraph* graph, const PageGraphId id,
+    const NodeActor* out_node, const NodeHTML* in_node);
 };
 
 }  // namespace brave_page_graph

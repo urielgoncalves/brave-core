@@ -4,20 +4,20 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "brave/components/brave_page_graph/graph_item/edge/edge_request.h"
-
 #include <string>
 #include "brave/components/brave_page_graph/graph_item/edge/edge_node.h"
 #include "brave/components/brave_page_graph/graph_item/node.h"
+#include "brave/components/brave_page_graph/page_graph.h"
 #include "brave/components/brave_page_graph/types.h"
-
 
 using ::std::string;
 
 namespace brave_page_graph {
 
-EdgeRequest::EdgeRequest(const PageGraphId id, const Node* in_node,
-  const Node* out_node, const string& url, const RequestType type) :
-    Edge(id, in_node, out_node),
+EdgeRequest::EdgeRequest(const PageGraph* graph, const PageGraphId id,
+    const Node* out_node, const Node* in_node, const string& url,
+    const RequestType type) :
+    Edge(graph, id, out_node, in_node),
     url_(url),
     type_(type) {}
 

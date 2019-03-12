@@ -1,5 +1,5 @@
 diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink/renderer/core/dom/document.cc
-index e5d02bd5288267372a37bb4924d144abcf9a312c..93ef51388fce4d832b8ed34d1fc83df05551a166 100644
+index e5d02bd5288267372a37bb4924d144abcf9a312c..775ab848f9c288dd668ae45145d251a047caaab2 100644
 --- a/third_party/blink/renderer/core/dom/document.cc
 +++ b/third_party/blink/renderer/core/dom/document.cc
 @@ -770,6 +770,10 @@ Document::Document(const DocumentInit& initializer,
@@ -13,8 +13,13 @@ index e5d02bd5288267372a37bb4924d144abcf9a312c..93ef51388fce4d832b8ed34d1fc83df0
  }
  
  Document::~Document() {
-@@ -782,6 +786,13 @@ Document::~Document() {
+@@ -780,8 +784,18 @@ Document::~Document() {
+   DCHECK(!ax_object_cache_);
+ 
    InstanceCounters::DecrementCounter(InstanceCounters::kDocumentCounter);
++#if defined(BRAVE_PAGE_GRAPH_ENABLED)
++  delete page_graph_;
++#endif
  }
  
 +#if defined(BRAVE_PAGE_GRAPH_ENABLED)

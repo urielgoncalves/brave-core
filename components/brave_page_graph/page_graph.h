@@ -9,16 +9,20 @@
 #include <map>
 #include <string>
 #include <vector>
+#include "brave/components/brave_page_graph/types.h"
+#include "brave/components/brave_page_graph/graph_item.h"
 #include "brave/components/brave_page_graph/graph_item/edge.h"
 #include "brave/components/brave_page_graph/graph_item/node.h"
-#include "brave/components/brave_page_graph/graph_item/node/node_storage_cookiejar.h"
-#include "brave/components/brave_page_graph/graph_item/node/node_storage_localstorage.h"
+#include "brave/components/brave_page_graph/graph_item/node/node_actor.h"
 #include "brave/components/brave_page_graph/graph_item/node/node_html.h"
+#include "brave/components/brave_page_graph/graph_item/node/node_html_text.h"
+#include "brave/components/brave_page_graph/graph_item/node/node_html_element.h"
 #include "brave/components/brave_page_graph/graph_item/node/node_parser.h"
 #include "brave/components/brave_page_graph/graph_item/node/node_script.h"
 #include "brave/components/brave_page_graph/graph_item/node/node_shields.h"
+#include "brave/components/brave_page_graph/graph_item/node/node_storage_cookiejar.h"
+#include "brave/components/brave_page_graph/graph_item/node/node_storage_localstorage.h"
 #include "brave/components/brave_page_graph/graph_item/node/node_webapi.h"
-#include "brave/components/brave_page_graph/types.h"
 
 using ::std::map;
 using ::std::string;
@@ -30,10 +34,25 @@ class PageGraph {
  public:
   PageGraph();
   ~PageGraph();
+
   NodeHTML* GetHTMLNode(const DOMNodeId node_id) const;
-  void SetParentOfHTMLNode(const DOMNodeId parent_node_id,
-    const DOMNodeId child_node_id);
-  void RegisterHTMLNodeInserted(const string& tag_name);
+  NodeHTMLElement* GetHTMLElementNode(const DOMNodeId node_id) const;
+  NodeHTMLText* GetHTMLTextNode(const DOMNodeId node_id) const;
+
+  void RegisterHTMLElementNodeCreated(const DOMNodeId node_id,
+    const string& tag_name);
+  void RegisterHTMLTextNodeCreated(const DOMNodeId node_id,
+    const string& text);
+  void RegisterHTMLElementNodeInserted(const DOMNodeId node_id,
+    const DOMNodeId parent_node_id, const DOMNodeId before_sibling_id);
+  void RegisterHTMLElementNodeRemoved(const DOMNodeId node_id);
+
+  void RegisterAttributeSet(const DOMNodeId node_id, const string& attr_name,
+    const string& attr_value);
+  void RegisterAttributeDelete(const DOMNodeId node_id,
+    const string& attr_name);
+
+  NodeActor* GetCurrentActingNode() const;
 
  protected:
   // Monotonically increasing counter, used so that we can replay the
@@ -46,10 +65,13 @@ class PageGraph {
 
   // Non-owning references to singleton items in the graph. (the owning
   // references will be in the above vectors).
-  NodeParser* node_parser_;
-  NodeShields* node_shields_;
-  NodeStorageCookieJar* node_cookie_jar_;
-  NodeStorageLocalStorage* node_local_storage_;
+  NodeParser* parser_node_;
+  NodeShields* shields_node_;
+  NodeStorageCookieJar* cookie_jar_node_;
+  NodeStorageLocalStorage* local_storage_node_;
+
+  // Non-owning reference to the HTML root of the document (i.e. <html>).
+  NodeHTML* html_root_node_;
 
   // Index structure for storing and looking up webapi nodes.
   // This map does not own the references.
@@ -57,7 +79,8 @@ class PageGraph {
 
   // Index structure for looking up HTML nodes.
   // This map does not own the references.
-  map<DOMNodeId, NodeHTML*> html_nodes_;
+  map<DOMNodeId, NodeHTMLElement*> html_element_nodes_;
+  map<DOMNodeId, NodeHTMLText*> html_text_nodes_;
 
   // Index structure for looking up script nodes.
   // This map does not own the references.

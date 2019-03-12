@@ -9,7 +9,6 @@
 #include <string>
 #include <vector>
 #include "brave/components/brave_page_graph/graph_item/edge.h"
-#include "brave/components/brave_page_graph/graph_item/node.h"
 #include "brave/components/brave_page_graph/types.h"
 
 using ::std::string;
@@ -17,6 +16,9 @@ using ::std::vector;
 
 namespace brave_page_graph {
 
+class Node;
+class NodeScript;
+class NodeWebAPI;
 class PageGraph;
 
 class EdgeCall final : public virtual Edge {
@@ -27,8 +29,9 @@ friend class PageGraph;
   string ItemName() const override;
 
  protected:
-  EdgeCall(const PageGraphId id, const Node* in_node,
-    const Node* out_node, const vector<string>& arguments);
+  EdgeCall(const PageGraph* graph, const PageGraphId id,
+    const NodeScript* out_node, const NodeWebAPI* in_node,
+    const vector<string>& arguments);
   string ToStringBody() const override;
 
   const vector<string> arguments_;

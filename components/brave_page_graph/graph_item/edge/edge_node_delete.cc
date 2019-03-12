@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include "brave/components/brave_page_graph/graph_item/edge/edge_node_remove.h"
+#include "brave/components/brave_page_graph/graph_item/edge/edge_node_delete.h"
 #include <string>
 #include "brave/components/brave_page_graph/graph_item/edge/edge_node.h"
 #include "brave/components/brave_page_graph/graph_item/node.h"
@@ -13,17 +13,18 @@
 #include "brave/components/brave_page_graph/types.h"
 
 using ::std::string;
+using ::std::to_string;
 
 namespace brave_page_graph {
 
-EdgeNodeRemove::EdgeNodeRemove(const PageGraph* graph, const PageGraphId id,
+EdgeNodeDelete::EdgeNodeDelete(const PageGraph* graph, const PageGraphId id,
     const NodeScript* out_node, const NodeHTML* in_node) :
     EdgeNode(graph, id, out_node, in_node) {}
 
-EdgeNodeRemove::~EdgeNodeRemove() {}
+EdgeNodeDelete::~EdgeNodeDelete() {}
 
-string EdgeNodeRemove::ItemName() const {
-  return "EdgeNodeRemove#" + ::std::to_string(id_);
+string EdgeNodeDelete::ItemName() const {
+  return "EdgeNodeDelete#" + to_string(id_);
 }
 
 }  // brave_page_graph

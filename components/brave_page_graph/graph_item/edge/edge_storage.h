@@ -8,13 +8,15 @@
 
 #include <string>
 #include "brave/components/brave_page_graph/graph_item/edge.h"
-#include "brave/components/brave_page_graph/graph_item/node.h"
 #include "brave/components/brave_page_graph/types.h"
 
 using ::std::string;
 
 namespace brave_page_graph {
 
+class Node;
+class NodeActor;
+class NodeStorage;
 class PageGraph;
 
 class EdgeStorage : public Edge {
@@ -23,8 +25,8 @@ friend class PageGraph;
   EdgeStorage() = delete;
 
  protected:
-  EdgeStorage(const PageGraphId id, const Node* in_node, const Node* out_node,
-    const string& key);
+  EdgeStorage(const PageGraph* graph, const PageGraphId id,
+    const NodeActor* out_node, const NodeStorage* in_node, const string& key);
   string ToStringBody() const override;
 
   const string key_;

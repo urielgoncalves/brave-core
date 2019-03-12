@@ -7,7 +7,7 @@
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_NODE_SCRIPT_H_
 
 #include <string>
-#include "brave/components/brave_page_graph/graph_item/node.h"
+#include "brave/components/brave_page_graph/graph_item/node/node_actor.h"
 #include "brave/components/brave_page_graph/types.h"
 
 using ::std::string;
@@ -16,12 +16,13 @@ namespace brave_page_graph {
 
 class PageGraph;
 
-class NodeScript final : public virtual Node {
+class NodeScript final : public NodeActor {
 friend class PageGraph;
  public:
   NodeScript() = delete;
   ~NodeScript() override;
   string ItemName() const override;
+  bool IsScript() const override;
 
  protected:
    NodeScript(const PageGraph* graph, const PageGraphId id,

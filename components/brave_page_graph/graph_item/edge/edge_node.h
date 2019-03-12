@@ -7,11 +7,13 @@
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_NODE_H_
 
 #include "brave/components/brave_page_graph/graph_item/edge.h"
-#include "brave/components/brave_page_graph/graph_item/node.h"
 #include "brave/components/brave_page_graph/types.h"
 
 namespace brave_page_graph {
 
+class Node;
+class NodeActor;
+class NodeHTML;
 class PageGraph;
 
 class EdgeNode : public Edge {
@@ -20,8 +22,8 @@ friend class PageGraph;
   EdgeNode() = delete;
 
  protected:
-  EdgeNode(const PageGraphId id, const Node* in_node,
-    const Node* out_node);
+  EdgeNode(const PageGraph* graph, const PageGraphId id,
+    const NodeActor* out_node, const NodeHTML* in_node);
 };
 
 }  // namespace brave_page_graph

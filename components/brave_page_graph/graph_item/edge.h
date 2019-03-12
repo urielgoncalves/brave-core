@@ -7,16 +7,15 @@
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_H_
 
 #include <vector>
-#include "brave/components/brave_page_graph/graph_item.h"
-#include "brave/components/brave_page_graph/graph_item/node.h"
 #include "brave/components/brave_page_graph/types.h"
+#include "brave/components/brave_page_graph/graph_item.h"
 
 using ::std::string;
 
 namespace brave_page_graph {
 
-class PageGraph;
 class Node;
+class PageGraph;
 
 class Edge : public GraphItem {
 friend class PageGraph;
@@ -24,7 +23,8 @@ friend class PageGraph;
   Edge() = delete;
 
  protected:
-  Edge(const PageGraphId id, const Node* in_node, const Node* out_node);
+  Edge(const PageGraph* graph, const PageGraphId id, const Node* out_node,
+    const Node* in_node);
   string ToStringPrefix() const override;
   string ToStringSuffix() const override;
 

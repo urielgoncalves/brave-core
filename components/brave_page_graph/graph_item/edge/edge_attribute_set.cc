@@ -7,16 +7,19 @@
 #include <string>
 #include "brave/components/brave_page_graph/graph_item/edge/edge_attribute.h"
 #include "brave/components/brave_page_graph/graph_item/node.h"
+#include "brave/components/brave_page_graph/graph_item/node/node_actor.h"
+#include "brave/components/brave_page_graph/graph_item/node/node_html_element.h"
+#include "brave/components/brave_page_graph/page_graph.h"
 #include "brave/components/brave_page_graph/types.h"
 
 using ::std::string;
 
 namespace brave_page_graph {
 
-EdgeAttributeSet::EdgeAttributeSet(const PageGraphId id,
-    const Node* in_node, const Node* out_node, const string& name,
-    const string& value) :
-    EdgeAttribute(id, in_node, out_node, name),
+EdgeAttributeSet::EdgeAttributeSet(const PageGraph* graph, const PageGraphId id,
+    const NodeActor* out_node, const NodeHTMLElement* in_node,
+    const string& name, const string& value) :
+    EdgeAttribute(graph, id, out_node, in_node, name),
     value_(value) {}
 
 EdgeAttributeSet::~EdgeAttributeSet() {}

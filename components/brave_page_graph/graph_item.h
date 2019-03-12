@@ -13,19 +13,22 @@ using ::std::string;
 
 namespace brave_page_graph {
 
+class PageGraph;
+
 class GraphItem {
  public:
   GraphItem() = delete;
   virtual ~GraphItem();
   virtual string ToString() const;
-  virtual string ItemName() const;
+  virtual string ItemName() const = 0;
   PageGraphId GetId() const;
 
  protected:
-  GraphItem(const PageGraphId id);
+  GraphItem(const PageGraph* graph, const PageGraphId id);
   virtual string ToStringBody() const;
-  virtual string ToStringPrefix() const;
-  virtual string ToStringSuffix() const;
+  virtual string ToStringPrefix() const = 0;
+  virtual string ToStringSuffix() const = 0;
+  const PageGraph* graph_;
   const PageGraphId id_; 
 };
 

@@ -6,6 +6,7 @@
 #include "brave/components/brave_page_graph/graph_item/node/node_script.h"
 #include <string>
 #include "brave/components/brave_page_graph/graph_item/node.h"
+#include "brave/components/brave_page_graph/graph_item/node/node_actor.h"
 #include "brave/components/brave_page_graph/types.h"
 #include "brave/components/brave_page_graph/page_graph.h"
 
@@ -16,7 +17,7 @@ namespace brave_page_graph {
 
 NodeScript::NodeScript(const PageGraph* graph, const PageGraphId id,
     const ScriptId script_id, const ScriptType type) :
-    Node(graph, id),
+    NodeActor(graph, id),
     script_id_(script_id),
     type_(type) {}
 
@@ -24,6 +25,10 @@ NodeScript::~NodeScript() {}
 
 string NodeScript::ItemName() const {
   return "NodeScript#" + to_string(id_);
+}
+
+bool NodeScript::IsScript() const {
+  return true;
 }
 
 string NodeScript::ToStringBody() const {

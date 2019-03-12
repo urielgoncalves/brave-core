@@ -1,15 +1,49 @@
 diff --git a/third_party/blink/renderer/core/dom/container_node.cc b/third_party/blink/renderer/core/dom/container_node.cc
-index 59467cf7652fd71631886bd23ff78cd559b609f8..5e072485bf772bcbcb62422a16728cd5ab0ec79d 100644
+index 59467cf7652fd71631886bd23ff78cd559b609f8..daa997ae7218e247e3bc9ad2227455972613c3d2 100644
 --- a/third_party/blink/renderer/core/dom/container_node.cc
 +++ b/third_party/blink/renderer/core/dom/container_node.cc
-@@ -922,6 +922,10 @@ void ContainerNode::NotifyNodeInsertedInternal(
+@@ -20,6 +20,7 @@
+  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+  * Boston, MA 02110-1301, USA.
+  */
++#include <iostream>
+ 
+ #include "third_party/blink/renderer/core/dom/container_node.h"
+ 
+@@ -61,6 +62,12 @@
+ #include "third_party/blink/renderer/platform/bindings/v8_per_isolate_data.h"
+ #include "third_party/blink/renderer/platform/runtime_enabled_features.h"
+ 
++#include "brave/components/brave_page_graph/buildflags/buildflags.h"
++#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++#include "third_party/blink/renderer/core/dom/dom_node_ids.h"
++#include "brave/components/brave_page_graph/page_graph.h"
++#endif
++
+ namespace blink {
+ 
+ static void DispatchChildInsertionEvents(Node&);
+@@ -922,6 +929,12 @@ void ContainerNode::NotifyNodeInsertedInternal(
    ScriptForbiddenScope forbid_script;
  
    for (Node& node : NodeTraversal::InclusiveDescendantsOf(root)) {
-+
-+#if defined(BRAVE_PAGE_GRAPH_ENABLED)
-+    node.GetDocument()->GetPageGraph()->RegisterHTMLNodeInserted(node.tagName);
++#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++    node.GetDocument().GetPageGraph()->RegisterHTMLElementNodeInserted(
++      DOMNodeIds::IdForNode(node),
++      DOMNodeIds::IdForNode(node.parentNode()),
++      DOMNodeIds::IdForNode(node.previousSibling()));
 +#endif
      // As an optimization we don't notify leaf nodes when when inserting
      // into detached subtrees that are not in a shadow tree.
      if (!isConnected() && !IsInShadowTree() && !node.IsContainerNode())
+@@ -938,6 +951,10 @@ void ContainerNode::NotifyNodeInsertedInternal(
+ void ContainerNode::NotifyNodeRemoved(Node& root) {
+   ScriptForbiddenScope forbid_script;
+   EventDispatchForbiddenScope assert_no_event_dispatch;
++#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  node.GetDocument().GetPageGraph()->RegisterHTMLElementNodeRemoved(
++    DOMNodeIds::IdForNode(node));
++#endif
+ 
+   for (Node& node : NodeTraversal::InclusiveDescendantsOf(root)) {
+     // As an optimization we skip notifying Text nodes and other leaf nodes

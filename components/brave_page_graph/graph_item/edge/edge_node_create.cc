@@ -7,20 +7,24 @@
 #include <string>
 #include "brave/components/brave_page_graph/graph_item/edge/edge_node.h"
 #include "brave/components/brave_page_graph/graph_item/node.h"
+#include "brave/components/brave_page_graph/graph_item/node/node_actor.h"
+#include "brave/components/brave_page_graph/graph_item/node/node_html.h"
+#include "brave/components/brave_page_graph/page_graph.h"
 #include "brave/components/brave_page_graph/types.h"
 
 using ::std::string;
+using ::std::to_string;
 
 namespace brave_page_graph {
 
-EdgeNodeCreate::EdgeNodeCreate(const PageGraphId id, const Node* in_node,
-    const Node* out_node) :
-    EdgeNode(id, in_node, out_node) {}
+EdgeNodeCreate::EdgeNodeCreate(const PageGraph* graph, const PageGraphId id,
+    const NodeActor* out_node, const NodeHTML* in_node) :
+    EdgeNode(graph, id, out_node, in_node) {}
 
 EdgeNodeCreate::~EdgeNodeCreate() {}
 
 string EdgeNodeCreate::ItemName() const {
-  return "EdgeNodeCreate#" + ::std::to_string(id_);
+  return "EdgeNodeCreate#" + to_string(id_);
 }
 
 }  // brave_page_graph

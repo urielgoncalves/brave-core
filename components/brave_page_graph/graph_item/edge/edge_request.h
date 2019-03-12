@@ -8,13 +8,13 @@
 
 #include <string>
 #include "brave/components/brave_page_graph/graph_item/edge.h"
-#include "brave/components/brave_page_graph/graph_item/node.h"
 #include "brave/components/brave_page_graph/types.h"
 
 using ::std::string;
 
 namespace brave_page_graph {
 
+class Node;
 class PageGraph;
 
 class EdgeRequest final : public virtual Edge {
@@ -25,8 +25,9 @@ friend class PageGraph;
   string ItemName() const override;
 
  protected:
-  EdgeRequest(const PageGraphId id, const Node* in_node,
-    const Node* out_node, const string& url, const RequestType type);
+  EdgeRequest(const PageGraph* graph, const PageGraphId id,
+    const Node* out_node, const Node* in_node, const string& url,
+    const RequestType type);
   string ToStringBody() const override;
 
   const string url_;

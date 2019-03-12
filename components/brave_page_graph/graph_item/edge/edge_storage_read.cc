@@ -4,24 +4,27 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "brave/components/brave_page_graph/graph_item/edge/edge_storage_read.h"
-
 #include <string>
 #include "brave/components/brave_page_graph/graph_item/edge/edge_storage.h"
 #include "brave/components/brave_page_graph/graph_item/node.h"
+#include "brave/components/brave_page_graph/graph_item/node/node_actor.h"
+#include "brave/components/brave_page_graph/graph_item/node/node_storage.h"
+#include "brave/components/brave_page_graph/page_graph.h"
 #include "brave/components/brave_page_graph/types.h"
 
 using ::std::string;
+using ::std::to_string;
 
 namespace brave_page_graph {
 
-EdgeStorageRead::EdgeStorageRead(const PageGraphId id,
-    const Node* in_node, const Node* out_node, const string& key) :
-    EdgeStorage(id, in_node, out_node, key) {}
+EdgeStorageRead::EdgeStorageRead(const PageGraph* graph, const PageGraphId id,
+    const NodeActor* out_node, const NodeStorage* in_node, const string& key) :
+    EdgeStorage(graph, id, out_node, in_node, key) {}
 
 EdgeStorageRead::~EdgeStorageRead() {}
 
 string EdgeStorageRead::ItemName() const {
-  return "EdgeStorageRead#" + ::std::to_string(id_);
+  return "EdgeStorageRead#" + to_string(id_);
 }
 
 }  // brave_page_graph

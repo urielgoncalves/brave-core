@@ -7,6 +7,7 @@
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_NODE_HTML_H_
 
 #include <map>
+#include <sstream>
 #include <string>
 #include <vector>
 #include "brave/components/brave_page_graph/graph_item/node.h"
@@ -14,36 +15,37 @@
 
 using ::std::map;
 using ::std::string;
+using ::std::stringstream;
 using ::std::vector;
 
 namespace brave_page_graph {
 
 class PageGraph;
+class NodeHTMLElement;
+class NodeHTMLText;
 
-class NodeHTML final : public Node {
+class NodeHTML : public Node {
 friend class PageGraph;
+friend class NodeHTMLElement;
+friend class NodeHTMLText;
  public:
   NodeHTML() = delete;
   ~NodeHTML() override;
-  string ItemName() const override;
-
-  // weak_ptr<NodeHTML> GetHTMLParent() const;
-  // void SetHTMLParent(weak_ptr<NodeHTML> parent,
-  //   weak_ptr<NodeHTML> before_sibling);
-  // vector<weak_ptr<Node>> GetHTMLChildren() const;
+  virtual string ToHTMLString() const = 0;
 
  protected:
   NodeHTML(const PageGraph* graph, const PageGraphId id,
-    const DOMNodeId node_id,  const string& tag_name);
-  string ToStringBody() const override;
+    const DOMNodeId node_id);
+  virtual void MarkNodeDeleted();
+  virtual void ToHTMLString(const uint32_t indent,
+    stringstream& builder) const = 0;
 
   const DOMNodeId node_id_;
-  const string tag_name_;
   bool is_deleted_ = false;
-  map<string, string> current_attributes_;
-  NodeHTML* parent_node_ = nullptr;
-  vector<NodeHTML*> child_nodes_;
+  NodeHTMLElement* parent_node_ = nullptr;
 };
+
+void indent_for_html(const uint32_t indent, stringstream& builder);
 
 }  // namespace brave_page_graph
 

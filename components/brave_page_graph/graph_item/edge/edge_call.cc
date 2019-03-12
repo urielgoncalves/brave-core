@@ -9,6 +9,9 @@
 #include <vector>
 #include "brave/components/brave_page_graph/graph_item/edge.h"
 #include "brave/components/brave_page_graph/graph_item/node.h"
+#include "brave/components/brave_page_graph/graph_item/node/node_script.h"
+#include "brave/components/brave_page_graph/graph_item/node/node_webapi.h"
+#include "brave/components/brave_page_graph/page_graph.h"
 #include "brave/components/brave_page_graph/types.h"
 
 using ::std::string;
@@ -17,9 +20,10 @@ using ::std::vector;
 
 namespace brave_page_graph {
 
-EdgeCall::EdgeCall(const PageGraphId id, const Node* in_node,
-    const Node* out_node, const vector<string>& arguments) :
-    Edge(id, in_node, out_node),
+EdgeCall::EdgeCall(const PageGraph* graph, const PageGraphId id,
+    const NodeScript* out_node, const NodeWebAPI* in_node,
+    const vector<string>& arguments) :
+    Edge(graph, id, out_node, in_node),
     arguments_(arguments) {}
 
 EdgeCall::~EdgeCall() {}

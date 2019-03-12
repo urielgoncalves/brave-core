@@ -8,7 +8,6 @@
 
 #include <string>
 #include "brave/components/brave_page_graph/graph_item/edge.h"
-#include "brave/components/brave_page_graph/graph_item/node.h"
 #include "brave/components/brave_page_graph/graph_item/edge/edge_attribute.h"
 #include "brave/components/brave_page_graph/types.h"
 
@@ -16,6 +15,9 @@ using ::std::string;
 
 namespace brave_page_graph {
 
+class Node;
+class NodeActor;
+class NodeHTMLElement;
 class PageGraph;
 
 class EdgeAttributeSet final : public EdgeAttribute {
@@ -27,11 +29,11 @@ friend class PageGraph;
   string AttributeValue() const;
 
  protected:
-  EdgeAttributeSet(const PageGraphId id, const Node* in_node,
-    const Node* out_node, const string& name, const string& value);
+  EdgeAttributeSet(const PageGraph* graph, const PageGraphId id,
+    const NodeActor* out_node, const NodeHTMLElement* in_node,
+    const string& name, const string& value);
   string ToStringBody() const override;
 
-  const string name_;
   const string value_;
 };
 

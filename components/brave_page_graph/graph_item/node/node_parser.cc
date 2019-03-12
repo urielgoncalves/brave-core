@@ -6,6 +6,7 @@
 #include "brave/components/brave_page_graph/graph_item/node/node_parser.h"
 #include <string>
 #include "brave/components/brave_page_graph/graph_item/node.h"
+#include "brave/components/brave_page_graph/graph_item/node/node_actor.h"
 #include "brave/components/brave_page_graph/types.h"
 #include "brave/components/brave_page_graph/page_graph.h"
 
@@ -15,12 +16,16 @@ using ::std::to_string;
 namespace brave_page_graph {
 
 NodeParser::NodeParser(const PageGraph* graph, const PageGraphId id) :
-    Node(graph, id) {}
+    NodeActor(graph, id) {}
 
 NodeParser::~NodeParser() {}
 
 string NodeParser::ItemName() const {
   return "NodeParser#" + to_string(id_);
+}
+
+bool NodeParser::IsParser() const {
+  return true;
 }
 
 }  // brave_page_graph
