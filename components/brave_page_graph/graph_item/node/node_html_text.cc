@@ -10,6 +10,7 @@
 #include "base/logging.h"
 #include "brave/components/brave_page_graph/graph_item/node.h"
 #include "brave/components/brave_page_graph/graph_item/node/node_html.h"
+#include "brave/components/brave_page_graph/graph_item/node/node_html_element.h"
 #include "brave/components/brave_page_graph/graph_item/edge/edge_node_remove.h"
 #include "brave/components/brave_page_graph/graph_item/edge/edge_node_insert.h"
 #include "brave/components/brave_page_graph/graph_item/edge/edge_node_delete.h"

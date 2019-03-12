@@ -10,25 +10,24 @@
 #include <string>
 #include <vector>
 #include "brave/components/brave_page_graph/types.h"
-#include "brave/components/brave_page_graph/graph_item.h"
-#include "brave/components/brave_page_graph/graph_item/edge.h"
-#include "brave/components/brave_page_graph/graph_item/node.h"
-#include "brave/components/brave_page_graph/graph_item/node/node_actor.h"
-#include "brave/components/brave_page_graph/graph_item/node/node_html.h"
-#include "brave/components/brave_page_graph/graph_item/node/node_html_text.h"
-#include "brave/components/brave_page_graph/graph_item/node/node_html_element.h"
-#include "brave/components/brave_page_graph/graph_item/node/node_parser.h"
-#include "brave/components/brave_page_graph/graph_item/node/node_script.h"
-#include "brave/components/brave_page_graph/graph_item/node/node_shields.h"
-#include "brave/components/brave_page_graph/graph_item/node/node_storage_cookiejar.h"
-#include "brave/components/brave_page_graph/graph_item/node/node_storage_localstorage.h"
-#include "brave/components/brave_page_graph/graph_item/node/node_webapi.h"
 
 using ::std::map;
 using ::std::string;
 using ::std::vector;
 
 namespace brave_page_graph {
+
+class GraphItem;
+class NodeActor;
+class NodeHTML;
+class NodeHTMLElement;
+class NodeHTMLText;
+class NodeParser;
+class NodeScript;
+class NodeShields;
+class NodeStorageCookieJar;
+class NodeStorageLocalStorage;
+class NodeWebAPI;
 
 class PageGraph {
  public:

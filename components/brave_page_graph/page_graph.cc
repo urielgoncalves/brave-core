@@ -43,7 +43,7 @@ PageGraph::PageGraph() {
 
 PageGraph::~PageGraph() {
   std::cout << "Deallocating PageGraph\n";
-  // Since graph item is the one place that owns the items in the graph,
+  // Since graph_items_ is the one place that owns the items in the graph,
   // so go ahead and delete them here.
   for (GraphItem* elm : graph_items_) {
     delete elm;
@@ -73,7 +73,7 @@ NodeHTMLText* PageGraph::GetHTMLTextNode(const DOMNodeId node_id) const {
 
 void PageGraph::RegisterHTMLElementNodeCreated(const DOMNodeId node_id,
     const string& tag_name) {
-  NodeHTMLElement* new_node = new NodeHTMLElement(this, ++graph_id_counter_,
+  NodeHTMLElement* new_node = new NodeHTMLElement(this, graph_id_counter_++,
     node_id, tag_name);
   graph_items_.push_back(new_node);
   html_element_nodes_.emplace(node_id, new_node);
@@ -85,7 +85,7 @@ void PageGraph::RegisterHTMLElementNodeCreated(const DOMNodeId node_id,
 
   NodeActor* acting_node = GetCurrentActingNode();
 
-  EdgeNodeCreate* edge = new EdgeNodeCreate(this, ++graph_id_counter_,
+  EdgeNodeCreate* edge = new EdgeNodeCreate(this, graph_id_counter_++,
     acting_node, new_node);
   graph_items_.push_back(edge);
 
@@ -97,14 +97,14 @@ void PageGraph::RegisterHTMLElementNodeCreated(const DOMNodeId node_id,
 
 void PageGraph::RegisterHTMLTextNodeCreated(const DOMNodeId node_id,
     const string& text) {
-  NodeHTMLText* new_node = new NodeHTMLText(this, ++graph_id_counter_,
+  NodeHTMLText* new_node = new NodeHTMLText(this, graph_id_counter_++,
     node_id, text);
   graph_items_.push_back(new_node);
   html_text_nodes_.emplace(node_id, new_node);
 
   NodeActor* acting_node = GetCurrentActingNode();
 
-  EdgeNodeCreate* edge = new EdgeNodeCreate(this, ++graph_id_counter_,
+  EdgeNodeCreate* edge = new EdgeNodeCreate(this, graph_id_counter_++,
     acting_node, new_node);
   graph_items_.push_back(edge);
 
@@ -121,7 +121,7 @@ void PageGraph::RegisterHTMLElementNodeInserted(const DOMNodeId node_id,
 
   NodeActor* acting_node = GetCurrentActingNode();
 
-  EdgeNodeInsert* edge = new EdgeNodeInsert(this, ++graph_id_counter_,
+  EdgeNodeInsert* edge = new EdgeNodeInsert(this, graph_id_counter_++,
     acting_node, inserted_node, parent_node_id, before_sibling_id);
   graph_items_.push_back(edge);
 
@@ -136,7 +136,7 @@ void PageGraph::RegisterHTMLElementNodeRemoved(const DOMNodeId node_id) {
   NodeActor* acting_node = GetCurrentActingNode();
   LOG_ASSERT(GetCurrentActingNode()->IsScript());
 
-  EdgeNodeRemove* edge = new EdgeNodeRemove(this, ++graph_id_counter_,
+  EdgeNodeRemove* edge = new EdgeNodeRemove(this, graph_id_counter_++,
     static_cast<NodeScript*>(acting_node), removed_node);
   graph_items_.push_back(edge);
 
@@ -151,7 +151,7 @@ void PageGraph::RegisterAttributeSet(const DOMNodeId node_id,
 
   NodeActor* acting_node = GetCurrentActingNode();
 
-  EdgeAttributeSet* edge = new EdgeAttributeSet(this, ++graph_id_counter_,
+  EdgeAttributeSet* edge = new EdgeAttributeSet(this, graph_id_counter_++,
     acting_node, target_node, attr_name, attr_value);
   graph_items_.push_back(edge);
 
@@ -167,7 +167,7 @@ void PageGraph::RegisterAttributeDelete(const DOMNodeId node_id,
   LOG_ASSERT(GetCurrentActingNode()->IsScript());
   NodeActor* acting_node = GetCurrentActingNode();
   EdgeAttributeDelete* edge = new EdgeAttributeDelete(this,
-    ++graph_id_counter_, static_cast<NodeScript*>(acting_node),
+    graph_id_counter_++, static_cast<NodeScript*>(acting_node),
     target_node, attr_name);
 
   graph_items_.push_back(edge);

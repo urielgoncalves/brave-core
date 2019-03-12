@@ -5,8 +5,9 @@
 
 #include "brave/components/brave_page_graph/graph_item/edge.h"
 #include <string>
-#include "brave/components/brave_page_graph/page_graph.h"
 #include "brave/components/brave_page_graph/graph_item.h"
+#include "brave/components/brave_page_graph/graph_item/node.h"
+#include "brave/components/brave_page_graph/page_graph.h"
 #include "brave/components/brave_page_graph/types.h"
 
 using ::std::string;
