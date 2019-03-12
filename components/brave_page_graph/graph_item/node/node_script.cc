@@ -17,9 +17,9 @@ namespace brave_page_graph {
 
 NodeScript::NodeScript(const PageGraph* graph, const PageGraphId id,
     const ScriptId script_id, const ScriptType type) :
-    NodeActor(graph, id),
-    script_id_(script_id),
-    type_(type) {}
+      NodeActor(graph, id),
+      script_id_(script_id),
+      type_(type) {}
 
 NodeScript::~NodeScript() {}
 

@@ -26,8 +26,8 @@ namespace brave_page_graph {
 
 NodeHTMLText::NodeHTMLText(const PageGraph* graph, const PageGraphId id,
     const DOMNodeId node_id,  const string& text) :
-    NodeHTML(graph, id, node_id),
-    text_(text) {}
+      NodeHTML(graph, id, node_id),
+      text_(text) {}
 
 NodeHTMLText::~NodeHTMLText() {}
 

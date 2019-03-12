@@ -37,8 +37,8 @@ friend class PageGraph;
   //   out_edge -> node -> in_edge
   // These vectors do not own their references.  All nodes in the entire
   // graph are owned by the PageGraph instance.
-  vector<const Edge*> in_edges_ptr_;
-  vector<const Edge*> out_edges_ptr_;
+  vector<const Edge*> in_edges_;
+  vector<const Edge*> out_edges_;
 };
 
 }  // namespace brave_page_graph

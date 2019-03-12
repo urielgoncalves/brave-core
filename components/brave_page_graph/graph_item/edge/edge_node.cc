@@ -15,6 +15,6 @@ namespace brave_page_graph {
 
 EdgeNode::EdgeNode(const PageGraph* graph, const PageGraphId id,
     const NodeActor* out_node, const NodeHTML* in_node) :
-    Edge(graph, id, out_node, in_node) {}
+      Edge(graph, id, out_node, in_node) {}
 
 }  // brave_page_graph

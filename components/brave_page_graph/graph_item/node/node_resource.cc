@@ -16,8 +16,8 @@ namespace brave_page_graph {
 
 NodeResource::NodeResource(const PageGraph *graph, const PageGraphId id,
     const RequestType type) :
-    Node(graph, id),
-    type_(type) {}
+      Node(graph, id),
+      type_(type) {}
 
 NodeResource::~NodeResource() {}
 

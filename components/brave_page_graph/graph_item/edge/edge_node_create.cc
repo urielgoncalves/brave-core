@@ -19,7 +19,7 @@ namespace brave_page_graph {
 
 EdgeNodeCreate::EdgeNodeCreate(const PageGraph* graph, const PageGraphId id,
     const NodeActor* out_node, const NodeHTML* in_node) :
-    EdgeNode(graph, id, out_node, in_node) {}
+      EdgeNode(graph, id, out_node, in_node) {}
 
 EdgeNodeCreate::~EdgeNodeCreate() {}
 

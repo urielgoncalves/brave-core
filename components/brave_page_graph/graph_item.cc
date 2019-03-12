@@ -13,8 +13,8 @@ using ::std::string;
 namespace brave_page_graph {
 
 GraphItem::GraphItem(const PageGraph* graph, const PageGraphId id) :
-  graph_(graph),
-  id_(id) {}
+    graph_(graph),
+    id_(id) {}
 
 GraphItem::~GraphItem() {}
 

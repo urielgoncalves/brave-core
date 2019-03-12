@@ -20,8 +20,8 @@ namespace brave_page_graph {
 EdgeStorageSet::EdgeStorageSet(const PageGraph* graph, const PageGraphId id,
     const NodeActor* out_node, const NodeStorage* in_node, const string& key,
     const string& value) :
-    EdgeStorage(graph, id, out_node, in_node, key),
-    value_(value) {}
+      EdgeStorage(graph, id, out_node, in_node, key),
+      value_(value) {}
 
 EdgeStorageSet::~EdgeStorageSet() {}
 

@@ -14,21 +14,21 @@ using ::std::stringstream;
 namespace brave_page_graph {
 
 Node::Node(const PageGraph* graph, const PageGraphId id) :
-    GraphItem(graph, id) {}
+      GraphItem(graph, id) {}
 
 Node::~Node() {}
 
 void Node::AddInEdge(const Edge* in_edge) {
-  in_edges_ptr_.push_back(in_edge);
+  in_edges_.push_back(in_edge);
 }
 
 void Node::AddOutEdge(const Edge* out_edge) {
-  out_edges_ptr_.push_back(out_edge);
+  out_edges_.push_back(out_edge);
 }
 
 string Node::ToStringPrefix() const {
   stringstream string_builder;
-  for (const Edge* elm : in_edges_ptr_) {
+  for (const Edge* elm : in_edges_) {
     string_builder << elm->ItemName() << " -> \n";
   }
   string_builder << "  ";
@@ -38,7 +38,7 @@ string Node::ToStringPrefix() const {
 string Node::ToStringSuffix() const {
   stringstream string_builder;
   string_builder << "\n";
-  for (const Edge* elm : out_edges_ptr_) {
+  for (const Edge* elm : out_edges_) {
     string_builder << "     -> " << elm->ItemName() << "\n";
   }
   return string_builder.str();

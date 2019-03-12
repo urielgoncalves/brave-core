@@ -19,7 +19,7 @@ namespace brave_page_graph {
 
 EdgeStorageRead::EdgeStorageRead(const PageGraph* graph, const PageGraphId id,
     const NodeActor* out_node, const NodeStorage* in_node, const string& key) :
-    EdgeStorage(graph, id, out_node, in_node, key) {}
+      EdgeStorage(graph, id, out_node, in_node, key) {}
 
 EdgeStorageRead::~EdgeStorageRead() {}
 

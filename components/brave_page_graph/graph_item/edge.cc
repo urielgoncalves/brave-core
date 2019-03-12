@@ -16,17 +16,17 @@ namespace brave_page_graph {
 
 Edge::Edge(const PageGraph* graph, const PageGraphId id, const Node* out_node,
     const Node* in_node) :
-    GraphItem(graph, id) {
-  in_node_ptr_ = in_node;
-  out_node_ptr_ = out_node;
+      GraphItem(graph, id) {
+  in_node_ = in_node;
+  out_node_ = out_node;
 }
 
 string Edge::ToStringPrefix() const {
-  return in_node_ptr_->ItemName() + " -> ";
+  return in_node_->ItemName() + " -> ";
 }
 
 string Edge::ToStringSuffix() const {
-  return " -> " + out_node_ptr_->ItemName();
+  return " -> " + out_node_->ItemName();
 }
 
 }  // namespace brave_page_graph

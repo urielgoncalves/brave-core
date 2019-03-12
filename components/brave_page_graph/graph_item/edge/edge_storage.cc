@@ -18,8 +18,8 @@ namespace brave_page_graph {
 
 EdgeStorage::EdgeStorage(const PageGraph* graph, const PageGraphId id,
     const NodeActor* out_node, const NodeStorage* in_node, const string& key) :
-    Edge(graph, id, out_node, in_node),
-    key_(key) {}
+      Edge(graph, id, out_node, in_node),
+      key_(key) {}
 
 string EdgeStorage::ToStringBody() const {
   return ItemName() + " [key:" + key_ + "]";

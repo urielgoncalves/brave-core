@@ -19,8 +19,8 @@ namespace brave_page_graph {
 EdgeAttributeSet::EdgeAttributeSet(const PageGraph* graph, const PageGraphId id,
     const NodeActor* out_node, const NodeHTMLElement* in_node,
     const string& name, const string& value) :
-    EdgeAttribute(graph, id, out_node, in_node, name),
-    value_(value) {}
+      EdgeAttribute(graph, id, out_node, in_node, name),
+      value_(value) {}
 
 EdgeAttributeSet::~EdgeAttributeSet() {}
 

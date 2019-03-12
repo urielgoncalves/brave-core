@@ -17,9 +17,9 @@ namespace brave_page_graph {
 EdgeRequest::EdgeRequest(const PageGraph* graph, const PageGraphId id,
     const Node* out_node, const Node* in_node, const string& url,
     const RequestType type) :
-    Edge(graph, id, out_node, in_node),
-    url_(url),
-    type_(type) {}
+      Edge(graph, id, out_node, in_node),
+      url_(url),
+      type_(type) {}
 
 EdgeRequest::~EdgeRequest() {}
 

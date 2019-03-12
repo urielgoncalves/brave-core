@@ -16,7 +16,7 @@ namespace brave_page_graph {
 
 NodeStorageCookieJar::NodeStorageCookieJar(const PageGraph* graph,
     const PageGraphId id) :
-    NodeStorage(graph, id) {}
+      NodeStorage(graph, id) {}
 
 NodeStorageCookieJar::~NodeStorageCookieJar() {}
 

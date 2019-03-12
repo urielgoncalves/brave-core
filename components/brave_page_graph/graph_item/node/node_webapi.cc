@@ -16,8 +16,8 @@ namespace brave_page_graph {
 
 NodeWebAPI::NodeWebAPI(const PageGraph* graph, const PageGraphId id,
     const MethodName method) :
-    Node(graph, id),
-    method_name_(method) {}
+      Node(graph, id),
+      method_name_(method) {}
 
 NodeWebAPI::~NodeWebAPI() {}
 

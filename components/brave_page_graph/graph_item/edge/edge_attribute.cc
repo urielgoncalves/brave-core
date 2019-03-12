@@ -17,8 +17,8 @@ namespace brave_page_graph {
 
 EdgeAttribute::EdgeAttribute(const PageGraph* graph, const PageGraphId id,
     const NodeActor* out_node, const Node* in_node, const string& name) :
-    Edge(graph, id, out_node, in_node),
-    name_(name) {}
+      Edge(graph, id, out_node, in_node),
+      name_(name) {}
 
 string EdgeAttribute::AttributeName() const {
   return name_;

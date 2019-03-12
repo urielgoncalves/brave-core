@@ -23,8 +23,8 @@ namespace brave_page_graph {
 EdgeCall::EdgeCall(const PageGraph* graph, const PageGraphId id,
     const NodeScript* out_node, const NodeWebAPI* in_node,
     const vector<string>& arguments) :
-    Edge(graph, id, out_node, in_node),
-    arguments_(arguments) {}
+      Edge(graph, id, out_node, in_node),
+      arguments_(arguments) {}
 
 EdgeCall::~EdgeCall() {}
 

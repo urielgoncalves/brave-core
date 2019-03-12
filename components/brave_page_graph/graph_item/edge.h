@@ -29,8 +29,8 @@ friend class PageGraph;
   string ToStringSuffix() const override;
 
   // These pointers are not owning, the PageGraph instance owns them.
-  const Node* out_node_ptr_;
-  const Node* in_node_ptr_;
+  const Node* out_node_;
+  const Node* in_node_;
 };
 
 }  // namespace brave_page_graph

@@ -19,7 +19,7 @@ namespace brave_page_graph {
 EdgeAttributeDelete::EdgeAttributeDelete(const PageGraph* graph,
     const PageGraphId id, const NodeScript* out_node,
     const NodeHTMLElement* in_node, const string& name) :
-    EdgeAttribute(graph, id, out_node, in_node, name) {}
+      EdgeAttribute(graph, id, out_node, in_node, name) {}
 
 EdgeAttributeDelete::~EdgeAttributeDelete() {}
 

@@ -21,9 +21,9 @@ namespace brave_page_graph {
 EdgeNodeInsert::EdgeNodeInsert(const PageGraph* graph, const PageGraphId id,
     const NodeActor* out_node, const NodeHTML* in_node,
     const DOMNodeId parent_id, const DOMNodeId prior_sibling_id) :
-    EdgeNode(graph, id, out_node, in_node),
-    parent_id_(parent_id),
-    prior_sibling_id_(prior_sibling_id) {}
+      EdgeNode(graph, id, out_node, in_node),
+      parent_id_(parent_id),
+      prior_sibling_id_(prior_sibling_id) {}
 
 EdgeNodeInsert::~EdgeNodeInsert() {}
 

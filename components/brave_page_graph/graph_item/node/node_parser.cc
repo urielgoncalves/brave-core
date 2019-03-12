@@ -16,7 +16,7 @@ using ::std::to_string;
 namespace brave_page_graph {
 
 NodeParser::NodeParser(const PageGraph* graph, const PageGraphId id) :
-    NodeActor(graph, id) {}
+      NodeActor(graph, id) {}
 
 NodeParser::~NodeParser() {}
 

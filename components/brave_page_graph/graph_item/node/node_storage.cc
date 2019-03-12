@@ -15,6 +15,6 @@ using ::std::to_string;
 namespace brave_page_graph {
 
 NodeStorage::NodeStorage(const PageGraph* graph, const PageGraphId id) :
-    Node(graph, id) {}
+      Node(graph, id) {}
 
 }  // brave_page_graph

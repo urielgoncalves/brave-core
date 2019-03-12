@@ -18,8 +18,8 @@ namespace brave_page_graph {
 
 NodeHTML::NodeHTML(const PageGraph* graph, const PageGraphId id,
     const DOMNodeId node_id) :
-    Node(graph, id),
-    node_id_(node_id) {}
+      Node(graph, id),
+      node_id_(node_id) {}
 
 NodeHTML::~NodeHTML() {}
 

@@ -30,8 +30,8 @@ namespace brave_page_graph {
 
 NodeHTMLElement::NodeHTMLElement(const PageGraph* graph, const PageGraphId id,
     const DOMNodeId node_id, const string& tag_name) :
-    NodeHTML(graph, id, node_id),
-    tag_name_(tag_name) {}
+      NodeHTML(graph, id, node_id),
+      tag_name_(tag_name) {}
 
 NodeHTMLElement::~NodeHTMLElement() {}
 
