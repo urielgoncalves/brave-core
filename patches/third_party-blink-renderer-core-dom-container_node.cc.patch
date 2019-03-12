@@ -1,21 +1,14 @@
 diff --git a/third_party/blink/renderer/core/dom/container_node.cc b/third_party/blink/renderer/core/dom/container_node.cc
-index 59467cf7652fd71631886bd23ff78cd559b609f8..daa997ae7218e247e3bc9ad2227455972613c3d2 100644
+index 59467cf7652fd71631886bd23ff78cd559b609f8..e2059972ec8d8bd930b04c7178fc94e53d0801c0 100644
 --- a/third_party/blink/renderer/core/dom/container_node.cc
 +++ b/third_party/blink/renderer/core/dom/container_node.cc
-@@ -20,6 +20,7 @@
-  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
-  * Boston, MA 02110-1301, USA.
-  */
-+#include <iostream>
- 
- #include "third_party/blink/renderer/core/dom/container_node.h"
- 
-@@ -61,6 +62,12 @@
+@@ -61,6 +61,13 @@
  #include "third_party/blink/renderer/platform/bindings/v8_per_isolate_data.h"
  #include "third_party/blink/renderer/platform/runtime_enabled_features.h"
  
 +#include "brave/components/brave_page_graph/buildflags/buildflags.h"
 +#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++#include "third_party/blink/renderer/core/dom/document.h"
 +#include "third_party/blink/renderer/core/dom/dom_node_ids.h"
 +#include "brave/components/brave_page_graph/page_graph.h"
 +#endif
@@ -29,7 +22,7 @@ index 59467cf7652fd71631886bd23ff78cd559b609f8..daa997ae7218e247e3bc9ad222745597
    for (Node& node : NodeTraversal::InclusiveDescendantsOf(root)) {
 +#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
 +    node.GetDocument().GetPageGraph()->RegisterHTMLElementNodeInserted(
-+      DOMNodeIds::IdForNode(node),
++      DOMNodeIds::IdForNode(&node),
 +      DOMNodeIds::IdForNode(node.parentNode()),
 +      DOMNodeIds::IdForNode(node.previousSibling()));
 +#endif
@@ -41,8 +34,8 @@ index 59467cf7652fd71631886bd23ff78cd559b609f8..daa997ae7218e247e3bc9ad222745597
    ScriptForbiddenScope forbid_script;
    EventDispatchForbiddenScope assert_no_event_dispatch;
 +#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
-+  node.GetDocument().GetPageGraph()->RegisterHTMLElementNodeRemoved(
-+    DOMNodeIds::IdForNode(node));
++  GetDocument().GetPageGraph()->RegisterHTMLElementNodeRemoved(
++    DOMNodeIds::IdForNode(this));
 +#endif
  
    for (Node& node : NodeTraversal::InclusiveDescendantsOf(root)) {

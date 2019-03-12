@@ -7,11 +7,8 @@
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_TYPES_H_
 
 #include <string>
-#include <vector>
 
 using ::std::string;
-using ::std::unique_ptr;
-using ::std::vector;
 
 namespace brave_page_graph {
 
@@ -38,8 +35,8 @@ typedef enum {
 string script_type_to_string(const ScriptType type) noexcept;
 
 typedef string MethodName;
-typedef int DOMNodeId;
-typedef uint32_t PageGraphId;
+typedef unsigned long long DOMNodeId;
+typedef unsigned long long PageGraphId;
 typedef int ScriptId;
 
 }  // namespace brave_page_graph

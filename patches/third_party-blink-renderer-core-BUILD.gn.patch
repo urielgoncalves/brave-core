@@ -1,12 +1,12 @@
 diff --git a/third_party/blink/renderer/core/BUILD.gn b/third_party/blink/renderer/core/BUILD.gn
-index 14b4353fa042e3a8265b44a41bfb87aef43e8c28..69ec00ad8a2b1dc4163cfbca2a2c391fd18b9a3d 100644
+index 14b4353fa042e3a8265b44a41bfb87aef43e8c28..3d21bc33319a0c593ca33202a003604e8c9dad94 100644
 --- a/third_party/blink/renderer/core/BUILD.gn
 +++ b/third_party/blink/renderer/core/BUILD.gn
-@@ -124,6 +124,7 @@ source_set("prerequisites") {
-     "//ui/native_theme",
-     "//url",
-     "//v8",
-+    "//brave/components/brave_page_graph",
+@@ -175,6 +175,7 @@ component("core") {
    ]
    deps = [
-     "//third_party/blink/renderer/bindings/core/v8:bindings_core_v8_generated",
+     "//third_party/blink/public/common",
++    "//brave/components/brave_page_graph",
+     "//third_party/blink/renderer/core/accessibility",
+     "//third_party/blink/renderer/core/animation",
+     "//third_party/blink/renderer/core/aom",
