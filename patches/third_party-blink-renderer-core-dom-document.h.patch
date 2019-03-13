@@ -1,14 +1,14 @@
 diff --git a/third_party/blink/renderer/core/dom/document.h b/third_party/blink/renderer/core/dom/document.h
-index f0f751197c365f2f5bf02ac1a03dc87a80e7f045..34935f63978a9fcfc33673ac2d383322e1e6ce1a 100644
+index f0f751197c365f2f5bf02ac1a03dc87a80e7f045..e55b9297f4d417e6f5767acd7b4c7807df4b89a0 100644
 --- a/third_party/blink/renderer/core/dom/document.h
 +++ b/third_party/blink/renderer/core/dom/document.h
 @@ -73,6 +73,11 @@
  #include "third_party/blink/renderer/platform/wtf/casting.h"
  #include "third_party/blink/renderer/platform/wtf/hash_set.h"
  
-+#include "brave/components/brave_page_graph/buildflags/buildflags.h"
++#include "brave/third_party/blink/brave_page_graph/buildflags/buildflags.h"
 +#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
-+#include "brave/components/brave_page_graph/page_graph.h"
++#include "brave/third_party/blink/brave_page_graph/page_graph.h"
 +#endif
 +
  namespace base {

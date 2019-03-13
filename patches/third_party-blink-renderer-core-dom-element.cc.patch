@@ -1,16 +1,16 @@
 diff --git a/third_party/blink/renderer/core/dom/element.cc b/third_party/blink/renderer/core/dom/element.cc
-index c971b86f411a59829a91d556e752c875cd5a2ca6..c3e005213c279faed416b15414b24ab8142efee2 100644
+index c971b86f411a59829a91d556e752c875cd5a2ca6..50270fa447159ed0a6d38876f9772b40b95c593d 100644
 --- a/third_party/blink/renderer/core/dom/element.cc
 +++ b/third_party/blink/renderer/core/dom/element.cc
 @@ -159,6 +159,13 @@
  #include "third_party/blink/renderer/platform/wtf/text/string_builder.h"
  #include "third_party/blink/renderer/platform/wtf/text/text_position.h"
  
-+#include "brave/components/brave_page_graph/buildflags/buildflags.h"
++#include "brave/third_party/blink/brave_page_graph/buildflags/buildflags.h"
 +#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
 +#include "third_party/blink/renderer/core/dom/document.h"
 +#include "third_party/blink/renderer/core/dom/dom_node_ids.h"
-+#include "brave/components/brave_page_graph/page_graph.h"
++#include "brave/third_party/blink/brave_page_graph/page_graph.h"
 +#endif
 +
  namespace blink {

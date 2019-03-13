@@ -9,7 +9,7 @@ import("//media/cdm/library_cdm/cdm_paths.gni")
 import("//brave/brave_paks.gni")
 import("//tools/v8_context_snapshot/v8_context_snapshot.gni")
 import("//brave/components/brave_rewards/browser/buildflags/buildflags.gni")
-import("//brave/components/brave_page_graph/buildflags/buildflags.gni")
+import("//brave/third_party/blink/brave_page_graph/buildflags/buildflags.gni")
 
 if (is_mac) {
   import("//build/config/mac/rules.gni")
