@@ -1,13 +1,14 @@
 diff --git a/third_party/blink/renderer/core/dom/container_node.cc b/third_party/blink/renderer/core/dom/container_node.cc
-index 59467cf7652fd71631886bd23ff78cd559b609f8..d3e777f77cb8132d5a75d5781524b77bc5d29592 100644
+index 59467cf7652fd71631886bd23ff78cd559b609f8..015c7a16078227684f5f13f17ad40444379a0dbc 100644
 --- a/third_party/blink/renderer/core/dom/container_node.cc
 +++ b/third_party/blink/renderer/core/dom/container_node.cc
-@@ -61,6 +61,13 @@
+@@ -61,6 +61,14 @@
  #include "third_party/blink/renderer/platform/bindings/v8_per_isolate_data.h"
  #include "third_party/blink/renderer/platform/runtime_enabled_features.h"
  
 +#include "brave/third_party/blink/brave_page_graph/buildflags/buildflags.h"
 +#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++#include <iostream>
 +#include "third_party/blink/renderer/core/dom/document.h"
 +#include "third_party/blink/renderer/core/dom/dom_node_ids.h"
 +#include "brave/third_party/blink/brave_page_graph/page_graph.h"
@@ -16,27 +17,58 @@ index 59467cf7652fd71631886bd23ff78cd559b609f8..d3e777f77cb8132d5a75d5781524b77b
  namespace blink {
  
  static void DispatchChildInsertionEvents(Node&);
-@@ -922,6 +929,12 @@ void ContainerNode::NotifyNodeInsertedInternal(
+@@ -922,6 +930,40 @@ void ContainerNode::NotifyNodeInsertedInternal(
    ScriptForbiddenScope forbid_script;
  
    for (Node& node : NodeTraversal::InclusiveDescendantsOf(root)) {
 +#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
-+    node.GetDocument().GetPageGraph()->RegisterHTMLElementNodeInserted(
-+      DOMNodeIds::IdForNode(&node),
-+      DOMNodeIds::IdForNode(node.parentNode()),
-+      DOMNodeIds::IdForNode(node.previousSibling()));
++    DOMNodeId node_id = DOMNodeIds::IdForNode(&node);
++    Node* parent = node.parentNode();
++    DOMNodeId parent_node_id = (parent && parent->IsElementNode()) 
++      ? DOMNodeIds::IdForNode(parent)
++      : 0;
++    Node* sibling = node.previousSibling();
++    DOMNodeId sibling_node_id = (sibling && sibling)
++      ? DOMNodeIds::IdForNode(sibling)
++      : 0;
++ 
++    NodeType node_type = node.getNodeType();
++    if (GetDocument().GetPageGraph() != nullptr &&
++        (node_type == kElementNode || node_type == kTextNode)) {
++      std::cout << " Node) id: " << node_id << ", name: " << node.nodeName() << ", type: " << node.getNodeType() << "\n";
++      if (parent_node_id) {
++        std::cout << " Parent) id: " << parent_node_id << ", name: " << parent->nodeName() << ", type: " << parent->getNodeType() << "\n";
++      }
++      if (sibling_node_id) {
++        std::cout << " Sibling) id: " << sibling_node_id << ", name: " << sibling->nodeName() << ", type: " << sibling->getNodeType() << "\n";
++      }
++      // for (DOMNodeId i = 0; i < sibling_node_id; i += 1) {
++      //   std::cout << "\t" << i << ") name: " << DOMNodeIds::NodeForId(i)->nodeName() << ", type: " << DOMNodeIds::NodeForId(i)->getNodeType() << "\n";
++      // }
++      if (node_type == kElementNode) {
++        GetDocument().GetPageGraph()->RegisterHTMLElementNodeInserted(
++          node_id, node.nodeName().Utf8().data(), parent_node_id,
++          sibling_node_id);
++      } else {
++        GetDocument().GetPageGraph()->RegisterHTMLTextNodeInserted(
++          node_id, parent_node_id, sibling_node_id);
++      }
++    }
 +#endif
      // As an optimization we don't notify leaf nodes when when inserting
      // into detached subtrees that are not in a shadow tree.
      if (!isConnected() && !IsInShadowTree() && !node.IsContainerNode())
-@@ -938,6 +951,10 @@ void ContainerNode::NotifyNodeInsertedInternal(
- void ContainerNode::NotifyNodeRemoved(Node& root) {
-   ScriptForbiddenScope forbid_script;
-   EventDispatchForbiddenScope assert_no_event_dispatch;
-+#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
-+  GetDocument().GetPageGraph()->RegisterHTMLElementNodeRemoved(
-+    DOMNodeIds::IdForNode(this));
-+#endif
- 
-   for (Node& node : NodeTraversal::InclusiveDescendantsOf(root)) {
+@@ -943,6 +985,13 @@ void ContainerNode::NotifyNodeRemoved(Node& root) {
      // As an optimization we skip notifying Text nodes and other leaf nodes
+     // of removal when they're not in the Document tree and not in a shadow root
+     // since the virtual call to removedFrom is not needed.
++#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++    if (GetDocument().GetPageGraph() != nullptr) {
++      GetDocument().GetPageGraph()->RegisterHTMLElementNodeRemoved(
++        DOMNodeIds::IdForNode(&node));
++    }
++#endif
++
+     if (!node.IsContainerNode() && !node.IsInTreeScope())
+       continue;
+     node.RemovedFrom(*this);

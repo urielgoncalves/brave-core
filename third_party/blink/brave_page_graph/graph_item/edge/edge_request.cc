@@ -5,6 +5,7 @@
 
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_request.h"
 #include <string>
+#include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_node.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
 #include "brave/third_party/blink/brave_page_graph/page_graph.h"
@@ -15,7 +16,7 @@ using ::std::string;
 namespace brave_page_graph {
 
 EdgeRequest::EdgeRequest(const PageGraph* graph, const PageGraphId id,
-    const Node* out_node, const Node* in_node, const string& url,
+    const Node* const out_node, const Node* const in_node, const string& url,
     const RequestType type) :
       Edge(graph, id, out_node, in_node),
       url_(url),
@@ -30,6 +31,17 @@ string EdgeRequest::ItemName() const {
 string EdgeRequest::ToStringBody() const {
   return ItemName() + " [url:" + url_ +
     ", type:" + request_type_to_string(type_) + "]";
+}
+
+GraphMLXMLGroup EdgeRequest::GraphMLAttributes() const {
+  return GraphMLXMLGroup({
+    graphml_attr_def_for_type(GraphMLAttrDefEdgeType)
+      ->ToValue("request"),
+    graphml_attr_def_for_type(GraphMLAttrDefRequestType)
+      ->ToValue(request_type_to_string(type_)),
+    graphml_attr_def_for_type(GraphMLAttrDefUrl)
+      ->ToValue(url_)
+  });
 }
 
 }  // brave_page_graph

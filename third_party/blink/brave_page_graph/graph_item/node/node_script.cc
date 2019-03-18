@@ -16,14 +16,6 @@ using ::std::to_string;
 
 namespace brave_page_graph {
 
-string graphml_node_script_script_type(void* node) {
-  return static_cast<NodeScript*>(node)->ScriptTypeString();
-}
-
-string graphml_node_script_type(void* node) {
-  return "script";
-}
-
 NodeScript::NodeScript(const PageGraph* graph, const PageGraphId id,
     const ScriptId script_id, const ScriptType type) :
       NodeActor(graph, id),
@@ -44,17 +36,13 @@ string NodeScript::ScriptTypeString() const {
   return script_type_to_string(type_);
 }
 
-GraphMLFuncAttrMap NodeScript::GraphMLAttributeDefs() const {
-  GraphMLFuncAttrMap mapping = Node::GraphMLAttributeDefs();
-  mapping.emplace(
-    &graphml_node_script_script_type,
-    GraphMLAttr::Create(GraphMLAttrForTypeNode, "script type",
-      GraphMLAttrTypeString));
-  mapping.emplace(
-    &graphml_node_script_type,
-    GraphMLAttr::Create(GraphMLAttrForTypeNode, "type",
-      GraphMLAttrTypeString));
-  return mapping;
+GraphMLXMLGroup NodeScript::GraphMLAttributes() const {
+  return GraphMLXMLGroup({
+    graphml_attr_def_for_type(GraphMLAttrDefNodeType)
+      ->ToValue("script"),
+    graphml_attr_def_for_type(GraphMLAttrDefScriptType)
+      ->ToValue(ScriptTypeString())
+  });
 }
 
 string NodeScript::ToStringBody() const {

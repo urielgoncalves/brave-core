@@ -6,29 +6,40 @@
 #ifndef BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_TYPES_H_
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_TYPES_H_
 
-#include <map>
 #include <string>
+#include "brave/third_party/blink/brave_page_graph/graphml.h"
 
-using ::std::map;
 using ::std::string;
 
 namespace brave_page_graph {
 
-class GraphMLAttr;
-
 typedef enum {
-  RequestTypeImage = 0,
+  RequestTypeAJAX = 0,
+  RequestTypeAudio,
+  RequestTypeCSS,
+  RequestTypeDocument,
+  RequestTypeFont,
+  RequestTypeImage,
   RequestTypeScriptClassic,
   RequestTypeScriptModule,
-  RequestTypeCSS,
-  RequestTypeVideo,
-  RequestTypeAudio,
   RequestTypeSVG,
-  RequestTypeFont,
-  RequestTypeDocument,
+  RequestTypeVideo,
   RequestTypeUnknown
 } RequestType;
 string request_type_to_string(const RequestType type) noexcept;
+
+typedef enum {
+  ResourceTypeAudio = 0,
+  ResourceTypeCSS,
+  ResourceTypeDocument,
+  ResourceTypeFont,
+  ResourceTypeImage,
+  ResourceTypeVideo,
+  ResourceTypeScript,
+  ResourceTypeSVG,
+  ResourceTypeUnknown
+} ResourceType;
+string request_type_to_string(const ResourceType type) noexcept;
 
 typedef enum {
   ScriptTypeClassic = 0,
@@ -38,8 +49,6 @@ typedef enum {
 } ScriptType;
 string script_type_to_string(const ScriptType type) noexcept;
 
-typedef string (*GraphMLValueFunc)(void*);
-typedef map<GraphMLValueFunc,GraphMLAttr> GraphMLFuncAttrMap;
 typedef string MethodName;
 typedef unsigned long long DOMNodeId;
 typedef unsigned long long PageGraphId;

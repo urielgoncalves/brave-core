@@ -7,6 +7,7 @@
 #include <ostream>
 #include <sstream>
 #include <string>
+#include <vector>
 #include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
@@ -20,19 +21,14 @@ using ::std::to_string;
 
 namespace brave_page_graph {
 
-string graphml_edge_type(void* edge) {
-  return "behavior";
-}
+Edge::Edge(const PageGraph* graph, const PageGraphId id,
+    const Node* const out_node, const Node* const in_node) :
+      GraphItem(graph, id),
+      out_node_(out_node),
+      in_node_(in_node) {}
 
-Edge::Edge(const PageGraph* graph, const PageGraphId id, const Node* out_node,
-    const Node* in_node) :
-      GraphItem(graph, id) {
-  in_node_ = in_node;
-  out_node_ = out_node;
-}
-
-string Edge::GraphMLTag() {
-  const string graphml_attributes = GraphMLAttributes();
+GraphMLXML Edge::GraphMLTag() const {
+  const vector<const GraphMLXML> graphml_attributes = GraphMLAttributes();
   const bool has_graphml_attrs = graphml_attributes.size() > 0;
 
   stringstream builder;
@@ -44,17 +40,12 @@ string Edge::GraphMLTag() {
     return builder.str();
   }
 
-  builder << ">" << graphml_attributes << "</edge>" << endl;
+  builder << ">" << endl;
+  for (const GraphMLXML& elm : graphml_attributes) {
+    builder << "\t" << elm << endl;
+  }
+  builder << "</edge>" << endl;
   return builder.str();
-}
-
-GraphMLFuncAttrMap Edge::GraphMLAttributeDefs() const {
-  GraphMLFuncAttrMap mapping = GraphItem::GraphMLAttributeDefs();
-  mapping.emplace(
-    &graphml_edge_type,
-    GraphMLAttr::Create(GraphMLAttrForTypeEdge, "type",
-      GraphMLAttrTypeString));
-  return mapping;
 }
 
 string Edge::ToStringPrefix() const {

@@ -17,14 +17,21 @@ using ::std::string;
 namespace brave_page_graph {
 
 EdgeStorageDelete::EdgeStorageDelete(const PageGraph* graph,
-    const PageGraphId id, const NodeActor* out_node, const NodeStorage* in_node,
-    const string& key) :
+    const PageGraphId id, const NodeActor* const out_node,
+    const NodeStorage* const in_node, const string& key) :
       EdgeStorage(graph, id, out_node, in_node, key) {}
 
 EdgeStorageDelete::~EdgeStorageDelete() {}
 
 string EdgeStorageDelete::ItemName() const {
   return "EdgeStorageDelete#" + ::std::to_string(id_);
+}
+
+GraphMLXMLGroup EdgeStorageDelete::GraphMLAttributes() const {
+  GraphMLXMLGroup items = EdgeStorage::GraphMLAttributes();
+  items.push_back(
+    graphml_attr_def_for_type(GraphMLAttrDefEdgeType)->ToValue("delete"));
+  return items;
 }
 
 }  // brave_page_graph

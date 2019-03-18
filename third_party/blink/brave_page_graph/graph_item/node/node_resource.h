@@ -7,6 +7,7 @@
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_NODE_RESOURCE_H_
 
 #include <string>
+#include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
@@ -23,13 +24,13 @@ friend class PageGraph;
   ~NodeResource() override;
   string ItemName() const override;
 
-  GraphMLFuncAttrMap GraphMLAttributeDefs() const override;
-
  protected:
   NodeResource(const PageGraph* graph, const PageGraphId id,
-    const RequestType type);
+    const ResourceType type);
   string ToStringBody() const override;
-  const RequestType type_;
+  GraphMLXMLGroup GraphMLAttributes() const override;
+
+  const ResourceType type_;
 };
 
 }  // namespace brave_page_graph

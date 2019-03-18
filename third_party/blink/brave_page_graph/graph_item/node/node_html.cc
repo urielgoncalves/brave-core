@@ -7,40 +7,36 @@
 #include <string>
 #include <sstream>
 #include "base/logging.h"
-#include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
 #include "brave/third_party/blink/brave_page_graph/graphml.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
 #include "brave/third_party/blink/brave_page_graph/page_graph.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
 using ::std::string;
 using ::std::stringstream;
+using ::std::to_string;
 
 namespace brave_page_graph {
-
-string graphml_node_html_text_type(void* node) {
-  return "html";
-}
 
 NodeHTML::NodeHTML(const PageGraph* graph, const PageGraphId id,
     const DOMNodeId node_id) :
       Node(graph, id),
-      node_id_(node_id) {}
+      node_id_(node_id),
+      is_deleted_(false),
+      parent_node_(nullptr) {}
 
 NodeHTML::~NodeHTML() {}
-
-GraphMLFuncAttrMap NodeHTML::GraphMLAttributeDefs() const {
-  GraphMLFuncAttrMap mapping = Node::GraphMLAttributeDefs();
-  mapping.emplace(
-    &graphml_node_html_text_type,
-    GraphMLAttr::Create(GraphMLAttrForTypeNode, "type",
-      GraphMLAttrTypeString));
-  return mapping;
-
-}
 
 void NodeHTML::MarkNodeDeleted() {
   LOG_ASSERT(is_deleted_ == false);
   is_deleted_ = true;
+}
+
+GraphMLXMLGroup NodeHTML::GraphMLAttributes() const {
+  return {
+    graphml_attr_def_for_type(GraphMLAttrDefNodeId)
+      ->ToValue(to_string(node_id_))
+  };
 }
 
 void indent_for_html(const uint32_t indent, stringstream& builder) {

@@ -6,7 +6,8 @@
 #ifndef BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_H_
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_H_
 
-#include <vector>
+#include <string>
+#include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
@@ -22,19 +23,18 @@ friend class Node;
 friend class PageGraph;
  public:
   Edge() = delete;
-  string GraphMLTag() override;
-  GraphMLFuncAttrMap GraphMLAttributeDefs() const override;
+  string GraphMLId() const override;
+  GraphMLXML GraphMLTag() const override;
 
  protected:
-  Edge(const PageGraph* graph, const PageGraphId id, const Node* out_node,
-    const Node* in_node);
+  Edge(const PageGraph* graph, const PageGraphId id, const Node* const out_node,
+    const Node* const in_node);
   string ToStringPrefix() const override;
   string ToStringSuffix() const override;
-  string GraphMLId() const override;
 
   // These pointers are not owning, the PageGraph instance owns them.
-  const Node* out_node_;
-  const Node* in_node_;
+  const Node* const out_node_;
+  const Node* const in_node_;
 };
 
 }  // namespace brave_page_graph

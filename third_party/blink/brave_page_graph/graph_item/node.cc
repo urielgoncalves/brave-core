@@ -7,6 +7,8 @@
 #include <ostream>
 #include <sstream>
 #include <string>
+#include <vector>
+#include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
@@ -15,6 +17,7 @@ using ::std::endl;
 using ::std::string;
 using ::std::stringstream;
 using ::std::to_string;
+using ::std::vector;
 
 namespace brave_page_graph {
 
@@ -23,18 +26,24 @@ Node::Node(const PageGraph* graph, const PageGraphId id) :
 
 Node::~Node() {}
 
-void Node::AddInEdge(const Edge* in_edge) {
+void Node::AddInEdge(const Edge* const in_edge) {
   in_edges_.push_back(in_edge);
 }
 
-void Node::AddOutEdge(const Edge* out_edge) {
+void Node::AddOutEdge(const Edge* const out_edge) {
   out_edges_.push_back(out_edge);
 }
 
-string Node::GraphMLTag() {
+string Node::GraphMLId() const {
+  return "n" + to_string(id_);
+}
+
+GraphMLXML Node::GraphMLTag() const {
   stringstream builder;
-  builder << "<node id=\"" + GraphMLId() + "\">";
-  builder << GraphItem::GraphMLAttributes();
+  builder << "<node id=\"" + GraphMLId() + "\">" << endl;
+  for (const GraphMLXML& elm : GraphItem::GraphMLAttributes()) {
+    builder << "\t" << elm << endl;
+  }
   builder << "</node>" << endl;
   return builder.str();
 }
@@ -55,10 +64,6 @@ string Node::ToStringSuffix() const {
     string_builder << "     -> " << elm->ItemName() << "\n";
   }
   return string_builder.str();
-}
-
-string Node::GraphMLId() const {
-  return "n" + to_string(id_);
 }
 
 }  // namespace brave_page_graph

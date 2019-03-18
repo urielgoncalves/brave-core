@@ -36,6 +36,29 @@ string request_type_to_string(const RequestType type) noexcept {
   }
 }
 
+string request_type_to_string(const ResourceType type) noexcept {
+  switch (type) {
+    case ResourceTypeAudio:
+      return "audio";
+    case ResourceTypeCSS:
+      return "cSS";
+    case ResourceTypeDocument:
+      return "document";
+    case ResourceTypeFont:
+      return "font";
+    case ResourceTypeImage:
+      return "image";
+    case ResourceTypeVideo:
+      return "video";
+    case ResourceTypeScript:
+      return "script";
+    case ResourceTypeSVG:
+      return "sVG";
+    case ResourceTypeUnknown:
+      return "unknown";
+  }
+}
+
 string script_type_to_string(const ScriptType type) noexcept {
   switch (type) {
     case ScriptTypeClassic:

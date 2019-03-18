@@ -7,12 +7,15 @@
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_H_
 
 #include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
-#include <vector>
 #include <string>
+#include <memory>
+#include <vector>
+#include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
 using ::std::string;
+using ::std::unique_ptr;
 using ::std::vector;
 
 namespace brave_page_graph {
@@ -26,15 +29,16 @@ friend class PageGraph;
  public:
   Node() = delete;
   ~Node() override;
-  void AddInEdge(const Edge* in_edge);
-  void AddOutEdge(const Edge* out_edge);
-  string GraphMLTag() override;
+  void AddInEdge(const Edge* const in_edge);
+  void AddOutEdge(const Edge* const out_edge);
+
+  string GraphMLId() const override;
+  GraphMLXML GraphMLTag() const override;
 
  protected:
   Node(const PageGraph* graph, const PageGraphId id);
   string ToStringPrefix() const override;
   string ToStringSuffix() const override;
-  string GraphMLId() const override;
 
   // Reminder to self:
   //   out_edge -> node -> in_edge

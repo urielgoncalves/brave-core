@@ -6,23 +6,19 @@
 #ifndef BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_NODE_HTML_H_
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_NODE_HTML_H_
 
-#include <map>
 #include <sstream>
 #include <string>
-#include <vector>
 #include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
-using ::std::map;
 using ::std::string;
 using ::std::stringstream;
-using ::std::vector;
 
 namespace brave_page_graph {
 
-class PageGraph;
 class NodeHTMLElement;
 class NodeHTMLText;
+class PageGraph;
 
 class NodeHTML : public Node {
 friend class PageGraph;
@@ -32,7 +28,6 @@ friend class NodeHTMLText;
   NodeHTML() = delete;
   ~NodeHTML() override;
   virtual string ToHTMLString() const = 0;
-  GraphMLFuncAttrMap GraphMLAttributeDefs() const override;
 
  protected:
   NodeHTML(const PageGraph* graph, const PageGraphId id,
@@ -40,10 +35,11 @@ friend class NodeHTMLText;
   virtual void MarkNodeDeleted();
   virtual void ToHTMLString(const uint32_t indent,
     stringstream& builder) const = 0;
+  GraphMLXMLGroup GraphMLAttributes() const override;
 
   const DOMNodeId node_id_;
-  bool is_deleted_ = false;
-  NodeHTMLElement* parent_node_ = nullptr;
+  bool is_deleted_;
+  NodeHTMLElement* parent_node_;
 };
 
 void indent_for_html(const uint32_t indent, stringstream& builder);

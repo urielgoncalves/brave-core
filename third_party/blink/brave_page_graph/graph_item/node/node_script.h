@@ -7,6 +7,7 @@
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_NODE_SCRIPT_H_
 
 #include <string>
+#include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_actor.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
@@ -24,12 +25,13 @@ friend class PageGraph;
   string ItemName() const override;
   bool IsScript() const override;
   string ScriptTypeString() const;
-  GraphMLFuncAttrMap GraphMLAttributeDefs() const override;
 
  protected:
    NodeScript(const PageGraph* graph, const PageGraphId id,
     const ScriptId script_id, const ScriptType type);
   string ToStringBody() const override;
+  GraphMLXMLGroup GraphMLAttributes() const override;
+
   const ScriptId script_id_;
   const ScriptType type_;
 };

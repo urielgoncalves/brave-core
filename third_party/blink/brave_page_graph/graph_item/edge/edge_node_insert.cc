@@ -5,6 +5,7 @@
 
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_node_insert.h"
 #include <string>
+#include "brave/third_party/blink/brave_page_graph/page_graph.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_node.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_html_element.h"
@@ -19,7 +20,7 @@ using ::std::to_string;
 namespace brave_page_graph {
 
 EdgeNodeInsert::EdgeNodeInsert(const PageGraph* graph, const PageGraphId id,
-    const NodeActor* out_node, const NodeHTML* in_node,
+    const NodeActor* const out_node, const NodeHTML* const in_node,
     const DOMNodeId parent_id, const DOMNodeId prior_sibling_id) :
       EdgeNode(graph, id, out_node, in_node),
       parent_id_(parent_id),
@@ -28,11 +29,11 @@ EdgeNodeInsert::EdgeNodeInsert(const PageGraph* graph, const PageGraphId id,
 EdgeNodeInsert::~EdgeNodeInsert() {}
 
 NodeHTMLElement* EdgeNodeInsert::GetParentNode() const {
-  return graph_->GetHTMLElementNode(parent_id_);
+  return parent_id_ ? graph_->GetHTMLElementNode(parent_id_) : nullptr;
 }
 
 NodeHTML* EdgeNodeInsert::GetPriorSiblingNode() const {
-  return graph_->GetHTMLNode(prior_sibling_id_);
+  return prior_sibling_id_ ? graph_->GetHTMLNode(prior_sibling_id_) : nullptr;
 }
 
 string EdgeNodeInsert::ItemName() const {
@@ -43,6 +44,24 @@ string EdgeNodeInsert::ToStringBody() const {
   return ItemName() +
     " [parent:" + to_string(parent_id_) +
     ", sibling:" + to_string(prior_sibling_id_) + "]";
+}
+
+GraphMLXMLGroup EdgeNodeInsert::GraphMLAttributes() const {
+  GraphMLXMLGroup attrs; {
+  attrs.push_back(graphml_attr_def_for_type(GraphMLAttrDefEdgeType)
+      ->ToValue("insert"));
+
+  if (parent_id_) {
+    attrs.push_back(graphml_attr_def_for_type(GraphMLAttrDefParentNodeId)
+        ->ToValue(to_string(parent_id_)));
+  }
+
+  if (prior_sibling_id_)
+    attrs.push_back(graphml_attr_def_for_type(GraphMLAttrDefBeforeNodeId)
+        ->ToValue(to_string(prior_sibling_id_)));
+  }
+
+  return attrs;
 }
 
 }  // namespace brave_page_graph

@@ -5,6 +5,7 @@
 
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_attribute_delete.h"
 #include <string>
+#include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_attribute.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_html_element.h"
@@ -18,8 +19,8 @@ using ::std::to_string;
 namespace brave_page_graph {
 
 EdgeAttributeDelete::EdgeAttributeDelete(const PageGraph* graph,
-    const PageGraphId id, const NodeScript* out_node,
-    const NodeHTMLElement* in_node, const string& name) :
+    const PageGraphId id, const NodeScript* const out_node,
+    const NodeHTMLElement* const in_node, const string& name) :
       EdgeAttribute(graph, id, out_node, in_node, name) {}
 
 EdgeAttributeDelete::~EdgeAttributeDelete() {}
@@ -30,6 +31,13 @@ string EdgeAttributeDelete::ItemName() const {
 
 string EdgeAttributeDelete::ToStringBody() const {
   return ItemName() + " [" + AttributeName() + "]";
+}
+
+GraphMLXMLGroup EdgeAttributeDelete::GraphMLAttributes() const {
+  GraphMLXMLGroup attrs = EdgeAttribute::GraphMLAttributes();
+  attrs.push_back(graphml_attr_def_for_type(GraphMLAttrDefEdgeType)
+      ->ToValue("attr delete"));
+  return attrs;
 }
 
 }  // namespace brave_page_graph

@@ -5,6 +5,7 @@
 
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_node_create.h"
 #include <string>
+#include "brave/third_party/blink/brave_page_graph/page_graph.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_node.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_actor.h"
@@ -18,13 +19,20 @@ using ::std::to_string;
 namespace brave_page_graph {
 
 EdgeNodeCreate::EdgeNodeCreate(const PageGraph* graph, const PageGraphId id,
-    const NodeActor* out_node, const NodeHTML* in_node) :
+    const NodeActor* const out_node, const NodeHTML* const in_node) :
       EdgeNode(graph, id, out_node, in_node) {}
 
 EdgeNodeCreate::~EdgeNodeCreate() {}
 
 string EdgeNodeCreate::ItemName() const {
   return "EdgeNodeCreate#" + to_string(id_);
+}
+
+GraphMLXMLGroup EdgeNodeCreate::GraphMLAttributes() const {
+  return {
+    graphml_attr_def_for_type(GraphMLAttrDefEdgeType)
+      ->ToValue("create")
+  };
 }
 
 }  // brave_page_graph

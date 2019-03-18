@@ -22,14 +22,13 @@ friend class PageGraph;
   NodeWebAPI() = delete;
   ~NodeWebAPI() override;
   string ItemName() const override;
-  MethodName Method() const;
-
-  GraphMLFuncAttrMap GraphMLAttributeDefs() const override;
+  const MethodName& Method() const;
 
  protected:
   NodeWebAPI(const PageGraph* graph, const PageGraphId id,
     const MethodName method);
   string ToStringBody() const override;
+
   const MethodName method_name_;
 };
 

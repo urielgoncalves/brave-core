@@ -7,6 +7,7 @@
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_NODE_STORAGE_LOCALSTORAGE_H_
 
 #include <string>
+#include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_storage.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
@@ -25,6 +26,7 @@ friend class PageGraph;
 
  protected:
   NodeStorageLocalStorage(const PageGraph* graph, const PageGraphId id);
+  GraphMLXMLGroup GraphMLAttributes() const override;
 };
 
 }  // namespace brave_page_graph

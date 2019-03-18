@@ -15,10 +15,6 @@ using ::std::to_string;
 
 namespace brave_page_graph {
 
-string graphml_node_shields_type(void* node) {
-  return "shields";
-}
-
 NodeShields::NodeShields(const PageGraph* graph, const PageGraphId id) :
       Node(graph, id) {}
 
@@ -28,13 +24,11 @@ string NodeShields::ItemName() const {
   return "NodeShields#" + to_string(id_);
 }
 
-GraphMLFuncAttrMap NodeShields::GraphMLAttributeDefs() const {
-  GraphMLFuncAttrMap mapping = Node::GraphMLAttributeDefs();
-  mapping.emplace(
-    &graphml_node_shields_type,
-    GraphMLAttr::Create(GraphMLAttrForTypeNode, "type",
-      GraphMLAttrTypeString));
-  return mapping;
+GraphMLXMLGroup NodeShields::GraphMLAttributes() const {
+  return {
+    graphml_attr_def_for_type(GraphMLAttrDefNodeType)
+      ->ToValue("shields")
+  };
 }
 
 }  // brave_page_graph

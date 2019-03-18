@@ -47,6 +47,8 @@ source_set("brave_page_graph") {
       "graph_item/edge/edge_attribute.h",
       "graph_item/edge/edge_call.cc",
       "graph_item/edge/edge_call.h",
+      "graph_item/edge/edge_html.cc",
+      "graph_item/edge/edge_html.h",
       "graph_item/edge/edge_node_create.cc",
       "graph_item/edge/edge_node_create.h",
       "graph_item/edge/edge_node_delete.cc",

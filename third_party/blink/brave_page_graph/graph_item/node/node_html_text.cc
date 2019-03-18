@@ -25,14 +25,6 @@ using ::std::to_string;
 
 namespace brave_page_graph {
 
-string graphml_node_html_text_text(void* node) {
-  return static_cast<NodeHTMLText*>(node)->Text();
-}
-
-string graphml_node_html_text_type(void* node) {
-  return "html text";
-}
-
 NodeHTMLText::NodeHTMLText(const PageGraph* graph, const PageGraphId id,
     const DOMNodeId node_id,  const string& text) :
       NodeHTML(graph, id, node_id),
@@ -48,20 +40,17 @@ string NodeHTMLText::ToHTMLString() const {
   return text_;
 }
 
-string NodeHTMLText::Text() const {
+const string& NodeHTMLText::Text() const {
   return text_;
 }
 
-GraphMLFuncAttrMap NodeHTMLText::GraphMLAttributeDefs() const {
-  GraphMLFuncAttrMap mapping = NodeHTML::GraphMLAttributeDefs();
-  mapping.emplace(
-    &graphml_node_html_text_text,
-    GraphMLAttr::Create(GraphMLAttrForTypeNode, "text", GraphMLAttrTypeString));
-  mapping.emplace(
-    &graphml_node_html_text_type,
-    GraphMLAttr::Create(GraphMLAttrForTypeNode, "type",
-      GraphMLAttrTypeString));
-  return mapping;
+GraphMLXMLGroup NodeHTMLText::GraphMLAttributes() const {
+  GraphMLXMLGroup attrs = NodeHTML::GraphMLAttributes();
+  attrs.push_back(graphml_attr_def_for_type(GraphMLAttrDefNodeType)
+      ->ToValue("text node"));
+  attrs.push_back(graphml_attr_def_for_type(GraphMLAttrDefNodeText)
+      ->ToValue(Text()));
+  return attrs;
 }
 
 string NodeHTMLText::ToStringBody() const {

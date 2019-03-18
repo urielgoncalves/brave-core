@@ -6,28 +6,27 @@
 #ifndef BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_NODE_HTML_TEXT_H_
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_NODE_HTML_TEXT_H_
 
-#include <map>
+#include <memory>
 #include <sstream>
 #include <string>
-#include <vector>
+#include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_html.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
-using ::std::map;
 using ::std::string;
 using ::std::stringstream;
-using ::std::vector;
+using ::std::unique_ptr;
 
 namespace brave_page_graph {
 
-class PageGraph;
 class EdgeNodeCreate;
 class EdgeNodeDelete;
 class EdgeNodeInsert;
 class EdgeNodeRemove;
 class EdgeAttributeDelete;
 class EdgeAttributeSet;
+class PageGraph;
 
 class NodeHTMLText final : public NodeHTML {
 friend class PageGraph;
@@ -36,14 +35,12 @@ friend class PageGraph;
   ~NodeHTMLText() override;
   string ItemName() const override;
   string ToHTMLString() const override;
-  string Text() const;
+  const string& Text() const;
 
   using Node::AddInEdge;
   void AddInEdge(const EdgeNodeRemove* edge);
   void AddInEdge(const EdgeNodeInsert* edge);
   void AddInEdge(const EdgeNodeDelete* edge);
-
-  GraphMLFuncAttrMap GraphMLAttributeDefs() const override;
 
  protected:
   NodeHTMLText(const PageGraph* graph, const PageGraphId id,
@@ -51,6 +48,8 @@ friend class PageGraph;
   string ToStringBody() const override;
   void ToHTMLString(const uint32_t indent,
     stringstream& builder) const override;
+  GraphMLXMLGroup GraphMLAttributes() const override;
+
   const string text_;
 };
 

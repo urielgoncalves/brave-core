@@ -8,6 +8,7 @@
 
 #include <string>
 #include <vector>
+#include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
@@ -27,16 +28,18 @@ friend class PageGraph;
   EdgeCall() = delete;
   ~EdgeCall() override;
   string ItemName() const override;
-  GraphMLFuncAttrMap GraphMLAttributeDefs() const override;
-  vector<string> Arguments() const;
+  const vector<const string>& Arguments() const;
+  string ArgumentsString() const;
 
  protected:
   EdgeCall(const PageGraph* graph, const PageGraphId id,
-    const NodeScript* out_node, const NodeWebAPI* in_node,
-    const vector<string>& arguments);
+    const NodeScript* const out_node, const NodeWebAPI* const in_node,
+    const string& method, const vector<const string>& arguments);
   string ToStringBody() const override;
+  GraphMLXMLGroup GraphMLAttributes() const override;
 
-  const vector<string> arguments_;
+  const string method_;
+  const vector<const string> arguments_;
 };
 
 }  // namespace brave_page_graph

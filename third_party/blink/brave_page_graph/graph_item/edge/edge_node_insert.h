@@ -7,6 +7,7 @@
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_NODE_INSERT_H_
 
 #include <string>
+#include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_node.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
@@ -31,9 +32,10 @@ friend class PageGraph;
 
  protected:
   EdgeNodeInsert(const PageGraph* graph, const PageGraphId id,
-    const NodeActor* out_node, const NodeHTML* in_node,
-    const DOMNodeId parent_id, const DOMNodeId prior_sibling_id = 0);
+    const NodeActor* const out_node, const NodeHTML* const in_node,
+    const DOMNodeId parent_id = 0, const DOMNodeId prior_sibling_id = 0);
   string ToStringBody() const override;
+  GraphMLXMLGroup GraphMLAttributes() const override;
 
   const DOMNodeId parent_id_;
   const DOMNodeId prior_sibling_id_;

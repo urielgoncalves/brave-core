@@ -23,7 +23,7 @@ friend class PageGraph;
 
  protected:
   EdgeNode(const PageGraph* graph, const PageGraphId id,
-    const NodeActor* out_node, const NodeHTML* in_node);
+    const NodeActor* const out_node, const NodeHTML* const in_node);
 };
 
 }  // namespace brave_page_graph

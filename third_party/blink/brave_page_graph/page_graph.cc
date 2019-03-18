@@ -4,8 +4,13 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "brave/third_party/blink/brave_page_graph/page_graph.h"
+#include <signal.h>
+#include <fstream>
 #include <iostream>
+#include <map>
+#include <memory>
 #include <sstream>
+#include <string>
 #include "base/logging.h"
 #include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_attribute_set.h"
@@ -25,125 +30,169 @@
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_storage_localstorage.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
+using ::std::map;
+using ::std::string;
+using ::std::unique_ptr;
+using ::std::vector;
+
 namespace brave_page_graph {
 
-PageGraph::PageGraph() {
+namespace {
+  PageGraph* yuck = nullptr;
+}
+
+void write_to_disk(int signal) {
+  std::ofstream outfile("/tmp/pagegraph.log");
+  string output = yuck->ToGraphML();
+  outfile.write(output.c_str(), output.size());
+  outfile.close();
+}
+
+PageGraph::PageGraph() :
+    id_counter_(0),
+    parser_node_(new NodeParser(this, id_counter_++)),
+    shields_node_(new NodeShields(this, id_counter_++)),
+    cookie_jar_node_(new NodeStorageCookieJar(this, id_counter_++)),
+    local_storage_node_(new NodeStorageLocalStorage(this, id_counter_++)),
+    html_root_node_(nullptr) {
   std::cout << "Allocating PageGraph\n";
-  graph_id_counter_ = 0;
-  parser_node_ = new NodeParser(this, graph_id_counter_++);
-  graph_nodes_.push_back(parser_node_);
-
-  shields_node_ = new NodeShields(this, graph_id_counter_++);
-  graph_nodes_.push_back(shields_node_);
-
-  cookie_jar_node_ = new NodeStorageCookieJar(this, graph_id_counter_++);
-  graph_nodes_.push_back(cookie_jar_node_);
-
-  local_storage_node_ = new NodeStorageLocalStorage(this, graph_id_counter_++);
-  graph_nodes_.push_back(local_storage_node_);
+  nodes_.push_back(unique_ptr<Node>(parser_node_));
+  nodes_.push_back(unique_ptr<Node>(shields_node_));
+  nodes_.push_back(unique_ptr<Node>(cookie_jar_node_));
+  nodes_.push_back(unique_ptr<Node>(local_storage_node_));
+  // yuck = this;
+  // signal(30, &write_to_disk);
 }
 
 PageGraph::~PageGraph() {
   std::cout << "Deallocating PageGraph\n";
-  // Since graph_items_ is the one place that owns the items in the graph,
-  // so go ahead and delete them here.
-  for (Node* elm : graph_nodes_) {
-    delete elm;
-  }
-  for (const Edge* elm : graph_edges_) {
-    delete elm;
-  }
 }
 
 NodeHTML* PageGraph::GetHTMLNode(const DOMNodeId node_id) const {
-  LOG_ASSERT(html_element_nodes_.count(node_id) +
-    html_text_nodes_.count(node_id) == 1);
-
-  if (html_element_nodes_.count(node_id) == 1) {
-    return html_element_nodes_.at(node_id);
+  LOG_ASSERT(element_nodes_.count(node_id) + text_nodes_.count(node_id) == 1);
+  if (element_nodes_.count(node_id) == 1) {
+    return element_nodes_.at(node_id);
   }
 
-  return html_text_nodes_.at(node_id);
+  return text_nodes_.at(node_id);
 }
 
 NodeHTMLElement* PageGraph::GetHTMLElementNode(const DOMNodeId node_id) const {
-  LOG_ASSERT(html_element_nodes_.find(node_id) != html_element_nodes_.end());
-  return html_element_nodes_.at(node_id);
+  std::cout << "GetHTMLElementNode: " << node_id << std::endl;
+  LOG_ASSERT(element_nodes_.count(node_id) == 1);
+  return element_nodes_.at(node_id);
 }
 
 NodeHTMLText* PageGraph::GetHTMLTextNode(const DOMNodeId node_id) const {
-  LOG_ASSERT(html_text_nodes_.find(node_id) != html_text_nodes_.end());
-  return html_text_nodes_.at(node_id);
+  LOG_ASSERT(text_nodes_.count(node_id) == 1);
+  return text_nodes_.at(node_id);
+}
+
+void print_map(const map<DOMNodeId, NodeHTMLElement*>& a_map) {
+  std::cout << "map has " << a_map.size() << " items in it\n" << std::flush;
+  for (const auto& elm : a_map) {
+    std::cout << elm.first << " - " << elm.second->ToString() << std::endl;
+  }
 }
 
 void PageGraph::RegisterHTMLElementNodeCreated(const DOMNodeId node_id,
     const string& tag_name) {
-  NodeHTMLElement* new_node = new NodeHTMLElement(this, graph_id_counter_++,
+  std::cout << "RegisterHTMLElementNodeCreated: " << node_id << " (" << tag_name << ")" <<std::endl;
+  LOG_ASSERT(element_nodes_.count(node_id) == 0);
+  NodeHTMLElement* const new_node = new NodeHTMLElement(this, id_counter_++,
     node_id, tag_name);
-  graph_nodes_.push_back(new_node);
-  html_element_nodes_.emplace(node_id, new_node);
 
-  if (tag_name.compare("html") == 0) {
+  nodes_.push_back(unique_ptr<Node>(new_node));
+  element_nodes_.emplace(node_id, new_node);
+  // print_map(*element_nodes_);
+
+  if (tag_name.compare("HTML") == 0) {
     LOG_ASSERT(html_root_node_ == nullptr);
     html_root_node_ = new_node;
   }
 
-  NodeActor* acting_node = GetCurrentActingNode();
+  NodeActor* const acting_node = GetCurrentActingNode();
 
-  EdgeNodeCreate* edge = new EdgeNodeCreate(this, graph_id_counter_++,
+  const EdgeNodeCreate* const edge = new EdgeNodeCreate(this, id_counter_++,
     acting_node, new_node);
-  graph_edges_.push_back(edge);
+  edges_.push_back(unique_ptr<const Edge>(edge));
 
   new_node->AddInEdge(edge);
   acting_node->AddOutEdge(edge);
-
-  std::cout << "RegisterHTMLElementNodeCreated: " << tag_name << "\n";
 }
 
 void PageGraph::RegisterHTMLTextNodeCreated(const DOMNodeId node_id,
     const string& text) {
-  NodeHTMLText* new_node = new NodeHTMLText(this, graph_id_counter_++,
+  std::cout << "RegisterHTMLTextNodeCreated: " << node_id << ", " << text << std::endl;
+  LOG_ASSERT(text_nodes_.count(node_id) == 0);
+  NodeHTMLText* const new_node = new NodeHTMLText(this, id_counter_++,
     node_id, text);
-  graph_nodes_.push_back(new_node);
-  html_text_nodes_.emplace(node_id, new_node);
+  nodes_.push_back(unique_ptr<Node>(new_node));
+  text_nodes_.emplace(node_id, new_node);
 
-  NodeActor* acting_node = GetCurrentActingNode();
+  NodeActor* const acting_node = GetCurrentActingNode();
 
-  EdgeNodeCreate* edge = new EdgeNodeCreate(this, graph_id_counter_++,
+  const EdgeNodeCreate* const edge = new EdgeNodeCreate(this, id_counter_++,
     acting_node, new_node);
-  graph_edges_.push_back(edge);
+  edges_.push_back(unique_ptr<const Edge>(edge));
 
   new_node->AddInEdge(edge);
   acting_node->AddOutEdge(edge);
-
-  std::cout << "RegisterHTMLTextNodeCreated: " << text << "\n";
 }
 
 void PageGraph::RegisterHTMLElementNodeInserted(const DOMNodeId node_id,
+    const string& tag_name, const DOMNodeId parent_node_id,
+    const DOMNodeId before_sibling_id) {
+  std::cout << "RegisterHTMLElementNodeInserted: "
+    << tag_name << " (" << node_id << "), "
+    << parent_node_id << ", "
+    << before_sibling_id << std::endl;
+
+  const DOMNodeId inserted_sibling_node = (tag_name == "html")
+    ? 0 : before_sibling_id;
+
+  LOG_ASSERT(element_nodes_.count(node_id) == 1);
+  NodeHTMLElement* const inserted_node = element_nodes_.at(node_id);
+
+  NodeActor* const acting_node = GetCurrentActingNode();
+
+  const EdgeNodeInsert* const edge = new EdgeNodeInsert(this, id_counter_++,
+    acting_node, inserted_node, parent_node_id, inserted_sibling_node);
+  edges_.push_back(unique_ptr<const Edge>(edge));
+
+  inserted_node->AddInEdge(edge);
+  acting_node->AddOutEdge(edge);
+}
+
+void PageGraph::RegisterHTMLTextNodeInserted(const DOMNodeId node_id,
     const DOMNodeId parent_node_id, const DOMNodeId before_sibling_id) {
-  LOG_ASSERT(html_element_nodes_.count(node_id) == 1);
-  NodeHTMLElement* inserted_node = html_element_nodes_[node_id];
+  std::cout << "RegisterHTMLTextNodeInserted: "
+    << " (" << node_id << "), "
+    << parent_node_id << ", "
+    << before_sibling_id << std::endl;
+  LOG_ASSERT(text_nodes_.count(node_id) == 1);
+  NodeHTMLText* const inserted_node = text_nodes_.at(node_id);
 
-  NodeActor* acting_node = GetCurrentActingNode();
+  NodeActor* const acting_node = GetCurrentActingNode();
 
-  EdgeNodeInsert* edge = new EdgeNodeInsert(this, graph_id_counter_++,
+  const EdgeNodeInsert* const edge = new EdgeNodeInsert(this, id_counter_++,
     acting_node, inserted_node, parent_node_id, before_sibling_id);
-  graph_edges_.push_back(edge);
+  edges_.push_back(unique_ptr<const Edge>(edge));
 
   inserted_node->AddInEdge(edge);
   acting_node->AddOutEdge(edge);
 }
 
 void PageGraph::RegisterHTMLElementNodeRemoved(const DOMNodeId node_id) {
-  LOG_ASSERT(html_element_nodes_.count(node_id) == 1);
-  NodeHTMLElement* removed_node = html_element_nodes_[node_id];
+  std::cout << "RegisterHTMLElementNodeRemoved: " << node_id << std::endl;
+  LOG_ASSERT(element_nodes_.count(node_id) == 1);
+  NodeHTMLElement* const removed_node = element_nodes_.at(node_id);
 
-  NodeActor* acting_node = GetCurrentActingNode();
-  LOG_ASSERT(GetCurrentActingNode()->IsScript());
+  NodeActor* const acting_node = GetCurrentActingNode();
 
-  EdgeNodeRemove* edge = new EdgeNodeRemove(this, graph_id_counter_++,
+  const EdgeNodeRemove* const edge = new EdgeNodeRemove(this, id_counter_++,
     static_cast<NodeScript*>(acting_node), removed_node);
-  graph_edges_.push_back(edge);
+  edges_.push_back(unique_ptr<const Edge>(edge));
 
   acting_node->AddOutEdge(edge);
   removed_node->AddInEdge(edge);
@@ -151,14 +200,14 @@ void PageGraph::RegisterHTMLElementNodeRemoved(const DOMNodeId node_id) {
 
 void PageGraph::RegisterAttributeSet(const DOMNodeId node_id,
     const string& attr_name, const string& attr_value) {
-  LOG_ASSERT(html_element_nodes_.count(node_id) == 1);
-  NodeHTMLElement* target_node = html_element_nodes_[node_id];
+  LOG_ASSERT(element_nodes_.count(node_id) == 1);
+  NodeHTMLElement* const target_node = element_nodes_.at(node_id);
 
-  NodeActor* acting_node = GetCurrentActingNode();
+  NodeActor* const acting_node = GetCurrentActingNode();
 
-  EdgeAttributeSet* edge = new EdgeAttributeSet(this, graph_id_counter_++,
+  const EdgeAttributeSet* const edge = new EdgeAttributeSet(this, id_counter_++,
     acting_node, target_node, attr_name, attr_value);
-  graph_edges_.push_back(edge);
+  edges_.push_back(unique_ptr<const Edge>(edge));
 
   acting_node->AddOutEdge(edge);
   target_node->AddInEdge(edge);
@@ -166,16 +215,15 @@ void PageGraph::RegisterAttributeSet(const DOMNodeId node_id,
 
 void PageGraph::RegisterAttributeDelete(const DOMNodeId node_id,
     const string& attr_name) {
-  LOG_ASSERT(html_element_nodes_.count(node_id) == 1);
-  NodeHTMLElement* target_node = html_element_nodes_[node_id];
+  LOG_ASSERT(element_nodes_.count(node_id) == 1);
+  NodeHTMLElement* const target_node = element_nodes_.at(node_id);
 
-  LOG_ASSERT(GetCurrentActingNode()->IsScript());
-  NodeActor* acting_node = GetCurrentActingNode();
-  EdgeAttributeDelete* edge = new EdgeAttributeDelete(this,
-    graph_id_counter_++, static_cast<NodeScript*>(acting_node),
+  NodeActor* const acting_node = GetCurrentActingNode();
+  const EdgeAttributeDelete* const edge = new EdgeAttributeDelete(this,
+    id_counter_++, static_cast<NodeScript*>(acting_node),
     target_node, attr_name);
 
-  graph_edges_.push_back(edge);
+  edges_.push_back(unique_ptr<const Edge>(edge));
   acting_node->AddOutEdge(edge);
   target_node->AddInEdge(edge);
 }
@@ -188,17 +236,17 @@ NodeActor* PageGraph::GetCurrentActingNode() const {
   return parser_node_;
 }
 
-vector<Node*> PageGraph::Nodes() const {
-  return graph_nodes_;
+const vector<unique_ptr<Node> >& PageGraph::Nodes() const {
+  return nodes_;
 }
 
-vector<const Edge*> PageGraph::Edges() const {
-  return graph_edges_;
+const vector<unique_ptr<const Edge> >& PageGraph::Edges() const {
+  return edges_;
 }
 
 vector<const NodeHTMLElement*> PageGraph::HTMLElementNodes() const {
   vector<const NodeHTMLElement*> html_nodes;
-  for (const auto& elm : html_element_nodes_) {
+  for (const auto& elm : element_nodes_) {
     html_nodes.push_back(elm.second);
   }
   return html_nodes;
@@ -206,11 +254,11 @@ vector<const NodeHTMLElement*> PageGraph::HTMLElementNodes() const {
 
 vector<const GraphItem*> PageGraph::GraphItems() const {
   vector<const GraphItem*> graph_items;
-  for (const GraphItem* elm : Nodes()) {
-    graph_items.push_back(elm);
+  for (const unique_ptr<Node>& elm : nodes_) {
+    graph_items.push_back(elm.get());
   }
-  for (const GraphItem* elm : Edges()) {
-    graph_items.push_back(elm);
+  for (const unique_ptr<const Edge>& elm : edges_) {
+    graph_items.push_back(elm.get());
   }
   return graph_items; 
 }

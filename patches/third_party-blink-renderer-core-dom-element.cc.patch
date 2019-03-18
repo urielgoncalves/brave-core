@@ -1,12 +1,13 @@
 diff --git a/third_party/blink/renderer/core/dom/element.cc b/third_party/blink/renderer/core/dom/element.cc
-index c971b86f411a59829a91d556e752c875cd5a2ca6..50270fa447159ed0a6d38876f9772b40b95c593d 100644
+index c971b86f411a59829a91d556e752c875cd5a2ca6..3d18c6a5d795b3a33dde443e7eb3dd71ae3c5ae4 100644
 --- a/third_party/blink/renderer/core/dom/element.cc
 +++ b/third_party/blink/renderer/core/dom/element.cc
-@@ -159,6 +159,13 @@
+@@ -159,6 +159,14 @@
  #include "third_party/blink/renderer/platform/wtf/text/string_builder.h"
  #include "third_party/blink/renderer/platform/wtf/text/text_position.h"
  
 +#include "brave/third_party/blink/brave_page_graph/buildflags/buildflags.h"
++#include <iostream>
 +#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
 +#include "third_party/blink/renderer/core/dom/document.h"
 +#include "third_party/blink/renderer/core/dom/dom_node_ids.h"
@@ -16,34 +17,38 @@ index c971b86f411a59829a91d556e752c875cd5a2ca6..50270fa447159ed0a6d38876f9772b40
  namespace blink {
  
  using namespace html_names;
-@@ -221,7 +228,12 @@ Element* Element::Create(const QualifiedName& tag_name, Document* document) {
+@@ -221,7 +229,14 @@ Element* Element::Create(const QualifiedName& tag_name, Document* document) {
  Element::Element(const QualifiedName& tag_name,
                   Document* document,
                   ConstructionType type)
 -    : ContainerNode(document, type), tag_name_(tag_name) {}
 +    : ContainerNode(document, type), tag_name_(tag_name) {
 +#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
-+  this->GetDocument().GetPageGraph()->RegisterHTMLElementNodeCreated(
-+    DOMNodeIds::IdForNode(this), tag_name_.ToString().Utf8().data());
++  if (GetDocument().GetPageGraph() != nullptr) {
++    GetDocument().GetPageGraph()->RegisterHTMLElementNodeCreated(
++      DOMNodeIds::IdForNode(this), tag_name_.ToString().Utf8().data());
++  }
 +#endif
 +}
  
  Element::~Element() {
    DCHECK(NeedsAttach());
-@@ -4529,6 +4541,12 @@ void Element::DidAddAttribute(const QualifiedName& name,
+@@ -4529,6 +4544,14 @@ void Element::DidAddAttribute(const QualifiedName& name,
    AttributeChanged(AttributeModificationParams(
        name, g_null_atom, value, AttributeModificationReason::kDirectly));
    probe::didModifyDOMAttr(this, name, value);
 +#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
-+  GetDocument().GetPageGraph()->RegisterAttributeSet(
-+    DOMNodeIds::IdForNode(this),
-+    name.ToString().Utf8().data(),
-+    value.Utf8().data());
++  if (GetDocument().GetPageGraph() != nullptr) {
++    GetDocument().GetPageGraph()->RegisterAttributeSet(
++      DOMNodeIds::IdForNode(this),
++      name.ToString().Utf8().data(),
++      value.Utf8().data());
++  }
 +#endif
    DispatchSubtreeModifiedEvent();
  }
  
-@@ -4540,6 +4558,12 @@ void Element::DidModifyAttribute(const QualifiedName& name,
+@@ -4540,6 +4563,12 @@ void Element::DidModifyAttribute(const QualifiedName& name,
    AttributeChanged(AttributeModificationParams(
        name, old_value, new_value, AttributeModificationReason::kDirectly));
    probe::didModifyDOMAttr(this, name, new_value);
@@ -56,7 +61,7 @@ index c971b86f411a59829a91d556e752c875cd5a2ca6..50270fa447159ed0a6d38876f9772b40
    // Do not dispatch a DOMSubtreeModified event here; see bug 81141.
  }
  
-@@ -4550,6 +4574,11 @@ void Element::DidRemoveAttribute(const QualifiedName& name,
+@@ -4550,6 +4579,11 @@ void Element::DidRemoveAttribute(const QualifiedName& name,
    AttributeChanged(AttributeModificationParams(
        name, old_value, g_null_atom, AttributeModificationReason::kDirectly));
    probe::didRemoveDOMAttr(this, name);

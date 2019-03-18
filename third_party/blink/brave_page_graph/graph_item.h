@@ -7,13 +7,13 @@
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_H_
 
 #include <string>
+#include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
 using ::std::string;
 
 namespace brave_page_graph {
 
-class GraphMLAttr;
 class PageGraph;
 
 class GraphItem {
@@ -22,17 +22,18 @@ class GraphItem {
   virtual ~GraphItem();
   virtual string ToString() const;
   virtual string ItemName() const = 0;
-  virtual GraphMLFuncAttrMap GraphMLAttributeDefs() const;
-  virtual string GraphMLTag() = 0;
-  PageGraphId GetId() const;
+  PageGraphId Id() const;
+
+  virtual string GraphMLId() const = 0;
+  virtual GraphMLXML GraphMLTag() const = 0;
 
  protected:
   GraphItem(const PageGraph* graph, const PageGraphId id);
   virtual string ToStringBody() const;
   virtual string ToStringPrefix() const = 0;
   virtual string ToStringSuffix() const = 0;
-  string GraphMLAttributes();
-  virtual string GraphMLId() const;
+  virtual GraphMLXMLGroup GraphMLAttributes() const;
+
   const PageGraph* graph_;
   const PageGraphId id_; 
 };

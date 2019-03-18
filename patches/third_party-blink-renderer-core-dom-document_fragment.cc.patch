@@ -1,8 +1,8 @@
 diff --git a/third_party/blink/renderer/core/dom/document_fragment.cc b/third_party/blink/renderer/core/dom/document_fragment.cc
-index b32f0044c3287ff9c563d91ecf8b49689673d064..ab8c09772cb52b075e863a5a54ae9c6c21039a60 100644
+index b32f0044c3287ff9c563d91ecf8b49689673d064..04e317dfe3d537e4ef49953435827246d8201c54 100644
 --- a/third_party/blink/renderer/core/dom/document_fragment.cc
 +++ b/third_party/blink/renderer/core/dom/document_fragment.cc
-@@ -28,11 +28,23 @@
+@@ -28,11 +28,25 @@
  #include "third_party/blink/renderer/platform/bindings/runtime_call_stats.h"
  #include "third_party/blink/renderer/platform/bindings/v8_per_isolate_data.h"
  
@@ -20,8 +20,10 @@ index b32f0044c3287ff9c563d91ecf8b49689673d064..ab8c09772cb52b075e863a5a54ae9c6c
 -    : ContainerNode(document, construction_type) {}
 +    : ContainerNode(document, construction_type) {
 +#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
-+  GetDocument().GetPageGraph()->RegisterHTMLElementNodeCreated(
-+    DOMNodeIds::IdForNode(this), nodeName().Utf8().data());
++  if (GetDocument().GetPageGraph() != nullptr) {
++    GetDocument().GetPageGraph()->RegisterHTMLElementNodeCreated(
++      DOMNodeIds::IdForNode(this), nodeName().Utf8().data());
++  }
 +#endif
 +}
  

@@ -15,12 +15,8 @@ using ::std::to_string;
 
 namespace brave_page_graph {
 
-string graphml_node_resource_type(void* node) {
-  return "resource";
-}
-
 NodeResource::NodeResource(const PageGraph *graph, const PageGraphId id,
-    const RequestType type) :
+    const ResourceType type) :
       Node(graph, id),
       type_(type) {}
 
@@ -30,16 +26,15 @@ string NodeResource::ItemName() const {
   return "NodeResource#" + to_string(id_);
 }
 
-GraphMLFuncAttrMap NodeResource::GraphMLAttributeDefs() const {
-  GraphMLFuncAttrMap mapping = Node::GraphMLAttributeDefs();
-  mapping.emplace(
-    &graphml_node_resource_type,
-    GraphMLAttr::Create(GraphMLAttrForTypeNode, "type", GraphMLAttrTypeString));
-  return mapping;
-}
-
 string NodeResource::ToStringBody() const {
   return ItemName() + " [RequestType:" + request_type_to_string(type_) + "]";
+}
+
+GraphMLXMLGroup NodeResource::GraphMLAttributes() const {
+  return {
+    graphml_attr_def_for_type(GraphMLAttrDefNodeType)
+      ->ToValue("resource")
+  };
 }
 
 }  // brave_page_graph

@@ -17,12 +17,8 @@ using ::std::string;
 
 namespace brave_page_graph {
 
-string graphml_edge_attribute_set_attribute_value(void* edge) {
-  return static_cast<EdgeAttributeSet*>(edge)->AttributeValue();
-}
-
 EdgeAttributeSet::EdgeAttributeSet(const PageGraph* graph, const PageGraphId id,
-    const NodeActor* out_node, const NodeHTMLElement* in_node,
+    const NodeActor* const out_node, const NodeHTMLElement* const in_node,
     const string& name, const string& value) :
       EdgeAttribute(graph, id, out_node, in_node, name),
       value_(value) {}
@@ -33,20 +29,21 @@ string EdgeAttributeSet::ItemName() const {
   return "EdgeAttributeSet#" + ::std::to_string(id_);
 }
 
-string EdgeAttributeSet::AttributeValue() const {
+const string& EdgeAttributeSet::AttributeValue() const {
   return value_;
-}
-
-GraphMLFuncAttrMap EdgeAttributeSet::GraphMLAttributeDefs() const {
-  GraphMLFuncAttrMap mapping = EdgeAttribute::GraphMLAttributeDefs();
-  mapping.emplace(
-    &graphml_edge_attribute_set_attribute_value,
-    GraphMLAttr::Create(GraphMLAttrForTypeEdge, "value", GraphMLAttrTypeString));
-  return mapping;
 }
 
 string EdgeAttributeSet::ToStringBody() const {
   return ItemName() + " [" + AttributeName() + "=" + AttributeValue() + "]";
+}
+
+GraphMLXMLGroup EdgeAttributeSet::GraphMLAttributes() const {
+  GraphMLXMLGroup attrs = EdgeAttribute::GraphMLAttributes();
+  attrs.push_back(graphml_attr_def_for_type(GraphMLAttrDefValue)
+      ->ToValue(AttributeValue()));
+  attrs.push_back(graphml_attr_def_for_type(GraphMLAttrDefEdgeType)
+      ->ToValue("attr set"));
+  return attrs;
 }
 
 }  // namespace brave_page_graph

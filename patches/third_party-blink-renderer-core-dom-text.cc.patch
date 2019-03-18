@@ -1,12 +1,13 @@
 diff --git a/third_party/blink/renderer/core/dom/text.cc b/third_party/blink/renderer/core/dom/text.cc
-index 7ee5d04f48a83d8454dcdbbf124ee296e7f10d48..cc9c85d12fc5fe427d57a0c2d81821efa41cad6f 100644
+index 7ee5d04f48a83d8454dcdbbf124ee296e7f10d48..b60c7faded0cbb1bf6389de7db79a4074af8bbb8 100644
 --- a/third_party/blink/renderer/core/dom/text.cc
 +++ b/third_party/blink/renderer/core/dom/text.cc
-@@ -43,10 +43,24 @@
+@@ -43,10 +43,27 @@
  #include "third_party/blink/renderer/platform/wtf/text/cstring.h"
  #include "third_party/blink/renderer/platform/wtf/text/string_builder.h"
  
 +#include "brave/third_party/blink/brave_page_graph/buildflags/buildflags.h"
++#include <iostream>
 +#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
 +#include "third_party/blink/renderer/core/dom/document.h"
 +#include "third_party/blink/renderer/core/dom/dom_node_ids.h"
@@ -17,9 +18,11 @@ index 7ee5d04f48a83d8454dcdbbf124ee296e7f10d48..cc9c85d12fc5fe427d57a0c2d81821ef
  
  Text* Text::Create(Document& document, const String& data) {
 +#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
-+  Text* text_node =MakeGarbageCollected<Text>(document, data, kCreateText);
-+  document.GetPageGraph()->RegisterHTMLTextNodeCreated(
-+    DOMNodeIds::IdForNode(text_node), data.Utf8().data());
++  Text* text_node = MakeGarbageCollected<Text>(document, data, kCreateText);
++  if (document.GetPageGraph() != nullptr) {
++    document.GetPageGraph()->RegisterHTMLTextNodeCreated(
++      DOMNodeIds::IdForNode(text_node), data.Utf8().data());
++  }
 +  return text_node;
 +#else
    return MakeGarbageCollected<Text>(document, data, kCreateText);

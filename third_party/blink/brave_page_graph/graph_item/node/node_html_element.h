@@ -10,6 +10,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_html.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
@@ -38,7 +39,7 @@ friend class NodeHTML;
   ~NodeHTMLElement() override;
   string ItemName() const override;
   string ToHTMLString() const override;
-  string TagName() const;
+  const string& TagName() const;
 
   using Node::AddInEdge;
   void AddInEdge(const EdgeNodeRemove* edge);
@@ -47,8 +48,8 @@ friend class NodeHTML;
   void AddInEdge(const EdgeAttributeDelete* edge);
   void AddInEdge(const EdgeAttributeSet* edge);
   
-  GraphMLFuncAttrMap GraphMLAttributeDefs() const override;
-  vector<NodeHTML*> ChildNodes() const;
+  const vector<NodeHTML*>& ChildNodes() const;
+  GraphMLXML GraphMLTag() const override;
 
  protected:
   NodeHTMLElement(const PageGraph* graph, const PageGraphId id,
@@ -60,9 +61,10 @@ friend class NodeHTML;
   void RemoveChildNode(NodeHTML* child);
   void ToHTMLString(const uint32_t indent,
     stringstream& builder) const override;
+  GraphMLXMLGroup GraphMLAttributes() const override;
 
   const string tag_name_;
-  map<string, string> current_attributes_;
+  map<const string, const string> current_attributes_;
   vector<NodeHTML*> child_nodes_;
 };
 

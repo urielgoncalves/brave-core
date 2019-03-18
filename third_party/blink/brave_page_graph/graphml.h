@@ -7,15 +7,18 @@
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPHML_H_
 
 #include <string>
+#include <vector>
 
 using ::std::string;
 using ::std::to_string;
-
-class Node;
-class NodeHTMLElement;
-class Edge;
+using ::std::vector;
 
 namespace brave_page_graph {
+
+class Edge;
+class Node;
+class NodeHTMLElement;
+class PageGraph;
 
 typedef enum {
   GraphMLAttrTypeString = 0,
@@ -35,32 +38,48 @@ typedef enum {
 } GraphMLAttrForType;
 string graphml_for_to_string(const GraphMLAttrForType type) noexcept;
 
+typedef string GraphMLXML;
+typedef vector<const GraphMLXML> GraphMLXMLGroup;
+
 class GraphMLAttr {
  public:
-  static GraphMLAttr Create(const GraphMLAttrForType for_value,
-    const string& name_value, const GraphMLAttrType type_value);
   GraphMLAttr() = delete;
+  GraphMLAttr(const GraphMLAttrForType for_value, const string& name);
+  GraphMLAttr(const GraphMLAttrForType for_value, const string& name,
+    const GraphMLAttrType type);
   string GraphMLId() const;
-  string ToAttrDefString() const;
-  string ToAttrString(const string& value) const;
-  uint64_t Id() const;
-  string MapKey() const;
+  GraphMLXML ToDefinition() const;
+  GraphMLXML ToValue(const string& value) const;
 
  protected:
-  GraphMLAttr(const GraphMLAttrForType for_value, const string& name_value,
-      const GraphMLAttrType type_value, const uint64_t id_value) :
-        id_(id_value),
-        for_(for_value),
-        name_(name_value),
-        type_(type_value) {}
   const uint64_t id_;
   const GraphMLAttrForType for_;
   const string name_;
   const GraphMLAttrType type_;
 };
-string graphml_attr_def_to_string(const GraphMLAttr attr_def) noexcept;
-string graphml_for_html_structure(const NodeHTMLElement* node) noexcept;
-string graphml_for_page_graph(const PageGraph* graph) noexcept;
+
+typedef enum {
+  GraphMLAttrDefBeforeNodeId = 0,
+  GraphMLAttrDefCallArgs,
+  GraphMLAttrDefEdgeType,
+  GraphMLAttrDefKey,
+  GraphMLAttrDefMethodName,
+  GraphMLAttrDefNodeId,
+  GraphMLAttrDefNodeTag,
+  GraphMLAttrDefNodeText,
+  GraphMLAttrDefNodeType,
+  GraphMLAttrDefParentNodeId,
+  GraphMLAttrDefRequestType,
+  GraphMLAttrDefScriptType,
+  GraphMLAttrDefUrl,
+  GraphMLAttrDefValue,
+  GraphMLAttrDefUnknown,
+} GraphMLAttrDef;
+GraphMLAttr* graphml_attr_def_for_type(const GraphMLAttrDef type) noexcept;
+
+GraphMLXML graphml_attr_def_to_string(const GraphMLAttr attr_def) noexcept;
+string graphml_for_html_structure(const NodeHTMLElement* const node) noexcept;
+string graphml_for_page_graph(const PageGraph* const graph) noexcept;
 
 }  // namespace brave_page_graph
 

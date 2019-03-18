@@ -7,12 +7,14 @@
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_PAGE_GRAPH_H_
 
 #include <map>
+#include <memory>
 #include <string>
 #include <vector>
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
 using ::std::map;
 using ::std::string;
+using ::std::unique_ptr;
 using ::std::vector;
 
 namespace brave_page_graph {
@@ -45,6 +47,9 @@ class PageGraph {
   void RegisterHTMLTextNodeCreated(const DOMNodeId node_id,
     const string& text);
   void RegisterHTMLElementNodeInserted(const DOMNodeId node_id,
+    const string& tag_name, const DOMNodeId parent_node_id,
+    const DOMNodeId before_sibling_id);
+  void RegisterHTMLTextNodeInserted(const DOMNodeId node_id,
     const DOMNodeId parent_node_id, const DOMNodeId before_sibling_id);
   void RegisterHTMLElementNodeRemoved(const DOMNodeId node_id);
 
@@ -56,43 +61,44 @@ class PageGraph {
   string ToGraphML() const;
   NodeActor* GetCurrentActingNode() const;
 
-  vector<Node*> Nodes() const;
-  vector<const Edge*> Edges() const;
+  const vector<unique_ptr<Node> >& Nodes() const;
+  const vector<unique_ptr<const Edge> >& Edges() const;
   vector<const NodeHTMLElement*> HTMLElementNodes() const;
   vector<const GraphItem*> GraphItems() const;
 
  protected:
   // Monotonically increasing counter, used so that we can replay the
   // the graph's construction if needed.
-  PageGraphId graph_id_counter_;
+  PageGraphId id_counter_;
 
   // These vectors owns the all the items that are shared and indexed across
-  // the rest of the graph.
-  vector<Node*> graph_nodes_;
-  vector<const Edge*> graph_edges_;
+  // the rest of the graph.  All the other pointers (the weak pointers)
+  // do not own their data.
+  vector<unique_ptr<Node> > nodes_;
+  vector<unique_ptr<const Edge> > edges_;
 
   // Non-owning references to singleton items in the graph. (the owning
   // references will be in the above vectors).
-  NodeParser* parser_node_;
-  NodeShields* shields_node_;
-  NodeStorageCookieJar* cookie_jar_node_;
-  NodeStorageLocalStorage* local_storage_node_;
+  NodeParser* const parser_node_;
+  NodeShields* const shields_node_;
+  NodeStorageCookieJar* const cookie_jar_node_;
+  NodeStorageLocalStorage* const local_storage_node_;
 
   // Non-owning reference to the HTML root of the document (i.e. <html>).
   NodeHTML* html_root_node_;
 
   // Index structure for storing and looking up webapi nodes.
   // This map does not own the references.
-  map<MethodName, NodeWebAPI*> webapi_nodes_;
+  map<MethodName, NodeWebAPI* const> webapi_nodes_;
 
   // Index structure for looking up HTML nodes.
   // This map does not own the references.
-  map<DOMNodeId, NodeHTMLElement*> html_element_nodes_;
-  map<DOMNodeId, NodeHTMLText*> html_text_nodes_;
+  map<DOMNodeId, NodeHTMLElement* const> element_nodes_;
+  map<DOMNodeId, NodeHTMLText* const> text_nodes_;
 
   // Index structure for looking up script nodes.
   // This map does not own the references.
-  map<ScriptId, NodeScript*> script_nodes_;
+  map<ScriptId, NodeScript* const> script_nodes_;
 };
 
 }

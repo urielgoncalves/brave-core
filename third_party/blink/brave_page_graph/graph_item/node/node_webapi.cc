@@ -15,14 +15,6 @@ using ::std::to_string;
 
 namespace brave_page_graph {
 
-string graphml_node_webapi_method(void* node) {
-  return static_cast<NodeWebAPI*>(node)->Method();
-}
-
-string graphml_node_webapi_type(void* node) {
-  return "webapi";
-}
-
 NodeWebAPI::NodeWebAPI(const PageGraph* graph, const PageGraphId id,
     const MethodName method) :
       Node(graph, id),
@@ -34,21 +26,8 @@ string NodeWebAPI::ItemName() const {
   return "NodeWebAPI#" + to_string(id_);
 }
 
-MethodName NodeWebAPI::Method() const {
+const MethodName& NodeWebAPI::Method() const {
   return method_name_;
-}
-
-GraphMLFuncAttrMap NodeWebAPI::GraphMLAttributeDefs() const {
-  GraphMLFuncAttrMap mapping = Node::GraphMLAttributeDefs();
-  mapping.emplace(
-    &graphml_node_webapi_method,
-    GraphMLAttr::Create(GraphMLAttrForTypeNode, "method",
-      GraphMLAttrTypeString));
-  mapping.emplace(
-    &graphml_node_webapi_type,
-    GraphMLAttr::Create(GraphMLAttrForTypeNode, "type",
-      GraphMLAttrTypeString));
-  return mapping;
 }
 
 string NodeWebAPI::ToStringBody() const {

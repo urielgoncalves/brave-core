@@ -16,7 +16,7 @@ using ::std::to_string;
 
 namespace brave_page_graph {
 
-string graphml_node_parser_type(void* node) {
+string graphml_node_parser_type(const void* node) {
   return "parser";
 }
 
@@ -33,12 +33,11 @@ bool NodeParser::IsParser() const {
   return true;
 }
 
-GraphMLFuncAttrMap NodeParser::GraphMLAttributeDefs() const {
-  GraphMLFuncAttrMap mapping = Node::GraphMLAttributeDefs();
-  mapping.emplace(
-    &graphml_node_parser_type,
-    GraphMLAttr::Create(GraphMLAttrForTypeNode, "type", GraphMLAttrTypeString));
-  return mapping;
+GraphMLXMLGroup NodeParser::GraphMLAttributes() const {
+  return {
+    graphml_attr_def_for_type(GraphMLAttrDefNodeType)
+      ->ToValue("parser")
+  };
 }
 
 }  // brave_page_graph

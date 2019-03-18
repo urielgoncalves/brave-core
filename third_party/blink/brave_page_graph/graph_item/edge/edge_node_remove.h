@@ -7,6 +7,7 @@
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_NODE_REMOVE_H_
 
 #include <string>
+#include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_node.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
@@ -28,7 +29,8 @@ friend class PageGraph;
 
  protected:
   EdgeNodeRemove(const PageGraph* graph, const PageGraphId id,
-    const NodeScript* out_node, const NodeHTML* in_node);
+    const NodeScript* const out_node, const NodeHTML* const in_node);
+  GraphMLXMLGroup GraphMLAttributes() const override;
 };
 
 }  // namespace brave_page_graph
