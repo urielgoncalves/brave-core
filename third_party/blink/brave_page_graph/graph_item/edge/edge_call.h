@@ -8,12 +8,8 @@
 
 #include <string>
 #include <vector>
-#include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
-
-using ::std::string;
-using ::std::vector;
 
 namespace brave_page_graph {
 
@@ -27,19 +23,19 @@ friend class PageGraph;
  public:
   EdgeCall() = delete;
   ~EdgeCall() override;
-  string ItemName() const override;
-  const vector<const string>& Arguments() const;
-  string ArgumentsString() const;
+  ItemName GetItemName() const override;
+  const std::vector<const std::string>& GetArguments() const;
+  std::string GetArgumentsString() const;
 
  protected:
   EdgeCall(const PageGraph* graph, const PageGraphId id,
     const NodeScript* const out_node, const NodeWebAPI* const in_node,
-    const string& method, const vector<const string>& arguments);
-  string ToStringBody() const override;
-  GraphMLXMLGroup GraphMLAttributes() const override;
+    const std::string& method, const std::vector<const std::string>& arguments);
+  ItemDesc GetDescBody() const override;
+  GraphMLXMLList GraphMLAttributes() const override;
 
-  const string method_;
-  const vector<const string> arguments_;
+  const std::string method_;
+  const std::vector<const std::string> arguments_;
 };
 
 }  // namespace brave_page_graph

@@ -6,17 +6,8 @@
 #ifndef BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_H_
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_H_
 
-#include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
-#include <string>
-#include <memory>
-#include <vector>
-#include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
-
-using ::std::string;
-using ::std::unique_ptr;
-using ::std::vector;
 
 namespace brave_page_graph {
 
@@ -32,20 +23,20 @@ friend class PageGraph;
   void AddInEdge(const Edge* const in_edge);
   void AddOutEdge(const Edge* const out_edge);
 
-  string GraphMLId() const override;
-  GraphMLXML GraphMLTag() const override;
+  GraphMLId GetGraphMLId() const override;
+  GraphMLXML GetGraphMLTag() const override;
 
  protected:
   Node(const PageGraph* graph, const PageGraphId id);
-  string ToStringPrefix() const override;
-  string ToStringSuffix() const override;
+  ItemDesc GetDescPrefix() const override;
+  ItemDesc GetDescSuffix() const override;
 
   // Reminder to self:
   //   out_edge -> node -> in_edge
   // These vectors do not own their references.  All nodes in the entire
   // graph are owned by the PageGraph instance.
-  vector<const Edge*> in_edges_;
-  vector<const Edge*> out_edges_;
+  EdgeList in_edges_;
+  EdgeList out_edges_;
 };
 
 }  // namespace brave_page_graph

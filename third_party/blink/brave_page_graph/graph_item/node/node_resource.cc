@@ -10,31 +10,42 @@
 #include "brave/third_party/blink/brave_page_graph/page_graph.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
-using ::std::string;
 using ::std::to_string;
 
 namespace brave_page_graph {
 
 NodeResource::NodeResource(const PageGraph *graph, const PageGraphId id,
-    const ResourceType type) :
+    const ResourceType type, const bool is_successful) :
       Node(graph, id),
-      type_(type) {}
+      type_(type),
+      successful_(is_successful) {}
 
 NodeResource::~NodeResource() {}
 
-string NodeResource::ItemName() const {
+ItemName NodeResource::GetItemName() const {
   return "NodeResource#" + to_string(id_);
 }
 
-string NodeResource::ToStringBody() const {
-  return ItemName() + " [RequestType:" + request_type_to_string(type_) + "]";
+ResourceType NodeResource::GetResourceType() const {
+  return type_;
 }
 
-GraphMLXMLGroup NodeResource::GraphMLAttributes() const {
+bool NodeResource::IsSuccessful() const {
+  return successful_;
+}
+
+ItemDesc NodeResource::GetDescBody() const {
+  return GetItemName() + " [RequestType:" + request_type_to_string(type_)
+      + ", success:" + to_string(successful_) + "]";
+}
+
+GraphMLXMLList NodeResource::GraphMLAttributes() const {
   return {
-    graphml_attr_def_for_type(GraphMLAttrDefNodeType)
-      ->ToValue("resource")
+    graphml_attr_def_for_type(kGraphMLAttrDefNodeType)
+      ->ToValue("resource"),
+    graphml_attr_def_for_type(kGraphMLAttrDefSuccess)
+      ->ToValue(successful_)
   };
 }
 
-}  // brave_page_graph
+}  // namespace brave_page_graph

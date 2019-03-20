@@ -8,12 +8,10 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
-using ::std::endl;
 using ::std::string;
 using ::std::stringstream;
 using ::std::to_string;
@@ -34,34 +32,34 @@ void Node::AddOutEdge(const Edge* const out_edge) {
   out_edges_.push_back(out_edge);
 }
 
-string Node::GraphMLId() const {
+GraphMLId Node::GetGraphMLId() const {
   return "n" + to_string(id_);
 }
 
-GraphMLXML Node::GraphMLTag() const {
+GraphMLXML Node::GetGraphMLTag() const {
   stringstream builder;
-  builder << "<node id=\"" + GraphMLId() + "\">" << endl;
-  for (const GraphMLXML& elm : GraphItem::GraphMLAttributes()) {
-    builder << "\t" << elm << endl;
+  builder << "<node id=\"" + GetGraphMLId() + "\">";
+  for (const GraphMLXML& elm : GraphMLAttributes()) {
+    builder << elm;
   }
-  builder << "</node>" << endl;
+  builder << "</node>";
   return builder.str();
 }
 
-string Node::ToStringPrefix() const {
+ItemDesc Node::GetDescPrefix() const {
   stringstream string_builder;
   for (const Edge* elm : in_edges_) {
-    string_builder << elm->ItemName() << " -> \n";
+    string_builder << elm->GetItemName() << " -> \n";
   }
   string_builder << "  ";
   return string_builder.str();
 }
 
-string Node::ToStringSuffix() const {
+ItemDesc Node::GetDescSuffix() const {
   stringstream string_builder;
   string_builder << "\n";
   for (const Edge* elm : out_edges_) {
-    string_builder << "     -> " << elm->ItemName() << "\n";
+    string_builder << "     -> " << elm->GetItemName() << "\n";
   }
   return string_builder.str();
 }

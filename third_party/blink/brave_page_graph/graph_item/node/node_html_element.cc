@@ -5,10 +5,8 @@
 
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_html_element.h"
 #include <algorithm>
-#include <iostream>
 #include <sstream>
 #include <string>
-#include <vector>
 #include "base/logging.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_attribute_delete.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_attribute_set.h"
@@ -23,12 +21,10 @@
 #include "brave/third_party/blink/brave_page_graph/page_graph.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
-using ::std::endl;
 using ::std::find;
 using ::std::string;
 using ::std::stringstream;
 using ::std::to_string;
-using ::std::vector;
 
 namespace brave_page_graph {
 
@@ -39,14 +35,8 @@ NodeHTMLElement::NodeHTMLElement(const PageGraph* graph, const PageGraphId id,
 
 NodeHTMLElement::~NodeHTMLElement() {}
 
-string NodeHTMLElement::ItemName() const {
+ItemName NodeHTMLElement::GetItemName() const {
   return "NodeHTMLElement#" + to_string(id_);
-}
-
-string NodeHTMLElement::ToHTMLString() const {
-  stringstream builder;
-  ToHTMLString(0, builder);
-  return builder.str();
 }
 
 const string& NodeHTMLElement::TagName() const {
@@ -90,24 +80,24 @@ void NodeHTMLElement::AddInEdge(const EdgeAttributeSet* const edge) {
   Node::AddInEdge(edge);
 }
 
-const vector<NodeHTML*>& NodeHTMLElement::ChildNodes() const {
+const HTMLNodeList& NodeHTMLElement::ChildNodes() const {
   return child_nodes_;
 }
 
-GraphMLXML NodeHTMLElement::GraphMLTag() const {
+GraphMLXML NodeHTMLElement::GetGraphMLTag() const {
   stringstream builder;
-  builder << Node::GraphMLTag();
+  builder << Node::GetGraphMLTag();
 
   for (const NodeHTML* child_node : child_nodes_) {
     EdgeHTML html_edge(this, child_node);
-    builder << html_edge.GraphMLTag();
+    builder << html_edge.GetGraphMLTag();
   }
   return builder.str();
 }
 
-string NodeHTMLElement::ToStringBody() const {
+string NodeHTMLElement::GetDescBody() const {
   stringstream string_builder;
-  string_builder << ItemName();
+  string_builder << GetItemName();
   string_builder << " [DOMNodeId:";
   string_builder << to_string(node_id_);
   string_builder << ", tag:";
@@ -163,34 +153,13 @@ void NodeHTMLElement::RemoveChildNode(NodeHTML* child) {
   child_nodes_.erase(child_pos);
 }
 
-void NodeHTMLElement::ToHTMLString(const uint32_t indent,
-    stringstream& builder) const {
-  indent_for_html(indent, builder);
-
-  builder << "<" << tag_name_;
-  for (const auto& attr : current_attributes_) {
-    string key = attr.first;
-    string value = attr.second;
-    builder << " " << key << "=\"" << value << "\"";
-  }
-  builder << ">" << endl;
-
-  const uint32_t new_indent = indent + 1;
-  for (const NodeHTML* child : child_nodes_) {
-    child->ToHTMLString(new_indent, builder);
-  }
-
-  indent_for_html(indent, builder);
-  builder << "<" << tag_name_ << ">" << endl;
-}
-
-GraphMLXMLGroup NodeHTMLElement::GraphMLAttributes() const {
-  GraphMLXMLGroup attrs = NodeHTML::GraphMLAttributes();
-  attrs.push_back(graphml_attr_def_for_type(GraphMLAttrDefNodeType)
+GraphMLXMLList NodeHTMLElement::GraphMLAttributes() const {
+  GraphMLXMLList attrs = NodeHTML::GraphMLAttributes();
+  attrs.push_back(graphml_attr_def_for_type(kGraphMLAttrDefNodeType)
       ->ToValue("html node"));
-  attrs.push_back(graphml_attr_def_for_type(GraphMLAttrDefNodeTag)
+  attrs.push_back(graphml_attr_def_for_type(kGraphMLAttrDefNodeTag)
       ->ToValue(TagName()));
   return attrs;
 }
 
-}  // brave_page_graph
+}  // namespace brave_page_graph

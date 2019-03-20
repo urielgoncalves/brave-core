@@ -7,11 +7,8 @@
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_CALL_H_
 
 #include <string>
-#include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
-
-using ::std::string;
 
 namespace brave_page_graph {
 
@@ -23,16 +20,16 @@ friend class PageGraph;
  public:
   EdgeRequest() = delete;
   ~EdgeRequest() override;
-  string ItemName() const override;
+  ItemName GetItemName() const override;
 
  protected:
   EdgeRequest(const PageGraph* graph, const PageGraphId id,
-    const Node* const out_node, const Node* const in_node, const string& url,
-    const RequestType type);
-  string ToStringBody() const override;
-  GraphMLXMLGroup GraphMLAttributes() const override;
+    const Node* const out_node, const Node* const in_node,
+    const std::string& url, const RequestType type);
+  ItemDesc GetDescBody() const override;
+  GraphMLXMLList GraphMLAttributes() const override;
 
-  const string url_;
+  const std::string url_;
   const RequestType type_;
 };
 

@@ -5,7 +5,7 @@
 
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_node_insert.h"
 #include <string>
-#include "brave/third_party/blink/brave_page_graph/page_graph.h"
+#include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_node.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_html_element.h"
@@ -36,29 +36,29 @@ NodeHTML* EdgeNodeInsert::GetPriorSiblingNode() const {
   return prior_sibling_id_ ? graph_->GetHTMLNode(prior_sibling_id_) : nullptr;
 }
 
-string EdgeNodeInsert::ItemName() const {
+ItemName EdgeNodeInsert::GetItemName() const {
   return "EdgeNodeInsert#" + to_string(id_);
 }
 
-string EdgeNodeInsert::ToStringBody() const {
-  return ItemName() +
+ItemDesc EdgeNodeInsert::GetDescBody() const {
+  return GetItemName() +
     " [parent:" + to_string(parent_id_) +
     ", sibling:" + to_string(prior_sibling_id_) + "]";
 }
 
-GraphMLXMLGroup EdgeNodeInsert::GraphMLAttributes() const {
-  GraphMLXMLGroup attrs; {
-  attrs.push_back(graphml_attr_def_for_type(GraphMLAttrDefEdgeType)
+GraphMLXMLList EdgeNodeInsert::GraphMLAttributes() const {
+  GraphMLXMLList attrs; {
+  attrs.push_back(graphml_attr_def_for_type(kGraphMLAttrDefEdgeType)
       ->ToValue("insert"));
 
   if (parent_id_) {
-    attrs.push_back(graphml_attr_def_for_type(GraphMLAttrDefParentNodeId)
-        ->ToValue(to_string(parent_id_)));
+    attrs.push_back(graphml_attr_def_for_type(kGraphMLAttrDefParentNodeId)
+        ->ToValue(parent_id_));
   }
 
   if (prior_sibling_id_)
-    attrs.push_back(graphml_attr_def_for_type(GraphMLAttrDefBeforeNodeId)
-        ->ToValue(to_string(prior_sibling_id_)));
+    attrs.push_back(graphml_attr_def_for_type(kGraphMLAttrDefBeforeNodeId)
+        ->ToValue(prior_sibling_id_));
   }
 
   return attrs;

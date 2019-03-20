@@ -1,13 +1,12 @@
 diff --git a/third_party/blink/renderer/core/dom/comment.cc b/third_party/blink/renderer/core/dom/comment.cc
-index d7476d197b825f1a13d92a708b84db849f7aacec..67c8f98a6e4dd4eaaeea0df288c2f41bf0ebd92a 100644
+index d7476d197b825f1a13d92a708b84db849f7aacec..dea5d7502c54981e0bc5dd07b9476aabbfe1e492 100644
 --- a/third_party/blink/renderer/core/dom/comment.cc
 +++ b/third_party/blink/renderer/core/dom/comment.cc
-@@ -23,13 +23,30 @@
+@@ -23,13 +23,29 @@
  
  #include "third_party/blink/renderer/core/dom/document.h"
  
 +#include "brave/third_party/blink/brave_page_graph/buildflags/buildflags.h"
-+#include <iostream>
 +#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
 +#include "third_party/blink/renderer/core/dom/document.h"
 +#include "third_party/blink/renderer/core/dom/dom_node_ids.h"

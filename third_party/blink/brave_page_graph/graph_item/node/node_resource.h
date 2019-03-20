@@ -6,12 +6,8 @@
 #ifndef BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_NODE_RESOURCE_H_
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_NODE_RESOURCE_H_
 
-#include <string>
-#include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
-
-using ::std::string;
 
 namespace brave_page_graph {
 
@@ -22,15 +18,18 @@ friend class PageGraph;
  public:
   NodeResource() = delete;
   ~NodeResource() override;
-  string ItemName() const override;
+  ItemName GetItemName() const override;
+  ResourceType GetResourceType() const;
+  bool IsSuccessful() const;
 
  protected:
   NodeResource(const PageGraph* graph, const PageGraphId id,
-    const ResourceType type);
-  string ToStringBody() const override;
-  GraphMLXMLGroup GraphMLAttributes() const override;
+    const ResourceType type, const bool is_successful);
+  ItemDesc GetDescBody() const override;
+  GraphMLXMLList GraphMLAttributes() const override;
 
   const ResourceType type_;
+  const bool successful_;
 };
 
 }  // namespace brave_page_graph

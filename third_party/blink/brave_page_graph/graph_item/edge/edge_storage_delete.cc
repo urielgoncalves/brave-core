@@ -5,6 +5,7 @@
 
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_storage_delete.h"
 #include <string>
+#include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_storage.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_actor.h"
@@ -23,15 +24,15 @@ EdgeStorageDelete::EdgeStorageDelete(const PageGraph* graph,
 
 EdgeStorageDelete::~EdgeStorageDelete() {}
 
-string EdgeStorageDelete::ItemName() const {
+ItemName EdgeStorageDelete::GetItemName() const {
   return "EdgeStorageDelete#" + ::std::to_string(id_);
 }
 
-GraphMLXMLGroup EdgeStorageDelete::GraphMLAttributes() const {
-  GraphMLXMLGroup items = EdgeStorage::GraphMLAttributes();
+GraphMLXMLList EdgeStorageDelete::GraphMLAttributes() const {
+  GraphMLXMLList items = EdgeStorage::GraphMLAttributes();
   items.push_back(
-    graphml_attr_def_for_type(GraphMLAttrDefEdgeType)->ToValue("delete"));
+    graphml_attr_def_for_type(kGraphMLAttrDefEdgeType)->ToValue("delete"));
   return items;
 }
 
-}  // brave_page_graph
+}  // namespace brave_page_graph

@@ -1,13 +1,12 @@
 diff --git a/third_party/blink/renderer/core/dom/element.cc b/third_party/blink/renderer/core/dom/element.cc
-index c971b86f411a59829a91d556e752c875cd5a2ca6..3d18c6a5d795b3a33dde443e7eb3dd71ae3c5ae4 100644
+index c971b86f411a59829a91d556e752c875cd5a2ca6..5c3e593fa659ad348e04ae839ceaf018230027da 100644
 --- a/third_party/blink/renderer/core/dom/element.cc
 +++ b/third_party/blink/renderer/core/dom/element.cc
-@@ -159,6 +159,14 @@
+@@ -159,6 +159,13 @@
  #include "third_party/blink/renderer/platform/wtf/text/string_builder.h"
  #include "third_party/blink/renderer/platform/wtf/text/text_position.h"
  
 +#include "brave/third_party/blink/brave_page_graph/buildflags/buildflags.h"
-+#include <iostream>
 +#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
 +#include "third_party/blink/renderer/core/dom/document.h"
 +#include "third_party/blink/renderer/core/dom/dom_node_ids.h"
@@ -17,7 +16,7 @@ index c971b86f411a59829a91d556e752c875cd5a2ca6..3d18c6a5d795b3a33dde443e7eb3dd71
  namespace blink {
  
  using namespace html_names;
-@@ -221,7 +229,14 @@ Element* Element::Create(const QualifiedName& tag_name, Document* document) {
+@@ -221,7 +228,14 @@ Element* Element::Create(const QualifiedName& tag_name, Document* document) {
  Element::Element(const QualifiedName& tag_name,
                   Document* document,
                   ConstructionType type)
@@ -33,7 +32,7 @@ index c971b86f411a59829a91d556e752c875cd5a2ca6..3d18c6a5d795b3a33dde443e7eb3dd71
  
  Element::~Element() {
    DCHECK(NeedsAttach());
-@@ -4529,6 +4544,14 @@ void Element::DidAddAttribute(const QualifiedName& name,
+@@ -4529,6 +4543,14 @@ void Element::DidAddAttribute(const QualifiedName& name,
    AttributeChanged(AttributeModificationParams(
        name, g_null_atom, value, AttributeModificationReason::kDirectly));
    probe::didModifyDOMAttr(this, name, value);
@@ -48,7 +47,7 @@ index c971b86f411a59829a91d556e752c875cd5a2ca6..3d18c6a5d795b3a33dde443e7eb3dd71
    DispatchSubtreeModifiedEvent();
  }
  
-@@ -4540,6 +4563,12 @@ void Element::DidModifyAttribute(const QualifiedName& name,
+@@ -4540,6 +4562,12 @@ void Element::DidModifyAttribute(const QualifiedName& name,
    AttributeChanged(AttributeModificationParams(
        name, old_value, new_value, AttributeModificationReason::kDirectly));
    probe::didModifyDOMAttr(this, name, new_value);
@@ -61,7 +60,7 @@ index c971b86f411a59829a91d556e752c875cd5a2ca6..3d18c6a5d795b3a33dde443e7eb3dd71
    // Do not dispatch a DOMSubtreeModified event here; see bug 81141.
  }
  
-@@ -4550,6 +4579,11 @@ void Element::DidRemoveAttribute(const QualifiedName& name,
+@@ -4550,6 +4578,11 @@ void Element::DidRemoveAttribute(const QualifiedName& name,
    AttributeChanged(AttributeModificationParams(
        name, old_value, g_null_atom, AttributeModificationReason::kDirectly));
    probe::didRemoveDOMAttr(this, name);

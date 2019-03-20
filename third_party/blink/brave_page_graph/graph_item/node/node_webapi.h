@@ -6,11 +6,8 @@
 #ifndef BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_NODE_WEBAPI_H_
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_NODE_WEBAPI_H_
 
-#include <string>
 #include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
-
-using ::std::string;
 
 namespace brave_page_graph {
 
@@ -21,13 +18,13 @@ friend class PageGraph;
  public:
   NodeWebAPI() = delete;
   ~NodeWebAPI() override;
-  string ItemName() const override;
-  const MethodName& Method() const;
+  ItemName GetItemName() const override;
+  const MethodName& GetMethod() const;
 
  protected:
   NodeWebAPI(const PageGraph* graph, const PageGraphId id,
     const MethodName method);
-  string ToStringBody() const override;
+  ItemDesc GetDescBody() const override;
 
   const MethodName method_name_;
 };

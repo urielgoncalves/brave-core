@@ -5,15 +5,12 @@
 
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_html.h"
 #include <string>
-#include <sstream>
 #include "base/logging.h"
 #include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
 #include "brave/third_party/blink/brave_page_graph/page_graph.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
-using ::std::string;
-using ::std::stringstream;
 using ::std::to_string;
 
 namespace brave_page_graph {
@@ -32,17 +29,11 @@ void NodeHTML::MarkNodeDeleted() {
   is_deleted_ = true;
 }
 
-GraphMLXMLGroup NodeHTML::GraphMLAttributes() const {
+GraphMLXMLList NodeHTML::GraphMLAttributes() const {
   return {
-    graphml_attr_def_for_type(GraphMLAttrDefNodeId)
-      ->ToValue(to_string(node_id_))
+    graphml_attr_def_for_type(kGraphMLAttrDefNodeId)
+      ->ToValue(node_id_)
   };
-}
-
-void indent_for_html(const uint32_t indent, stringstream& builder) {
-  for (uint32_t i = 0; i < indent; i += 1) {
-    builder << "  ";
-  }
 }
 
 }  // namespace brave_page_graph

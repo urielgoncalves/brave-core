@@ -5,12 +5,11 @@
 
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_storage_cookiejar.h"
 #include <string>
-#include "brave/third_party/blink/brave_page_graph/graph_item/node/node_storage.h"
 #include "brave/third_party/blink/brave_page_graph/graphml.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/node/node_storage.h"
 #include "brave/third_party/blink/brave_page_graph/page_graph.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
-using ::std::string;
 using ::std::to_string;
 
 namespace brave_page_graph {
@@ -21,15 +20,14 @@ NodeStorageCookieJar::NodeStorageCookieJar(const PageGraph* graph,
 
 NodeStorageCookieJar::~NodeStorageCookieJar() {}
 
-string NodeStorageCookieJar::ItemName() const {
+ItemName NodeStorageCookieJar::GetItemName() const {
   return "NodeStorageCookieJar#" + to_string(id_);
 }
 
-GraphMLXMLGroup NodeStorageCookieJar::GraphMLAttributes() const {
+GraphMLXMLList NodeStorageCookieJar::GraphMLAttributes() const {
   return {
-    graphml_attr_def_for_type(GraphMLAttrDefNodeType)
-      ->ToValue("cookie jar")
+    graphml_attr_def_for_type(kGraphMLAttrDefNodeType)->ToValue("cookie jar")
   };
 }
 
-}  // brave_page_graph
+}  // namespace brave_page_graph

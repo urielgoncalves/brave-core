@@ -9,6 +9,7 @@
 #include <set>
 #include <sstream>
 #include <string>
+#include "base/logging.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
@@ -29,55 +30,42 @@ using ::std::unique_ptr;
 namespace brave_page_graph {
 
 namespace {
-  GraphMLAttr* attr_name = new GraphMLAttr(GraphMLAttrForTypeEdge, "attr name");
-  GraphMLAttr* attr_value = new GraphMLAttr(GraphMLAttrForTypeEdge,
+  GraphMLAttr* attr_name = new GraphMLAttr(kGraphMLAttrForTypeEdge,
+    "attr name");
+  GraphMLAttr* attr_value = new GraphMLAttr(kGraphMLAttrForTypeEdge,
     "attr value");
-  GraphMLAttr* before_node_attr = new GraphMLAttr(GraphMLAttrForTypeEdge,
-    "before", GraphMLAttrTypeInt);
-  GraphMLAttr* call_args = new GraphMLAttr(GraphMLAttrForTypeEdge, "args");
-  GraphMLAttr* edge_type = new GraphMLAttr(GraphMLAttrForTypeEdge, "edge type");
-  GraphMLAttr* key_attr = new GraphMLAttr(GraphMLAttrForTypeEdge, "key");
-  GraphMLAttr* method_attr = new GraphMLAttr(GraphMLAttrForTypeEdge, "method");
-  GraphMLAttr* tag_attr = new GraphMLAttr(GraphMLAttrForTypeNode, "tag name");
-  GraphMLAttr* node_id_attr = new GraphMLAttr(GraphMLAttrForTypeNode,
-    "node id", GraphMLAttrTypeInt);
-  GraphMLAttr* node_text = new GraphMLAttr(GraphMLAttrForTypeNode, "text");
-  GraphMLAttr* node_type = new GraphMLAttr(GraphMLAttrForTypeNode, "node type");
-  GraphMLAttr* parent_node_attr = new GraphMLAttr(GraphMLAttrForTypeEdge,
-    "parent", GraphMLAttrTypeInt);
-  GraphMLAttr* script_type = new GraphMLAttr(GraphMLAttrForTypeNode,
+  GraphMLAttr* before_node_attr = new GraphMLAttr(kGraphMLAttrForTypeEdge,
+    "before", kGraphMLAttrTypeInt);
+  GraphMLAttr* call_args = new GraphMLAttr(kGraphMLAttrForTypeEdge, "args");
+  GraphMLAttr* edge_type = new GraphMLAttr(kGraphMLAttrForTypeEdge,
+    "edge type");
+  GraphMLAttr* key_attr = new GraphMLAttr(kGraphMLAttrForTypeEdge, "key");
+  GraphMLAttr* method_attr = new GraphMLAttr(kGraphMLAttrForTypeEdge, "method");
+  GraphMLAttr* tag_attr = new GraphMLAttr(kGraphMLAttrForTypeNode, "tag name");
+  GraphMLAttr* node_id_attr = new GraphMLAttr(kGraphMLAttrForTypeNode,
+    "node id", kGraphMLAttrTypeInt);
+  GraphMLAttr* node_text = new GraphMLAttr(kGraphMLAttrForTypeNode, "text");
+  GraphMLAttr* node_type = new GraphMLAttr(kGraphMLAttrForTypeNode,
+    "node type");
+  GraphMLAttr* parent_node_attr = new GraphMLAttr(kGraphMLAttrForTypeEdge,
+    "parent", kGraphMLAttrTypeInt);
+  GraphMLAttr* script_type = new GraphMLAttr(kGraphMLAttrForTypeNode,
     "script type");
-  GraphMLAttr* url_attr = new GraphMLAttr(GraphMLAttrForTypeEdge, "url");
-  GraphMLAttr* request_type_attr = new GraphMLAttr(GraphMLAttrForTypeEdge,
+  GraphMLAttr* success_attr = new GraphMLAttr(kGraphMLAttrForTypeNode,
+    "is success", kGraphMLAttrTypeBoolean);
+  GraphMLAttr* url_attr = new GraphMLAttr(kGraphMLAttrForTypeEdge, "url");
+  GraphMLAttr* request_type_attr = new GraphMLAttr(kGraphMLAttrForTypeEdge,
     "request type");
-  GraphMLAttr* value_attr = new GraphMLAttr(GraphMLAttrForTypeEdge, "value");
+  GraphMLAttr* value_attr = new GraphMLAttr(kGraphMLAttrForTypeEdge, "value");
 
-  const int num_attrs = 16;
+  const int num_attrs = 17;
   GraphMLAttr* all_attrs[num_attrs] = {attr_name, attr_value, before_node_attr,
     call_args, edge_type, key_attr, method_attr, tag_attr, node_id_attr,
-    node_text, node_type, parent_node_attr, script_type, url_attr,
+    node_text, node_type, parent_node_attr, script_type, success_attr, url_attr,
     request_type_attr, value_attr};
 }
 
-string graphml_for_html_structure(const NodeHTMLElement* const node) noexcept {
-  if (node->ChildNodes().size() == 0) {
-    return "";
-  }
-
-  stringstream builder;
-  uint32_t counter = 0;
-  for (NodeHTML* child_node : node->ChildNodes()) {
-    builder << "<edge id\"t" << to_string(++counter) << "\" " <<
-                      "source=\"" << node->GraphMLId() << "\" " <<
-                      "target=\"" << child_node->GraphMLId() << "\">";
-    // builder << html_structure_attr_type->ToValue("child");
-    builder << "</edge>" << endl;
-  }
-
-  return builder.str();
-}
-
-string graphml_for_page_graph(const PageGraph* const graph) noexcept {
+GraphMLXML graphml_for_page_graph(const PageGraph* const graph) noexcept {
   stringstream builder;
   builder << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << endl;
   builder << "<graphml xmlns=\"http://graphml.graphdrawing.org/xmlns\"" << endl;
@@ -92,50 +80,15 @@ string graphml_for_page_graph(const PageGraph* const graph) noexcept {
   builder << "\t<graph id=\"G\" edgedefault=\"directed\">" << endl;
 
   for (const unique_ptr<Node>& elm : graph->Nodes()) {
-    builder << elm->GraphMLTag() << endl;
+    builder << elm->GetGraphMLTag() << endl;
   }
   for (const unique_ptr<const Edge>& elm : graph->Edges()) {
-    builder << elm->GraphMLTag() << endl;
-  }
-  for (const NodeHTMLElement* elm : graph->HTMLElementNodes()) {
-    builder << graphml_for_html_structure(elm);
+    builder << elm->GetGraphMLTag() << endl;
   }
 
   builder << "\t</graph>" << endl;
   builder << "</graphml>" << endl;
   return builder.str();
-}
-
-string graphml_type_to_string(const GraphMLAttrType type) noexcept {
-  switch (type) {
-    case GraphMLAttrTypeString:
-      return "string";
-    case GraphMLAttrTypeBoolean:
-      return "boolean";
-    case GraphMLAttrTypeInt:
-      return "int";
-    case GraphMLAttrTypeLong:
-      return "long";
-    case GraphMLAttrTypeFloat:
-      return "float";
-    case GraphMLAttrTypeDouble:
-      return "double";
-    case GraphMLAttrTypeUnknown:
-    default:
-      return "unknown";
-  }
-}
-
-string graphml_for_to_string(const GraphMLAttrForType type) noexcept {
-  switch (type) {
-    case GraphMLAttrForTypeNode:
-      return "node";
-    case GraphMLAttrForTypeEdge:
-      return "edge";
-    case GraphMLAttrForTypeUnknown:
-    default:
-      return "unknown";
-  }
 }
 
 namespace {
@@ -147,7 +100,7 @@ GraphMLAttr::GraphMLAttr(const GraphMLAttrForType for_value,
       id_(++graphml_index),
       for_(for_value),
       name_(name),
-      type_(GraphMLAttrTypeString) {}
+      type_(kGraphMLAttrTypeString) {}
 
 GraphMLAttr::GraphMLAttr(const GraphMLAttrForType for_value, const string& name,
     const GraphMLAttrType type) :
@@ -156,57 +109,71 @@ GraphMLAttr::GraphMLAttr(const GraphMLAttrForType for_value, const string& name,
       name_(name),
       type_(type) {}
 
-string GraphMLAttr::GraphMLId() const {
+GraphMLId GraphMLAttr::GetGraphMLId() const {
   return "d" + to_string(id_);
 }
 
 GraphMLXML GraphMLAttr::ToDefinition() const {
-   return "<key id=\"" + GraphMLId() + "\" " +
+   return "<key id=\"" + GetGraphMLId() + "\" " +
                 "for=\"" + graphml_for_to_string(for_) + "\" " +
                 "attr.name=\"" + name_ + "\" " +
-                "attr.type=\"" + graphml_type_to_string(type_) + "\"/>\n";
+                "attr.type=\"" + graphml_type_to_string(type_) + "\"/>";
+}
+
+GraphMLXML GraphMLAttr::ToValue(const char* value) const {
+  return ToValue(string(value));
 }
 
 GraphMLXML GraphMLAttr::ToValue(const string& value) const {
-  if (type_ == GraphMLAttrTypeInt) {
-    return "<data key=\"" + GraphMLId() + "\">" + value + "]]></data>\n";
-  }
-  return "<data key=\"" + GraphMLId() + "\">" +
+  LOG_ASSERT(type_ == kGraphMLAttrTypeString);
+  return "<data key=\"" + GetGraphMLId() + "\">" +
             "<![CDATA[" + value + "]]>" +
-            "</data>\n";
+            "</data>";
+}
+
+GraphMLXML GraphMLAttr::ToValue(const DOMNodeId value) const {
+  LOG_ASSERT(type_ == kGraphMLAttrTypeInt);
+  return "<data key=\"" + GetGraphMLId() + "\">" + to_string(value) + "</data>";
+}
+
+GraphMLXML GraphMLAttr::ToValue(const bool value) const {
+  LOG_ASSERT(type_ == kGraphMLAttrTypeBoolean);
+  return "<data key=\"" + GetGraphMLId() + "\">" + to_string(value) + "</data>";
 }
 
 GraphMLAttr* graphml_attr_def_for_type(const GraphMLAttrDef type) noexcept {
   switch (type) {
-    case GraphMLAttrDefBeforeNodeId:
+    case kGraphMLAttrDefBeforeNodeId:
       return before_node_attr;
-    case GraphMLAttrDefCallArgs:
+    case kGraphMLAttrDefCallArgs:
       return call_args;
-    case GraphMLAttrDefEdgeType:
+    case kGraphMLAttrDefEdgeType:
       return edge_type;
-    case GraphMLAttrDefKey:
+    case kGraphMLAttrDefKey:
       return key_attr;
-    case GraphMLAttrDefMethodName:
+    case kGraphMLAttrDefMethodName:
       return method_attr;
-    case GraphMLAttrDefNodeTag:
+    case kGraphMLAttrDefNodeTag:
       return tag_attr;
-    case GraphMLAttrDefNodeId:
+    case kGraphMLAttrDefNodeId:
       return node_id_attr;
-    case GraphMLAttrDefNodeText:
+    case kGraphMLAttrDefNodeText:
       return node_text;
-    case GraphMLAttrDefNodeType:
+    case kGraphMLAttrDefNodeType:
       return node_type;
-    case GraphMLAttrDefParentNodeId:
+    case kGraphMLAttrDefParentNodeId:
       return parent_node_attr;
-    case GraphMLAttrDefRequestType:
+    case kGraphMLAttrDefRequestType:
       return request_type_attr;
-    case GraphMLAttrDefScriptType:
+    case kGraphMLAttrDefScriptType:
       return script_type;
-    case GraphMLAttrDefUrl:
+    case kGraphMLAttrDefSuccess:
+      return success_attr;
+    case kGraphMLAttrDefUrl:
       return url_attr;
-    case GraphMLAttrDefValue:
+    case kGraphMLAttrDefValue:
       return value_attr;
-    case GraphMLAttrDefUnknown:
+    case kGraphMLAttrDefUnknown:
       return nullptr;
   }
 }

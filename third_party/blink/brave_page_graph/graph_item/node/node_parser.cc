@@ -16,16 +16,12 @@ using ::std::to_string;
 
 namespace brave_page_graph {
 
-string graphml_node_parser_type(const void* node) {
-  return "parser";
-}
-
 NodeParser::NodeParser(const PageGraph* graph, const PageGraphId id) :
       NodeActor(graph, id) {}
 
 NodeParser::~NodeParser() {}
 
-string NodeParser::ItemName() const {
+ItemName NodeParser::GetItemName() const {
   return "NodeParser#" + to_string(id_);
 }
 
@@ -33,11 +29,11 @@ bool NodeParser::IsParser() const {
   return true;
 }
 
-GraphMLXMLGroup NodeParser::GraphMLAttributes() const {
+GraphMLXMLList NodeParser::GraphMLAttributes() const {
   return {
-    graphml_attr_def_for_type(GraphMLAttrDefNodeType)
+    graphml_attr_def_for_type(kGraphMLAttrDefNodeType)
       ->ToValue("parser")
   };
 }
 
-}  // brave_page_graph
+}  // namespace brave_page_graph

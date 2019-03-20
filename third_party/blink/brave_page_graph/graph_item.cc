@@ -4,12 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "brave/third_party/blink/brave_page_graph/graph_item.h"
-#include <string>
 #include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/page_graph.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
-
-using ::std::string;
 
 namespace brave_page_graph {
 
@@ -23,16 +20,16 @@ PageGraphId GraphItem::Id() const {
   return id_;
 }
 
-string GraphItem::ToStringBody() const {
-  return ItemName();
+ItemDesc GraphItem::GetDescBody() const {
+  return GetItemName();
 }
 
-string GraphItem::ToString() const {
-  return ToStringPrefix() + ToStringBody() + ToStringSuffix();
+ItemDesc GraphItem::GetDesc() const {
+  return GetDescPrefix() + GetDescBody() + GetDescSuffix();
 }
 
-GraphMLXMLGroup GraphItem::GraphMLAttributes() const {
-  return GraphMLXMLGroup();
+GraphMLXMLList GraphItem::GraphMLAttributes() const {
+  return GraphMLXMLList();
 }
 
 }  // namespace brave_page_graph

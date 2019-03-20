@@ -7,11 +7,8 @@
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_NODE_PARSER_H_
 
 #include <string>
-#include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_actor.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
-
-using ::std::string;
 
 namespace brave_page_graph {
 
@@ -22,12 +19,12 @@ friend class PageGraph;
  public:
   NodeParser() = delete;
   ~NodeParser() override;
-  string ItemName() const override;
+  ItemName GetItemName() const override;
   bool IsParser() const override;
 
  protected:
   NodeParser(const PageGraph*, const PageGraphId id);
-  GraphMLXMLGroup GraphMLAttributes() const override;
+  GraphMLXMLList GraphMLAttributes() const override;
 };
 
 }  // namespace brave_page_graph

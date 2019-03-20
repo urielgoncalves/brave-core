@@ -6,11 +6,9 @@
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_webapi.h"
 #include <string>
 #include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
-#include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/page_graph.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
-using ::std::string;
 using ::std::to_string;
 
 namespace brave_page_graph {
@@ -22,16 +20,16 @@ NodeWebAPI::NodeWebAPI(const PageGraph* graph, const PageGraphId id,
 
 NodeWebAPI::~NodeWebAPI() {}
 
-string NodeWebAPI::ItemName() const {
+ItemName NodeWebAPI::GetItemName() const {
   return "NodeWebAPI#" + to_string(id_);
 }
 
-const MethodName& NodeWebAPI::Method() const {
+const MethodName& NodeWebAPI::GetMethod() const {
   return method_name_;
 }
 
-string NodeWebAPI::ToStringBody() const {
-  return ItemName() + " [method:" + method_name_ + "]"; 
+ItemDesc NodeWebAPI::GetDescBody() const {
+  return GetItemName() + " [method:" + method_name_ + "]"; 
 }
 
-}  // brave_page_graph
+}  // namespace brave_page_graph

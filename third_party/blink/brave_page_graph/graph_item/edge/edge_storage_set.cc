@@ -5,6 +5,7 @@
 
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_storage_set.h"
 #include <string>
+#include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_storage.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_actor.h"
@@ -25,21 +26,21 @@ EdgeStorageSet::EdgeStorageSet(const PageGraph* graph, const PageGraphId id,
 
 EdgeStorageSet::~EdgeStorageSet() {}
 
-string EdgeStorageSet::ItemName() const {
+ItemName EdgeStorageSet::GetItemName() const {
   return "EdgeStorageSet#" + to_string(id_);
 }
 
-string EdgeStorageSet::ToStringBody() const {
-  return ItemName() + " [key:" + key_ + ", value:" + value_ + "]";
+ItemDesc EdgeStorageSet::GetDescBody() const {
+  return GetItemName() + " [key:" + key_ + ", value:" + value_ + "]";
 }
 
-GraphMLXMLGroup EdgeStorageSet::GraphMLAttributes() const {
-  GraphMLXMLGroup items = EdgeStorage::GraphMLAttributes();
-  items.push_back(graphml_attr_def_for_type(
-    GraphMLAttrDefEdgeType)->ToValue("set"));
-  items.push_back(graphml_attr_def_for_type(
-    GraphMLAttrDefValue)->ToValue(value_));
+GraphMLXMLList EdgeStorageSet::GraphMLAttributes() const {
+  GraphMLXMLList items = EdgeStorage::GraphMLAttributes();
+  items.push_back(
+    graphml_attr_def_for_type(kGraphMLAttrDefEdgeType)->ToValue("set"));
+  items.push_back(
+    graphml_attr_def_for_type(kGraphMLAttrDefValue)->ToValue(value_));
   return items;
 }
 
-}  // brave_page_graph
+}  // namespace brave_page_graph

@@ -7,18 +7,10 @@
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_NODE_HTML_ELEMENT_H_
 
 #include <map>
-#include <sstream>
 #include <string>
-#include <vector>
-#include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_html.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
-
-using ::std::map;
-using ::std::string;
-using ::std::stringstream;
-using ::std::vector;
 
 namespace brave_page_graph {
 
@@ -37,9 +29,8 @@ friend class NodeHTML;
  public:
   NodeHTMLElement() = delete;
   ~NodeHTMLElement() override;
-  string ItemName() const override;
-  string ToHTMLString() const override;
-  const string& TagName() const;
+  ItemName GetItemName() const override;
+  const std::string& TagName() const;
 
   using Node::AddInEdge;
   void AddInEdge(const EdgeNodeRemove* edge);
@@ -48,27 +39,23 @@ friend class NodeHTML;
   void AddInEdge(const EdgeAttributeDelete* edge);
   void AddInEdge(const EdgeAttributeSet* edge);
   
-  const vector<NodeHTML*>& ChildNodes() const;
-  GraphMLXML GraphMLTag() const override;
+  const HTMLNodeList& ChildNodes() const;
+  GraphMLXML GetGraphMLTag() const override;
 
  protected:
   NodeHTMLElement(const PageGraph* graph, const PageGraphId id,
-    const DOMNodeId node_id,  const string& tag_name);
-  string ToStringBody() const override;
+    const DOMNodeId node_id,  const std::string& tag_name);
+  ItemDesc GetDescBody() const override;
   void MarkNodeDeleted() override;
   void PlaceChildNodeAfterSiblingNode(NodeHTML* child,
     NodeHTML* sibling);
   void RemoveChildNode(NodeHTML* child);
-  void ToHTMLString(const uint32_t indent,
-    stringstream& builder) const override;
-  GraphMLXMLGroup GraphMLAttributes() const override;
+  GraphMLXMLList GraphMLAttributes() const override;
 
-  const string tag_name_;
-  map<const string, const string> current_attributes_;
-  vector<NodeHTML*> child_nodes_;
+  const std::string tag_name_;
+  std::map<const std::string, const std::string> current_attributes_;
+  HTMLNodeList child_nodes_;
 };
-
-extern void indent_for_html(const uint32_t indent, stringstream& builder);
 
 }  // namespace brave_page_graph
 

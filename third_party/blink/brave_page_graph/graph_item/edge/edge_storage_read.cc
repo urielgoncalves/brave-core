@@ -5,6 +5,7 @@
 
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_storage_read.h"
 #include <string>
+#include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_storage.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_actor.h"
@@ -24,15 +25,15 @@ EdgeStorageRead::EdgeStorageRead(const PageGraph* graph, const PageGraphId id,
 
 EdgeStorageRead::~EdgeStorageRead() {}
 
-string EdgeStorageRead::ItemName() const {
+ItemName EdgeStorageRead::GetItemName() const {
   return "EdgeStorageRead#" + to_string(id_);
 }
 
-GraphMLXMLGroup EdgeStorageRead::GraphMLAttributes() const {
-  GraphMLXMLGroup items = EdgeStorage::GraphMLAttributes();
+GraphMLXMLList EdgeStorageRead::GraphMLAttributes() const {
+  GraphMLXMLList items = EdgeStorage::GraphMLAttributes();
   items.push_back(
-    graphml_attr_def_for_type(GraphMLAttrDefEdgeType)->ToValue("read"));
+    graphml_attr_def_for_type(kGraphMLAttrDefEdgeType)->ToValue("read"));
   return items;
 }
 
-}  // brave_page_graph
+}  // namespace brave_page_graph

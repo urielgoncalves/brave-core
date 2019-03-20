@@ -5,7 +5,7 @@
 
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_node_create.h"
 #include <string>
-#include "brave/third_party/blink/brave_page_graph/page_graph.h"
+#include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_node.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_actor.h"
@@ -13,7 +13,6 @@
 #include "brave/third_party/blink/brave_page_graph/page_graph.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
-using ::std::string;
 using ::std::to_string;
 
 namespace brave_page_graph {
@@ -24,15 +23,14 @@ EdgeNodeCreate::EdgeNodeCreate(const PageGraph* graph, const PageGraphId id,
 
 EdgeNodeCreate::~EdgeNodeCreate() {}
 
-string EdgeNodeCreate::ItemName() const {
+ItemName EdgeNodeCreate::GetItemName() const {
   return "EdgeNodeCreate#" + to_string(id_);
 }
 
-GraphMLXMLGroup EdgeNodeCreate::GraphMLAttributes() const {
+GraphMLXMLList EdgeNodeCreate::GraphMLAttributes() const {
   return {
-    graphml_attr_def_for_type(GraphMLAttrDefEdgeType)
-      ->ToValue("create")
+    graphml_attr_def_for_type(kGraphMLAttrDefEdgeType)->ToValue("create")
   };
 }
 
-}  // brave_page_graph
+}  // namespace brave_page_graph

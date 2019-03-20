@@ -7,12 +7,9 @@
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_ATTRIBUTE_SET_H_
 
 #include <string>
-#include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_attribute.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
-
-using ::std::string;
 
 namespace brave_page_graph {
 
@@ -26,17 +23,17 @@ friend class PageGraph;
  public:
   EdgeAttributeSet() = delete;
   ~EdgeAttributeSet() override;
-  string ItemName() const override;
-  const string& AttributeValue() const;
+  ItemName GetItemName() const override;
+  const std::string& AttributeValue() const;
 
  protected:
   EdgeAttributeSet(const PageGraph* graph, const PageGraphId id,
     const NodeActor* const out_node, const NodeHTMLElement* const in_node,
-    const string& name, const string& value);
-  string ToStringBody() const override;
-  GraphMLXMLGroup GraphMLAttributes() const override;
+    const std::string& name, const std::string& value);
+  ItemDesc GetDescBody() const override;
+  GraphMLXMLList GraphMLAttributes() const override;
 
-  const string value_;
+  const std::string value_;
 };
 
 }  // namespace brave_page_graph

@@ -10,7 +10,6 @@
 #include "brave/third_party/blink/brave_page_graph/page_graph.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
-using ::std::string;
 using ::std::to_string;
 
 namespace brave_page_graph {
@@ -20,15 +19,15 @@ NodeShields::NodeShields(const PageGraph* graph, const PageGraphId id) :
 
 NodeShields::~NodeShields() {}
 
-string NodeShields::ItemName() const {
+ItemName NodeShields::GetItemName() const {
   return "NodeShields#" + to_string(id_);
 }
 
-GraphMLXMLGroup NodeShields::GraphMLAttributes() const {
+GraphMLXMLList NodeShields::GraphMLAttributes() const {
   return {
-    graphml_attr_def_for_type(GraphMLAttrDefNodeType)
+    graphml_attr_def_for_type(kGraphMLAttrDefNodeType)
       ->ToValue("shields")
   };
 }
 
-}  // brave_page_graph
+}  // namespace brave_page_graph

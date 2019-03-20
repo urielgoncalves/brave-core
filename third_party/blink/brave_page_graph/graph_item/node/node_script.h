@@ -6,12 +6,8 @@
 #ifndef BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_NODE_SCRIPT_H_
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_NODE_SCRIPT_H_
 
-#include <string>
-#include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_actor.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
-
-using ::std::string;
 
 namespace brave_page_graph {
 
@@ -22,15 +18,14 @@ friend class PageGraph;
  public:
   NodeScript() = delete;
   ~NodeScript() override;
-  string ItemName() const override;
+  ItemName GetItemName() const override;
   bool IsScript() const override;
-  string ScriptTypeString() const;
 
  protected:
    NodeScript(const PageGraph* graph, const PageGraphId id,
     const ScriptId script_id, const ScriptType type);
-  string ToStringBody() const override;
-  GraphMLXMLGroup GraphMLAttributes() const override;
+  ItemDesc GetDescBody() const override;
+  GraphMLXMLList GraphMLAttributes() const override;
 
   const ScriptId script_id_;
   const ScriptType type_;

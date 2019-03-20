@@ -26,11 +26,11 @@ const string& EdgeAttribute::AttributeName() const {
   return name_;
 }
 
-GraphMLXMLGroup EdgeAttribute::GraphMLAttributes() const {
-  GraphMLXMLGroup attrs;
-  attrs.push_back(graphml_attr_def_for_type(GraphMLAttrDefKey)
-      ->ToValue(AttributeName()));
+GraphMLXMLList EdgeAttribute::GraphMLAttributes() const {
+  GraphMLXMLList attrs;
+  attrs.push_back(
+    graphml_attr_def_for_type(kGraphMLAttrDefKey)->ToValue(AttributeName()));
   return attrs;
 }
 
-}  // brave_page_graph
+}  // namespace brave_page_graph

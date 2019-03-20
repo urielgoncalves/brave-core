@@ -5,7 +5,9 @@
 
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_html.h"
 #include <ostream>
+#include <sstream>
 #include <string>
+#include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_html.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_html_element.h"
@@ -30,16 +32,16 @@ EdgeHTML::EdgeHTML(const NodeHTMLElement* const out_node,
 
 EdgeHTML::~EdgeHTML() {}
 
-string EdgeHTML::ItemName() const {
+ItemName EdgeHTML::GetItemName() const {
   return "EdgeHTML#" + to_string(id_);
 }
 
-GraphMLXML EdgeHTML::GraphMLTag() const {
+GraphMLXML EdgeHTML::GetGraphMLTag() const {
   // graph_ will be null when EdgeHTML elements are being created only
   // for temporary GraphML export.  In all other cases graph_ will
   // point to the shared PageGraph instance/
   if (graph_ != nullptr) {
-    return Edge::GraphMLTag();
+    return Edge::GetGraphMLTag();
   }
 
   // To ensure all tag ids are unique, dervie a graphml id based on
@@ -48,9 +50,9 @@ GraphMLXML EdgeHTML::GraphMLTag() const {
                             to_string(in_node_->Id());
 
   stringstream builder;
-  builder << "<edge id\"t" + graphml_id << "\" " <<
-                      "source=\"" << out_node_->GraphMLId() << "\" " <<
-                      "target=\"" << in_node_->GraphMLId() << "\">" << endl;
+  builder << "<edge id=\"t" + graphml_id << "\" " <<
+                      "source=\"" << out_node_->GetGraphMLId() << "\" " <<
+                      "target=\"" << in_node_->GetGraphMLId() << "\">" << endl;
 
   for (const GraphMLXML& elm : GraphMLAttributes()) {
     builder << "\t" << elm << endl;
@@ -59,11 +61,11 @@ GraphMLXML EdgeHTML::GraphMLTag() const {
   return builder.str();
 }
 
-GraphMLXMLGroup EdgeHTML::GraphMLAttributes() const {
+GraphMLXMLList EdgeHTML::GraphMLAttributes() const {
   return {
-    graphml_attr_def_for_type(GraphMLAttrDefEdgeType)
+    graphml_attr_def_for_type(kGraphMLAttrDefEdgeType)
       ->ToValue("structure")
   };
 }
 
-}  // brave_page_graph
+}  // namespace brave_page_graph

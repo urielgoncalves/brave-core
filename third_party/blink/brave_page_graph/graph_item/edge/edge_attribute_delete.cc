@@ -25,17 +25,17 @@ EdgeAttributeDelete::EdgeAttributeDelete(const PageGraph* graph,
 
 EdgeAttributeDelete::~EdgeAttributeDelete() {}
 
-string EdgeAttributeDelete::ItemName() const {
+ItemName EdgeAttributeDelete::GetItemName() const {
   return "EdgeAttributeDelete#" + ::std::to_string(id_);
 }
 
-string EdgeAttributeDelete::ToStringBody() const {
-  return ItemName() + " [" + AttributeName() + "]";
+ItemDesc EdgeAttributeDelete::GetDescBody() const {
+  return GetItemName() + " [" + AttributeName() + "]";
 }
 
-GraphMLXMLGroup EdgeAttributeDelete::GraphMLAttributes() const {
-  GraphMLXMLGroup attrs = EdgeAttribute::GraphMLAttributes();
-  attrs.push_back(graphml_attr_def_for_type(GraphMLAttrDefEdgeType)
+GraphMLXMLList EdgeAttributeDelete::GraphMLAttributes() const {
+  GraphMLXMLList attrs = EdgeAttribute::GraphMLAttributes();
+  attrs.push_back(graphml_attr_def_for_type(kGraphMLAttrDefEdgeType)
       ->ToValue("attr delete"));
   return attrs;
 }

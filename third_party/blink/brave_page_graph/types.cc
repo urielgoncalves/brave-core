@@ -10,27 +10,59 @@ using ::std::string;
 
 namespace brave_page_graph {
 
+string graphml_type_to_string(const GraphMLAttrType type) noexcept {
+  switch (type) {
+    case kGraphMLAttrTypeString:
+      return "string";
+    case kGraphMLAttrTypeBoolean:
+      return "boolean";
+    case kGraphMLAttrTypeInt:
+      return "int";
+    case kGraphMLAttrTypeLong:
+      return "long";
+    case kGraphMLAttrTypeFloat:
+      return "float";
+    case kGraphMLAttrTypeDouble:
+      return "double";
+    case kGraphMLAttrTypeUnknown:
+    default:
+      return "unknown";
+  }
+}
+
+string graphml_for_to_string(const GraphMLAttrForType type) noexcept {
+  switch (type) {
+    case kGraphMLAttrForTypeNode:
+      return "node";
+    case kGraphMLAttrForTypeEdge:
+      return "edge";
+    case kGraphMLAttrForTypeUnknown:
+    default:
+      return "unknown";
+  }
+}
+
 string request_type_to_string(const RequestType type) noexcept {
   switch (type) {
-    case RequestTypeImage:
+    case kRequestTypeImage:
       return "Image";
-    case RequestTypeScriptClassic:
+    case kRequestTypeScriptClassic:
       return "ScriptClassic";
-    case RequestTypeScriptModule:
+    case kRequestTypeScriptModule:
       return "ScriptModule";
-    case RequestTypeCSS:
+    case kRequestTypeCSS:
       return "CSS";
-    case RequestTypeVideo:
+    case kRequestTypeVideo:
       return "Video";
-    case RequestTypeAudio:
+    case kRequestTypeAudio:
       return "Audio";
-    case RequestTypeSVG:
+    case kRequestTypeSVG:
       return "SVG";
-    case RequestTypeFont:
+    case kRequestTypeFont:
       return "Font";
-    case RequestTypeDocument:
+    case kRequestTypeDocument:
       return "Document";
-    case RequestTypeUnknown:
+    case kRequestTypeUnknown:
     default:
       return "Unknown";
   }
@@ -38,36 +70,36 @@ string request_type_to_string(const RequestType type) noexcept {
 
 string request_type_to_string(const ResourceType type) noexcept {
   switch (type) {
-    case ResourceTypeAudio:
+    case kResourceTypeAudio:
       return "audio";
-    case ResourceTypeCSS:
+    case kResourceTypeCSS:
       return "cSS";
-    case ResourceTypeDocument:
+    case kResourceTypeDocument:
       return "document";
-    case ResourceTypeFont:
+    case kResourceTypeFont:
       return "font";
-    case ResourceTypeImage:
+    case kResourceTypeImage:
       return "image";
-    case ResourceTypeVideo:
+    case kResourceTypeVideo:
       return "video";
-    case ResourceTypeScript:
+    case kResourceTypeScript:
       return "script";
-    case ResourceTypeSVG:
+    case kResourceTypeSVG:
       return "sVG";
-    case ResourceTypeUnknown:
+    case kResourceTypeUnknown:
       return "unknown";
   }
 }
 
 string script_type_to_string(const ScriptType type) noexcept {
   switch (type) {
-    case ScriptTypeClassic:
+    case kScriptTypeClassic:
       return "Classic";
-    case ScriptTypeModule:
+    case kScriptTypeModule:
       return "Module";
-    case ScriptTypeExtension:
+    case kScriptTypeExtension:
       return "Extension";
-    case ScriptTypeUnknown:
+    case kScriptTypeUnknown:
     default:
       return "Unknown";
   }

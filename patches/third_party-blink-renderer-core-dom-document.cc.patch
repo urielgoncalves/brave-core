@@ -1,17 +1,8 @@
 diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink/renderer/core/dom/document.cc
-index e5d02bd5288267372a37bb4924d144abcf9a312c..60805970292ba9550c566a5233ea823e27de5e75 100644
+index e5d02bd5288267372a37bb4924d144abcf9a312c..d8ef07be91dbdb79ae09ba03aee091bde4360709 100644
 --- a/third_party/blink/renderer/core/dom/document.cc
 +++ b/third_party/blink/renderer/core/dom/document.cc
-@@ -27,6 +27,8 @@
-  * Boston, MA 02110-1301, USA.
-  */
- 
-+#include <iostream>
-+
- #include "third_party/blink/renderer/core/dom/document.h"
- 
- #include <memory>
-@@ -301,6 +303,11 @@ using WeakDocumentSet = blink::HeapHashSet<blink::WeakMember<blink::Document>>;
+@@ -301,6 +301,11 @@ using WeakDocumentSet = blink::HeapHashSet<blink::WeakMember<blink::Document>>;
  static WeakDocumentSet& liveDocumentSet();
  #endif
  
@@ -23,7 +14,7 @@ index e5d02bd5288267372a37bb4924d144abcf9a312c..60805970292ba9550c566a5233ea823e
  namespace blink {
  
  using namespace html_names;
-@@ -730,7 +737,6 @@ Document::Document(const DocumentInit& initializer,
+@@ -730,7 +735,6 @@ Document::Document(const DocumentInit& initializer,
          &FetchContext::NullInstance(), GetTaskRunner(TaskType::kNetworking)));
    }
    DCHECK(fetcher_);
@@ -31,15 +22,7 @@ index e5d02bd5288267372a37bb4924d144abcf9a312c..60805970292ba9550c566a5233ea823e
    root_scroller_controller_ = RootScrollerController::Create(*this);
  
    // We depend on the url getting immediately set in subframes, but we
-@@ -767,9 +773,18 @@ Document::Document(const DocumentInit& initializer,
-   // loading resources ignoring the defersLoading flag.
-   DCHECK(!ParentDocument() || !ParentDocument()->IsContextPaused());
- 
-+  if (Url().ProtocolIsInHTTPFamily()) {
-+    std::cout << "\n\n\n\n\n\n";
-+    std::cout << "Init document: " << Url().GetString().Utf8().data() << "\n";
-+  }
-+
+@@ -770,6 +774,10 @@ Document::Document(const DocumentInit& initializer,
  #ifndef NDEBUG
    liveDocumentSet().insert(this);
  #endif
@@ -50,7 +33,7 @@ index e5d02bd5288267372a37bb4924d144abcf9a312c..60805970292ba9550c566a5233ea823e
  }
  
  Document::~Document() {
-@@ -780,7 +795,31 @@ Document::~Document() {
+@@ -780,7 +788,23 @@ Document::~Document() {
    DCHECK(!ax_object_cache_);
  
    InstanceCounters::DecrementCounter(InstanceCounters::kDocumentCounter);
@@ -65,15 +48,7 @@ index e5d02bd5288267372a37bb4924d144abcf9a312c..60805970292ba9550c566a5233ea823e
 +#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
 +brave_page_graph::PageGraph* Document::GetPageGraph() {
 +  if (page_graph_ == nullptr && Url().ProtocolIsInHTTPFamily()) {
-+    std::cout << "GetPageGraph: " << Url().GetString().Utf8().data() << std::endl;
 +    page_graph_ = new brave_page_graph::PageGraph();
-+    HTMLCollection* all_items = all();
-+    unsigned num_items = all_items->length();
-+    for (unsigned i = 0; i < num_items; i += 1) {
-+      Element* elm = all_items->item(i);
-+      page_graph_->RegisterHTMLElementNodeCreated(
-+        DOMNodeIds::IdForNode(elm), elm->tagName().Utf8().data());
-+    }
 +  }
 +  return page_graph_;
  }

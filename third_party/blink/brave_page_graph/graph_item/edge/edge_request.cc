@@ -24,24 +24,24 @@ EdgeRequest::EdgeRequest(const PageGraph* graph, const PageGraphId id,
 
 EdgeRequest::~EdgeRequest() {}
 
-string EdgeRequest::ItemName() const {
+ItemName EdgeRequest::GetItemName() const {
   return "EdgeRequest#" + ::std::to_string(id_);
 }
 
-string EdgeRequest::ToStringBody() const {
-  return ItemName() + " [url:" + url_ +
+ItemDesc EdgeRequest::GetDescBody() const {
+  return GetItemName() + " [url:" + url_ +
     ", type:" + request_type_to_string(type_) + "]";
 }
 
-GraphMLXMLGroup EdgeRequest::GraphMLAttributes() const {
-  return GraphMLXMLGroup({
-    graphml_attr_def_for_type(GraphMLAttrDefEdgeType)
+GraphMLXMLList EdgeRequest::GraphMLAttributes() const {
+  return GraphMLXMLList({
+    graphml_attr_def_for_type(kGraphMLAttrDefEdgeType)
       ->ToValue("request"),
-    graphml_attr_def_for_type(GraphMLAttrDefRequestType)
+    graphml_attr_def_for_type(kGraphMLAttrDefRequestType)
       ->ToValue(request_type_to_string(type_)),
-    graphml_attr_def_for_type(GraphMLAttrDefUrl)
+    graphml_attr_def_for_type(kGraphMLAttrDefUrl)
       ->ToValue(url_)
   });
 }
 
-}  // brave_page_graph
+}  // namespace brave_page_graph

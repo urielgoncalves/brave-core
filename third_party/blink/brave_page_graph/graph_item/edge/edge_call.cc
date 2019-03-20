@@ -31,15 +31,15 @@ EdgeCall::EdgeCall(const PageGraph* graph, const PageGraphId id,
 
 EdgeCall::~EdgeCall() {}
 
-string EdgeCall::ItemName() const {
+ItemName EdgeCall::GetItemName() const {
   return "EdgeCall#" + ::std::to_string(id_);
 }
 
-const vector<const string>& EdgeCall::Arguments() const {
+const vector<const string>& EdgeCall::GetArguments() const {
   return arguments_;
 }
 
-string EdgeCall::ArgumentsString() const {
+string EdgeCall::GetArgumentsString() const {
   stringstream builder;
   const size_t num_args = arguments_.size();
   const size_t last_index = num_args - 1;
@@ -53,20 +53,20 @@ string EdgeCall::ArgumentsString() const {
   return builder.str();
 }
 
-string EdgeCall::ToStringBody() const {
-  return ItemName() + " [method: " + method_
-                    + ", arguments:" + ArgumentsString() + "]";
+ItemDesc EdgeCall::GetDescBody() const {
+  return GetItemName() + " [method: " + method_
+                    + ", arguments:" + GetArgumentsString() + "]";
 }
 
-GraphMLXMLGroup EdgeCall::GraphMLAttributes() const {
-  GraphMLXMLGroup attrs;
-  attrs.push_back(graphml_attr_def_for_type(GraphMLAttrDefEdgeType)
+GraphMLXMLList EdgeCall::GraphMLAttributes() const {
+  GraphMLXMLList attrs;
+  attrs.push_back(graphml_attr_def_for_type(kGraphMLAttrDefEdgeType)
       ->ToValue("call"));
-  attrs.push_back(graphml_attr_def_for_type(GraphMLAttrDefMethodName)
+  attrs.push_back(graphml_attr_def_for_type(kGraphMLAttrDefMethodName)
       ->ToValue(method_));
-  attrs.push_back(graphml_attr_def_for_type(GraphMLAttrDefCallArgs)
-      ->ToValue(ArgumentsString()));
+  attrs.push_back(graphml_attr_def_for_type(kGraphMLAttrDefCallArgs)
+      ->ToValue(GetArgumentsString()));
   return attrs;
 }
 
-}  // brave_page_graph
+}  // namespace brave_page_graph

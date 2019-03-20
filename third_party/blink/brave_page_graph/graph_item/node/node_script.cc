@@ -11,7 +11,6 @@
 #include "brave/third_party/blink/brave_page_graph/page_graph.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
-using ::std::string;
 using ::std::to_string;
 
 namespace brave_page_graph {
@@ -24,7 +23,7 @@ NodeScript::NodeScript(const PageGraph* graph, const PageGraphId id,
 
 NodeScript::~NodeScript() {}
 
-string NodeScript::ItemName() const {
+ItemName NodeScript::GetItemName() const {
   return "NodeScript#" + to_string(id_);
 }
 
@@ -32,23 +31,19 @@ bool NodeScript::IsScript() const {
   return true;
 }
 
-string NodeScript::ScriptTypeString() const {
-  return script_type_to_string(type_);
-}
-
-GraphMLXMLGroup NodeScript::GraphMLAttributes() const {
-  return GraphMLXMLGroup({
-    graphml_attr_def_for_type(GraphMLAttrDefNodeType)
+GraphMLXMLList NodeScript::GraphMLAttributes() const {
+  return GraphMLXMLList({
+    graphml_attr_def_for_type(kGraphMLAttrDefNodeType)
       ->ToValue("script"),
-    graphml_attr_def_for_type(GraphMLAttrDefScriptType)
-      ->ToValue(ScriptTypeString())
+    graphml_attr_def_for_type(kGraphMLAttrDefScriptType)
+      ->ToValue(script_type_to_string(type_))
   });
 }
 
-string NodeScript::ToStringBody() const {
-  return ItemName() +
+ItemDesc NodeScript::GetDescBody() const {
+  return GetItemName() +
     " [ScriptId:" + to_string(script_id_) +
     ", Type:"  + script_type_to_string(type_) + "]"; 
 }
 
-}  // brave_page_graph
+}  // namespace brave_page_graph

@@ -7,51 +7,102 @@
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_TYPES_H_
 
 #include <string>
-#include "brave/third_party/blink/brave_page_graph/graphml.h"
-
-using ::std::string;
+#include <vector>
 
 namespace brave_page_graph {
 
+class Edge;
+class Node;
+class NodeHTML;
+
+typedef std::string RequestUrl;
+
+typedef std::vector<const Edge*> EdgeList;
+typedef std::vector<Node*> NodeList;
+typedef std::vector<NodeHTML*> HTMLNodeList;
+
+typedef std::string ItemDesc;
+typedef std::string ItemName;
+typedef std::string GraphMLXML;
+typedef std::string GraphMLId;
+typedef std::vector<const GraphMLXML> GraphMLXMLList;
+
 typedef enum {
-  RequestTypeAJAX = 0,
-  RequestTypeAudio,
-  RequestTypeCSS,
-  RequestTypeDocument,
-  RequestTypeFont,
-  RequestTypeImage,
-  RequestTypeScriptClassic,
-  RequestTypeScriptModule,
-  RequestTypeSVG,
-  RequestTypeVideo,
-  RequestTypeUnknown
+  kGraphMLAttrDefBeforeNodeId = 0,
+  kGraphMLAttrDefCallArgs,
+  kGraphMLAttrDefEdgeType,
+  kGraphMLAttrDefKey,
+  kGraphMLAttrDefMethodName,
+  kGraphMLAttrDefNodeId,
+  kGraphMLAttrDefNodeTag,
+  kGraphMLAttrDefNodeText,
+  kGraphMLAttrDefNodeType,
+  kGraphMLAttrDefParentNodeId,
+  kGraphMLAttrDefRequestType,
+  kGraphMLAttrDefScriptType,
+  kGraphMLAttrDefSuccess,
+  kGraphMLAttrDefUrl,
+  kGraphMLAttrDefValue,
+  kGraphMLAttrDefUnknown,
+} GraphMLAttrDef;
+
+typedef enum {
+  kGraphMLAttrTypeString = 0,
+  kGraphMLAttrTypeBoolean,
+  kGraphMLAttrTypeInt,
+  kGraphMLAttrTypeLong,
+  kGraphMLAttrTypeFloat,
+  kGraphMLAttrTypeDouble,
+  kGraphMLAttrTypeUnknown
+} GraphMLAttrType;
+std::string graphml_type_to_string(const GraphMLAttrType type) noexcept;
+
+typedef enum {
+  kGraphMLAttrForTypeNode = 0,
+  kGraphMLAttrForTypeEdge,
+  kGraphMLAttrForTypeUnknown
+} GraphMLAttrForType;
+std::string graphml_for_to_string(const GraphMLAttrForType type) noexcept;
+
+typedef enum {
+  kRequestTypeAJAX = 0,
+  kRequestTypeAudio,
+  kRequestTypeCSS,
+  kRequestTypeDocument,
+  kRequestTypeFont,
+  kRequestTypeImage,
+  kRequestTypeScriptClassic,
+  kRequestTypeScriptModule,
+  kRequestTypeSVG,
+  kRequestTypeVideo,
+  kRequestTypeUnknown
 } RequestType;
-string request_type_to_string(const RequestType type) noexcept;
+std::string request_type_to_string(const RequestType type) noexcept;
 
 typedef enum {
-  ResourceTypeAudio = 0,
-  ResourceTypeCSS,
-  ResourceTypeDocument,
-  ResourceTypeFont,
-  ResourceTypeImage,
-  ResourceTypeVideo,
-  ResourceTypeScript,
-  ResourceTypeSVG,
-  ResourceTypeUnknown
+  kResourceTypeAudio = 0,
+  kResourceTypeCSS,
+  kResourceTypeDocument,
+  kResourceTypeFont,
+  kResourceTypeImage,
+  kResourceTypeVideo,
+  kResourceTypeScript,
+  kResourceTypeSVG,
+  kResourceTypeUnknown
 } ResourceType;
-string request_type_to_string(const ResourceType type) noexcept;
+std::string request_type_to_string(const ResourceType type) noexcept;
 
 typedef enum {
-  ScriptTypeClassic = 0,
-  ScriptTypeModule,
-  ScriptTypeExtension,
-  ScriptTypeUnknown
+  kScriptTypeClassic = 0,
+  kScriptTypeModule,
+  kScriptTypeExtension,
+  kScriptTypeUnknown
 } ScriptType;
-string script_type_to_string(const ScriptType type) noexcept;
+std::string script_type_to_string(const ScriptType type) noexcept;
 
-typedef string MethodName;
-typedef unsigned long long DOMNodeId;
-typedef unsigned long long PageGraphId;
+typedef std::string MethodName;
+typedef uint64_t DOMNodeId;
+typedef uint64_t PageGraphId;
 typedef int ScriptId;
 
 }  // namespace brave_page_graph

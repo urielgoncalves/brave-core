@@ -23,15 +23,15 @@ EdgeStorage::EdgeStorage(const PageGraph* graph, const PageGraphId id,
       Edge(graph, id, out_node, in_node),
       key_(key) {}
 
-string EdgeStorage::ToStringBody() const {
-  return ItemName() + " [key:" + key_ + "]";
+ItemName EdgeStorage::GetDescBody() const {
+  return GetItemName() + " [key:" + key_ + "]";
 }
 
-GraphMLXMLGroup EdgeStorage::GraphMLAttributes() const {
+GraphMLXMLList EdgeStorage::GraphMLAttributes() const {
   return {
-    graphml_attr_def_for_type(GraphMLAttrDefKey)
+    graphml_attr_def_for_type(kGraphMLAttrDefKey)
       ->ToValue(key_)
   };
 }
 
-}  // brave_page_graph
+}  // namespace brave_page_graph

@@ -25,7 +25,7 @@ EdgeAttributeSet::EdgeAttributeSet(const PageGraph* graph, const PageGraphId id,
 
 EdgeAttributeSet::~EdgeAttributeSet() {}
 
-string EdgeAttributeSet::ItemName() const {
+ItemName EdgeAttributeSet::GetItemName() const {
   return "EdgeAttributeSet#" + ::std::to_string(id_);
 }
 
@@ -33,15 +33,15 @@ const string& EdgeAttributeSet::AttributeValue() const {
   return value_;
 }
 
-string EdgeAttributeSet::ToStringBody() const {
-  return ItemName() + " [" + AttributeName() + "=" + AttributeValue() + "]";
+ItemDesc EdgeAttributeSet::GetDescBody() const {
+  return GetItemName() + " [" + AttributeName() + "=" + AttributeValue() + "]";
 }
 
-GraphMLXMLGroup EdgeAttributeSet::GraphMLAttributes() const {
-  GraphMLXMLGroup attrs = EdgeAttribute::GraphMLAttributes();
-  attrs.push_back(graphml_attr_def_for_type(GraphMLAttrDefValue)
+GraphMLXMLList EdgeAttributeSet::GraphMLAttributes() const {
+  GraphMLXMLList attrs = EdgeAttribute::GraphMLAttributes();
+  attrs.push_back(graphml_attr_def_for_type(kGraphMLAttrDefValue)
       ->ToValue(AttributeValue()));
-  attrs.push_back(graphml_attr_def_for_type(GraphMLAttrDefEdgeType)
+  attrs.push_back(graphml_attr_def_for_type(kGraphMLAttrDefEdgeType)
       ->ToValue("attr set"));
   return attrs;
 }

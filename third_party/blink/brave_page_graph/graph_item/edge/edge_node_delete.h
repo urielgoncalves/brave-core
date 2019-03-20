@@ -6,12 +6,8 @@
 #ifndef BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_NODE_DELETE_H_
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_NODE_DELETE_H_
 
-#include <string>
-#include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_node.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
-
-using ::std::string;
 
 namespace brave_page_graph {
 
@@ -24,12 +20,12 @@ friend class PageGraph;
  public:
   EdgeNodeDelete() = delete;
   ~EdgeNodeDelete() override;
-  string ItemName() const override;
+  ItemName GetItemName() const override;
 
  protected:
   EdgeNodeDelete(const PageGraph* graph, const PageGraphId id,
     const NodeScript* const out_node, const NodeHTML* const in_node);
-  GraphMLXMLGroup GraphMLAttributes() const override;
+  GraphMLXMLList GraphMLAttributes() const override;
 };
 
 }  // namespace brave_page_graph

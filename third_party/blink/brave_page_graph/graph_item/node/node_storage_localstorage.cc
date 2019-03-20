@@ -10,7 +10,6 @@
 #include "brave/third_party/blink/brave_page_graph/page_graph.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
-using ::std::string;
 using ::std::to_string;
 
 namespace brave_page_graph {
@@ -21,15 +20,15 @@ NodeStorageLocalStorage::NodeStorageLocalStorage(const PageGraph* graph,
 
 NodeStorageLocalStorage::~NodeStorageLocalStorage() {}
 
-string NodeStorageLocalStorage::ItemName() const {
+ItemName NodeStorageLocalStorage::GetItemName() const {
   return "NodeStorageLocalStorage#" + to_string(id_);
 }
 
-GraphMLXMLGroup NodeStorageLocalStorage::GraphMLAttributes() const {
+GraphMLXMLList NodeStorageLocalStorage::GraphMLAttributes() const {
   return {
-    graphml_attr_def_for_type(GraphMLAttrDefNodeType)
+    graphml_attr_def_for_type(kGraphMLAttrDefNodeType)
       ->ToValue("local storage")
   };
 }
 
-}  // brave_page_graph
+}  // namespace brave_page_graph
