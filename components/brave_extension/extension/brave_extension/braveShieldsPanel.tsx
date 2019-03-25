@@ -8,6 +8,7 @@ import * as ReactDOM from 'react-dom'
 import shieldsDarkTheme from 'brave-ui/theme/shields-dark'
 import shieldsLightTheme from 'brave-ui/theme/shields-light'
 import { ThemeProvider } from 'brave-ui/theme'
+import IBraveTheme from 'brave-ui/theme/theme-interface'
 
 import { Provider } from 'react-redux'
 import { Store } from 'react-chrome-redux'
@@ -19,19 +20,57 @@ const store: any = new Store({
   portName: 'BRAVE'
 })
 
+type BraveCoreThemeProviderProps = {
+  initialThemeType?: chrome.braveTheme.ThemeType
+  dark: IBraveTheme,
+  light: IBraveTheme
+}
+type BraveCoreThemeProviderState = {
+  braveCoreTheme?: chrome.braveTheme.ThemeType
+}
+
+class BraveCoreThemeProvider extends React.Component<BraveCoreThemeProviderProps, BraveCoreThemeProviderState> {
+  componentWillMount () {
+    if (this.props.initialThemeType) {
+      this.setThemeState(this.props.initialThemeType)
+    }
+    chrome.braveTheme.onBraveThemeTypeChanged.addListener(this.setThemeState)
+  }
+
+  setThemeState = (braveCoreTheme: chrome.braveTheme.ThemeType) => {
+    this.setState({ braveCoreTheme })
+  }
+
+  render () {
+    // Don't render until we have a theme
+    if (!this.state.braveCoreTheme) return null
+    // Render provided dark or light theme
+    const selectedShieldsTheme = this.state.braveCoreTheme === 'Dark'
+                                  ? this.props.dark
+                                  : this.props.light
+    return (
+      <ThemeProvider theme={selectedShieldsTheme}>
+        {React.Children.only(this.props.children)}
+      </ThemeProvider>
+    )
+  }
+}
+
 Promise.all([
   store.ready(),
   new Promise(resolve => chrome.braveTheme.getBraveThemeType(resolve))
 ])
-.then(([ , braveTheme ]) => {
+.then(([ , braveTheme ]: [ undefined, chrome.braveTheme.ThemeType ]) => {
   const mountNode: HTMLElement | null = document.querySelector('#root')
-  // For an extension panel, we only need to infer theme at init
-  const selectedShieldsTheme = braveTheme === 'Dark' ? shieldsDarkTheme : shieldsLightTheme
   ReactDOM.render(
     <Provider store={store}>
-      <ThemeProvider theme={selectedShieldsTheme}>
+      <BraveCoreThemeProvider
+        initialThemeType={braveTheme}
+        dark={shieldsDarkTheme}
+        light={shieldsLightTheme}
+      >
         <BraveShields />
-      </ThemeProvider>
+      </BraveCoreThemeProvider>
     </Provider>,
     mountNode
   )
