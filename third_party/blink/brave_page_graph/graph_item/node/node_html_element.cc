@@ -28,9 +28,9 @@ using ::std::to_string;
 
 namespace brave_page_graph {
 
-NodeHTMLElement::NodeHTMLElement(const PageGraph* graph, const PageGraphId id,
+NodeHTMLElement::NodeHTMLElement(PageGraph* const graph,
     const DOMNodeId node_id, const string& tag_name) :
-      NodeHTML(graph, id, node_id),
+      NodeHTML(graph, node_id),
       tag_name_(tag_name) {}
 
 NodeHTMLElement::~NodeHTMLElement() {}
@@ -46,7 +46,7 @@ const string& NodeHTMLElement::TagName() const {
 // Special case for when something (script) is removing an HTML element
 // from the DOM.  Update the parallel HTML graph by removing the pointer
 // to the parent element.
-void NodeHTMLElement::AddInEdge(const EdgeNodeRemove* edge) {
+void NodeHTMLElement::AddInEdge(const EdgeNodeRemove* const edge) {
   if (parent_node_ != nullptr) {
     parent_node_->RemoveChildNode(this);
   }
@@ -54,7 +54,7 @@ void NodeHTMLElement::AddInEdge(const EdgeNodeRemove* edge) {
   Node::AddInEdge(edge);
 }
 
-void NodeHTMLElement::AddInEdge(const EdgeNodeInsert* edge) {
+void NodeHTMLElement::AddInEdge(const EdgeNodeInsert* const edge) {
   parent_node_ = edge->GetParentNode();
   // Parent node will be nullptr if this is the root of a document, or a
   // subtree.
@@ -70,13 +70,23 @@ void NodeHTMLElement::AddInEdge(const EdgeNodeDelete* const edge) {
   Node::AddInEdge(edge);
 }
 
-void NodeHTMLElement::AddInEdge(const EdgeAttributeDelete* const edge) {
-  current_attributes_.erase(edge->AttributeName());
+void NodeHTMLElement::AddInEdge(const EdgeAttributeSet* const edge) {
+  if (edge->GetIsStyle()) {
+    current_inline_styles_.emplace(edge->GetAttributeName(),
+      edge->AttributeValue());
+  } else {
+    current_attributes_.emplace(edge->GetAttributeName(),
+      edge->AttributeValue());
+  }
   Node::AddInEdge(edge);
 }
 
-void NodeHTMLElement::AddInEdge(const EdgeAttributeSet* const edge) {
-  current_attributes_.emplace(edge->AttributeName(), edge->AttributeValue());
+void NodeHTMLElement::AddInEdge(const EdgeAttributeDelete* const edge) {
+  if (edge->GetIsStyle()) {
+    current_inline_styles_.erase(edge->GetAttributeName());
+  } else {
+    current_attributes_.erase(edge->GetAttributeName());
+  }
   Node::AddInEdge(edge);
 }
 
@@ -88,14 +98,14 @@ GraphMLXML NodeHTMLElement::GetGraphMLTag() const {
   stringstream builder;
   builder << Node::GetGraphMLTag();
 
-  for (const NodeHTML* child_node : child_nodes_) {
+  for (const NodeHTML* const child_node : child_nodes_) {
     EdgeHTML html_edge(this, child_node);
     builder << html_edge.GetGraphMLTag();
   }
   return builder.str();
 }
 
-string NodeHTMLElement::GetDescBody() const {
+ItemDesc NodeHTMLElement::GetDescBody() const {
   stringstream string_builder;
   string_builder << GetItemName();
   string_builder << " [DOMNodeId:";
@@ -104,6 +114,16 @@ string NodeHTMLElement::GetDescBody() const {
   string_builder << tag_name_;
   string_builder << ", attributes=";
   for (const auto& attr : current_attributes_) {
+    string key = attr.first;
+    string value = attr.second;
+    string_builder << "{";
+    string_builder << key;
+    string_builder << "='";
+    string_builder << value;
+    string_builder << "'} ";
+  }
+  string_builder << ", style=";
+  for (const auto& attr : current_inline_styles_) {
     string key = attr.first;
     string value = attr.second;
     string_builder << "{";
@@ -124,8 +144,8 @@ void NodeHTMLElement::MarkNodeDeleted() {
   }
 }
 
-void NodeHTMLElement::PlaceChildNodeAfterSiblingNode(NodeHTML* child,
-    NodeHTML* sibling) {
+void NodeHTMLElement::PlaceChildNodeAfterSiblingNode(NodeHTML* const child,
+    NodeHTML* const sibling) {
   // If this node has no current children, then this is easy, just add
   // the provided child as the only child.
   if (child_nodes_.size() == 0) {

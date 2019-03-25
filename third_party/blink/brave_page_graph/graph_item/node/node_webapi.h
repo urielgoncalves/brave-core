@@ -22,8 +22,7 @@ friend class PageGraph;
   const MethodName& GetMethod() const;
 
  protected:
-  NodeWebAPI(const PageGraph* graph, const PageGraphId id,
-    const MethodName method);
+  NodeWebAPI(PageGraph* const graph, const MethodName method);
   ItemDesc GetDescBody() const override;
 
   const MethodName method_name_;

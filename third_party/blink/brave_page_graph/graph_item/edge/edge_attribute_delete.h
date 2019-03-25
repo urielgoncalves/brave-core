@@ -15,7 +15,7 @@ namespace brave_page_graph {
 
 class Node;
 class NodeHTMLElement;
-class NodeScript;
+class NodeActor;
 class PageGraph;
 
 class EdgeAttributeDelete final : public EdgeAttribute {
@@ -26,9 +26,9 @@ friend class PageGraph;
   ItemName GetItemName() const override;
 
  protected:
-  EdgeAttributeDelete(const PageGraph* graph, const PageGraphId id,
-    const NodeScript* const out_node, const NodeHTMLElement* const in_node,
-    const std::string& name);
+  EdgeAttributeDelete(PageGraph* const graph, const NodeActor* const out_node,
+    const NodeHTMLElement* const in_node, const std::string& name,
+    const bool is_style = false);
   ItemDesc GetDescBody() const override;
   GraphMLXMLList GraphMLAttributes() const override;
 };

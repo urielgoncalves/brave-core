@@ -17,10 +17,10 @@ using ::std::string;
 
 namespace brave_page_graph {
 
-EdgeStorageDelete::EdgeStorageDelete(const PageGraph* graph,
-    const PageGraphId id, const NodeActor* const out_node,
-    const NodeStorage* const in_node, const string& key) :
-      EdgeStorage(graph, id, out_node, in_node, key) {}
+EdgeStorageDelete::EdgeStorageDelete(PageGraph* const graph,
+    const NodeActor* const out_node, const NodeStorage* const in_node,
+    const string& key) :
+      EdgeStorage(graph, out_node, in_node, key) {}
 
 EdgeStorageDelete::~EdgeStorageDelete() {}
 

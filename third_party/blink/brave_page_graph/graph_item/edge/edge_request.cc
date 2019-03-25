@@ -15,10 +15,9 @@ using ::std::string;
 
 namespace brave_page_graph {
 
-EdgeRequest::EdgeRequest(const PageGraph* graph, const PageGraphId id,
-    const Node* const out_node, const Node* const in_node, const string& url,
-    const RequestType type) :
-      Edge(graph, id, out_node, in_node),
+EdgeRequest::EdgeRequest(PageGraph* const graph, const Node* const out_node,
+    const Node* const in_node, const string& url, const RequestType type) :
+      Edge(graph, out_node, in_node),
       url_(url),
       type_(type) {}
 

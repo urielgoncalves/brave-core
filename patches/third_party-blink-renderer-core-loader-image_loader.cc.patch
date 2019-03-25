@@ -1,0 +1,33 @@
+diff --git a/third_party/blink/renderer/core/loader/image_loader.cc b/third_party/blink/renderer/core/loader/image_loader.cc
+index 81a68656eeff73515430ea71d9a3a25361897eeb..28f49fce4130aa899baa536c1f7eced7a38e9366 100644
+--- a/third_party/blink/renderer/core/loader/image_loader.cc
++++ b/third_party/blink/renderer/core/loader/image_loader.cc
+@@ -65,6 +65,14 @@
+ #include "third_party/blink/renderer/platform/weborigin/security_origin.h"
+ #include "third_party/blink/renderer/platform/weborigin/security_policy.h"
+ 
++#include "brave/third_party/blink/brave_page_graph/buildflags/buildflags.h"
++#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++#include "third_party/blink/renderer/core/dom/document.h"
++#include "third_party/blink/renderer/core/dom/dom_node_ids.h"
++#include "brave/third_party/blink/brave_page_graph/page_graph.h"
++#endif
++
++
+ namespace blink {
+ 
+ namespace {
+@@ -413,6 +421,13 @@ inline void ImageLoader::EnqueueImageLoadingMicroTask(
+   pending_task_ = task->GetWeakPtr();
+   Microtask::EnqueueMicrotask(
+       WTF::Bind(&Task::Run, WTF::Passed(std::move(task))));
++#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  if (element_->GetDocument().GetPageGraph() != nullptr) {
++    element_->GetDocument().GetPageGraph()->RegisterRequestStartFromElm(
++      DOMNodeIds::IdForNode(element_), request_url.GetString().Utf8().data(),
++      brave_page_graph::kRequestTypeImage);
++  }
++#endif
+   delay_until_do_update_from_element_ =
+       IncrementLoadEventDelayCount::Create(element_->GetDocument());
+ }

@@ -28,9 +28,9 @@ friend class PageGraph;
   std::string GetArgumentsString() const;
 
  protected:
-  EdgeCall(const PageGraph* graph, const PageGraphId id,
-    const NodeScript* const out_node, const NodeWebAPI* const in_node,
-    const std::string& method, const std::vector<const std::string>& arguments);
+  EdgeCall(PageGraph* const graph, const NodeScript* const out_node,
+    const NodeWebAPI* const in_node, const std::string& method,
+    const std::vector<const std::string>& arguments);
   ItemDesc GetDescBody() const override;
   GraphMLXMLList GraphMLAttributes() const override;
 

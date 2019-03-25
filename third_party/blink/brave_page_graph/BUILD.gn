@@ -71,10 +71,12 @@ source_set("brave_page_graph") {
       "graph_item/edge/edge_storage.h",
       "graph_item.cc",
       "graph_item.h",
-      "types.cc",
-      "types.h",
       "page_graph.cc",
       "page_graph.h",
+      "types.cc",
+      "types.h",
+      "requests/in_air_request.cc",
+      "requests/in_air_request.h",
     ]
 
     # deps = [

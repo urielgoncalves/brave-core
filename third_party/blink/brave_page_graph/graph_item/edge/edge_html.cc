@@ -15,20 +15,19 @@
 #include "brave/third_party/blink/brave_page_graph/page_graph.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
-using ::std::endl;
 using ::std::string;
 using ::std::stringstream;
 using ::std::to_string;
 
 namespace brave_page_graph {
 
-EdgeHTML::EdgeHTML(const PageGraph* graph, const PageGraphId id,
+EdgeHTML::EdgeHTML(PageGraph* const graph,
     const NodeHTMLElement* const out_node, const NodeHTML* const in_node) :
-      Edge(graph, id, out_node, in_node) {}
+      Edge(graph, out_node, in_node) {}
 
 EdgeHTML::EdgeHTML(const NodeHTMLElement* const out_node,
     const NodeHTML* const in_node) :
-      Edge(nullptr, 0, out_node, in_node) {}
+      Edge(nullptr, out_node, in_node) {}
 
 EdgeHTML::~EdgeHTML() {}
 
@@ -52,12 +51,12 @@ GraphMLXML EdgeHTML::GetGraphMLTag() const {
   stringstream builder;
   builder << "<edge id=\"t" + graphml_id << "\" " <<
                       "source=\"" << out_node_->GetGraphMLId() << "\" " <<
-                      "target=\"" << in_node_->GetGraphMLId() << "\">" << endl;
+                      "target=\"" << in_node_->GetGraphMLId() << "\">";
 
   for (const GraphMLXML& elm : GraphMLAttributes()) {
-    builder << "\t" << elm << endl;
+    builder << "\t" << elm;
   }
-  builder << "</edge>" << endl;
+  builder << "</edge>";
   return builder.str();
 }
 

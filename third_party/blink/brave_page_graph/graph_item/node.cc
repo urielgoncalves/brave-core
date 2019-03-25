@@ -19,8 +19,8 @@ using ::std::vector;
 
 namespace brave_page_graph {
 
-Node::Node(const PageGraph* graph, const PageGraphId id) :
-      GraphItem(graph, id) {}
+Node::Node(PageGraph* const graph) :
+      GraphItem(graph) {}
 
 Node::~Node() {}
 

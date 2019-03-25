@@ -19,7 +19,7 @@ friend class PageGraph;
   NodeStorage() = delete;
 
  protected:
-  NodeStorage(const PageGraph* graph, const PageGraphId id);
+  NodeStorage(PageGraph* const graph);
 };
 
 }  // namespace brave_page_graph

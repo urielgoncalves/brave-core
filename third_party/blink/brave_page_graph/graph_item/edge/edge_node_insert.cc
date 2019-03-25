@@ -19,10 +19,10 @@ using ::std::to_string;
 
 namespace brave_page_graph {
 
-EdgeNodeInsert::EdgeNodeInsert(const PageGraph* graph, const PageGraphId id,
+EdgeNodeInsert::EdgeNodeInsert(PageGraph* const graph,
     const NodeActor* const out_node, const NodeHTML* const in_node,
     const DOMNodeId parent_id, const DOMNodeId prior_sibling_id) :
-      EdgeNode(graph, id, out_node, in_node),
+      EdgeNode(graph, out_node, in_node),
       parent_id_(parent_id),
       prior_sibling_id_(prior_sibling_id) {}
 

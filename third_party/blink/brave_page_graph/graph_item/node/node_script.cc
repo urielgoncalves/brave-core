@@ -15,9 +15,9 @@ using ::std::to_string;
 
 namespace brave_page_graph {
 
-NodeScript::NodeScript(const PageGraph* graph, const PageGraphId id,
-    const ScriptId script_id, const ScriptType type) :
-      NodeActor(graph, id),
+NodeScript::NodeScript(PageGraph* const graph, const ScriptId script_id,
+    const ScriptType type) :
+      NodeActor(graph),
       script_id_(script_id),
       type_(type) {}
 

@@ -18,10 +18,10 @@ using ::std::to_string;
 
 namespace brave_page_graph {
 
-EdgeAttributeDelete::EdgeAttributeDelete(const PageGraph* graph,
-    const PageGraphId id, const NodeScript* const out_node,
-    const NodeHTMLElement* const in_node, const string& name) :
-      EdgeAttribute(graph, id, out_node, in_node, name) {}
+EdgeAttributeDelete::EdgeAttributeDelete(PageGraph* const graph,
+    const NodeActor* const out_node, const NodeHTMLElement* const in_node,
+    const string& name, const bool is_style) :
+      EdgeAttribute(graph, out_node, in_node, name, is_style) {}
 
 EdgeAttributeDelete::~EdgeAttributeDelete() {}
 
@@ -30,7 +30,7 @@ ItemName EdgeAttributeDelete::GetItemName() const {
 }
 
 ItemDesc EdgeAttributeDelete::GetDescBody() const {
-  return GetItemName() + " [" + AttributeName() + "]";
+  return GetItemName() + " [" + GetAttributeName() + "]";
 }
 
 GraphMLXMLList EdgeAttributeDelete::GraphMLAttributes() const {

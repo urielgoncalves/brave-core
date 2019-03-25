@@ -30,13 +30,13 @@ friend class PageGraph;
   const std::string& Text() const;
 
   using Node::AddInEdge;
-  void AddInEdge(const EdgeNodeRemove* edge);
-  void AddInEdge(const EdgeNodeInsert* edge);
-  void AddInEdge(const EdgeNodeDelete* edge);
+  void AddInEdge(const EdgeNodeRemove* const edge);
+  void AddInEdge(const EdgeNodeInsert* const edge);
+  void AddInEdge(const EdgeNodeDelete* const edge);
 
  protected:
-  NodeHTMLText(const PageGraph* graph, const PageGraphId id,
-    const DOMNodeId node_id,  const std::string& text);
+  NodeHTMLText(PageGraph* const graph, const DOMNodeId node_id,
+    const std::string& text);
   ItemDesc GetDescBody() const override;
   GraphMLXMLList GraphMLAttributes() const override;
 

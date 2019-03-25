@@ -18,10 +18,10 @@ using ::std::to_string;
 
 namespace brave_page_graph {
 
-EdgeStorageSet::EdgeStorageSet(const PageGraph* graph, const PageGraphId id,
+EdgeStorageSet::EdgeStorageSet(PageGraph* const graph,
     const NodeActor* const out_node, const NodeStorage* const in_node,
     const string& key, const string& value) :
-      EdgeStorage(graph, id, out_node, in_node, key),
+      EdgeStorage(graph, out_node, in_node, key),
       value_(value) {}
 
 EdgeStorageSet::~EdgeStorageSet() {}

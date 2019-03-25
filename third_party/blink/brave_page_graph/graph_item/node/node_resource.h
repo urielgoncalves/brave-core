@@ -23,8 +23,8 @@ friend class PageGraph;
   bool IsSuccessful() const;
 
  protected:
-  NodeResource(const PageGraph* graph, const PageGraphId id,
-    const ResourceType type, const bool is_successful);
+  NodeResource(PageGraph* const graph, const ResourceType type,
+    const bool is_successful);
   ItemDesc GetDescBody() const override;
   GraphMLXMLList GraphMLAttributes() const override;
 

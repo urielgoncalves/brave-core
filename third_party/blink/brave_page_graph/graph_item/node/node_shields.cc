@@ -14,8 +14,8 @@ using ::std::to_string;
 
 namespace brave_page_graph {
 
-NodeShields::NodeShields(const PageGraph* graph, const PageGraphId id) :
-      Node(graph, id) {}
+NodeShields::NodeShields(PageGraph* const graph) :
+      Node(graph) {}
 
 NodeShields::~NodeShields() {}
 

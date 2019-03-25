@@ -17,9 +17,9 @@ using ::std::to_string;
 
 namespace brave_page_graph {
 
-Edge::Edge(const PageGraph* graph, const PageGraphId id,
+Edge::Edge(PageGraph* const graph,
     const Node* const out_node, const Node* const in_node) :
-      GraphItem(graph, id),
+      GraphItem(graph),
       out_node_(out_node),
       in_node_(in_node) {}
 

@@ -24,13 +24,13 @@ class GraphItem {
   virtual GraphMLXML GetGraphMLTag() const = 0;
 
  protected:
-  GraphItem(const PageGraph* graph, const PageGraphId id);
+  GraphItem(PageGraph* const graph);
   virtual ItemDesc GetDescBody() const;
   virtual ItemDesc GetDescPrefix() const = 0;
   virtual ItemDesc GetDescSuffix() const = 0;
   virtual GraphMLXMLList GraphMLAttributes() const;
 
-  const PageGraph* graph_;
+  PageGraph* const graph_;
   const PageGraphId id_; 
 };
 

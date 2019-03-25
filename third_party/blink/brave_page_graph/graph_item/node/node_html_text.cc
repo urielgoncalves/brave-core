@@ -21,9 +21,9 @@ using ::std::to_string;
 
 namespace brave_page_graph {
 
-NodeHTMLText::NodeHTMLText(const PageGraph* graph, const PageGraphId id,
+NodeHTMLText::NodeHTMLText(PageGraph* const graph,
     const DOMNodeId node_id,  const string& text) :
-      NodeHTML(graph, id, node_id),
+      NodeHTML(graph, node_id),
       text_(text) {}
 
 NodeHTMLText::~NodeHTMLText() {}
@@ -49,20 +49,20 @@ ItemDesc NodeHTMLText::GetDescBody() const {
   return "(text)" + text_;
 }
 
-void NodeHTMLText::AddInEdge(const EdgeNodeRemove* edge) {
+void NodeHTMLText::AddInEdge(const EdgeNodeRemove* const edge) {
   parent_node_->RemoveChildNode(this);
   parent_node_ = nullptr;
   Node::AddInEdge(edge);
 }
 
-void NodeHTMLText::AddInEdge(const EdgeNodeInsert* edge) {
+void NodeHTMLText::AddInEdge(const EdgeNodeInsert* const edge) {
   parent_node_ = edge->GetParentNode();
   parent_node_->PlaceChildNodeAfterSiblingNode(this,
     edge->GetPriorSiblingNode());
   Node::AddInEdge(edge);
 }
 
-void NodeHTMLText::AddInEdge(const EdgeNodeDelete* edge) {
+void NodeHTMLText::AddInEdge(const EdgeNodeDelete* const edge) {
   MarkNodeDeleted();
   Node::AddInEdge(edge);
 }

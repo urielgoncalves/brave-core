@@ -23,7 +23,7 @@ friend class PageGraph;
   GraphMLXML GetGraphMLTag() const override;
 
  protected:
-  Edge(const PageGraph* graph, const PageGraphId id, const Node* const out_node,
+  Edge(PageGraph* const graph, const Node* const out_node,
     const Node* const in_node);
   ItemDesc GetDescPrefix() const override;
   ItemDesc GetDescSuffix() const override;

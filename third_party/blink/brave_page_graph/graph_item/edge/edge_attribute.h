@@ -20,14 +20,16 @@ class EdgeAttribute : public Edge {
 friend class PageGraph;
  public:
   EdgeAttribute() = delete;
-  const std::string& AttributeName() const;
+  const std::string& GetAttributeName() const;
+  bool GetIsStyle() const;
 
  protected:
-  EdgeAttribute(const PageGraph* graph, const PageGraphId id,
-    const NodeActor* const out_node, const Node* const in_node,
-    const std::string& name);
+  EdgeAttribute(PageGraph* const graph, const NodeActor* const out_node,
+    const Node* const in_node, const std::string& name,
+    const bool is_style = false);
   GraphMLXMLList GraphMLAttributes() const override;
 
+  const bool is_style_;
   const std::string name_;
 };
 

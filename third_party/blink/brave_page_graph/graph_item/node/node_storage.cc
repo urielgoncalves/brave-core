@@ -10,7 +10,7 @@
 
 namespace brave_page_graph {
 
-NodeStorage::NodeStorage(const PageGraph* graph, const PageGraphId id) :
-      Node(graph, id) {}
+NodeStorage::NodeStorage(PageGraph* const graph) :
+      Node(graph) {}
 
 }  // namespace brave_page_graph

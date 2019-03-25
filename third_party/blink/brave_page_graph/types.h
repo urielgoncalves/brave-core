@@ -6,11 +6,13 @@
 #ifndef BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_TYPES_H_
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_TYPES_H_
 
+#include <map>
 #include <string>
 #include <vector>
 
 namespace brave_page_graph {
 
+class Element;
 class Edge;
 class Node;
 class NodeHTML;
@@ -20,6 +22,7 @@ typedef std::string RequestUrl;
 typedef std::vector<const Edge*> EdgeList;
 typedef std::vector<Node*> NodeList;
 typedef std::vector<NodeHTML*> HTMLNodeList;
+typedef std::map<const std::string, const std::string> AttributeMap;
 
 typedef std::string ItemDesc;
 typedef std::string ItemName;
@@ -31,6 +34,7 @@ typedef enum {
   kGraphMLAttrDefBeforeNodeId = 0,
   kGraphMLAttrDefCallArgs,
   kGraphMLAttrDefEdgeType,
+  kGraphMLAttrDefIsStyle,
   kGraphMLAttrDefKey,
   kGraphMLAttrDefMethodName,
   kGraphMLAttrDefNodeId,
@@ -100,10 +104,24 @@ typedef enum {
 } ScriptType;
 std::string script_type_to_string(const ScriptType type) noexcept;
 
-typedef std::string MethodName;
+enum NodeType {
+  kElementNode = 1,
+  kAttributeNode = 2,
+  kTextNode = 3,
+  kCdataSectionNode = 4,
+  kProcessingInstructionNode = 7,
+  kCommentNode = 8,
+  kDocumentNode = 9,
+  kDocumentTypeNode = 10,
+  kDocumentFragmentNode = 11,
+};
+
+typedef unsigned SourceCodeHash;
+typedef unsigned UrlHash;
+typedef uint64_t ScriptId;
 typedef uint64_t DOMNodeId;
 typedef uint64_t PageGraphId;
-typedef int ScriptId;
+typedef std::string MethodName;
 
 }  // namespace brave_page_graph
 

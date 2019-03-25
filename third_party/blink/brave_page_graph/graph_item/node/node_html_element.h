@@ -6,7 +6,6 @@
 #ifndef BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_NODE_HTML_ELEMENT_H_
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_NODE_HTML_ELEMENT_H_
 
-#include <map>
 #include <string>
 #include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_html.h"
@@ -33,27 +32,28 @@ friend class NodeHTML;
   const std::string& TagName() const;
 
   using Node::AddInEdge;
-  void AddInEdge(const EdgeNodeRemove* edge);
-  void AddInEdge(const EdgeNodeInsert* edge);
-  void AddInEdge(const EdgeNodeDelete* edge);
-  void AddInEdge(const EdgeAttributeDelete* edge);
-  void AddInEdge(const EdgeAttributeSet* edge);
+  void AddInEdge(const EdgeNodeRemove* const edge);
+  void AddInEdge(const EdgeNodeInsert* const edge);
+  void AddInEdge(const EdgeNodeDelete* const edge);
+  void AddInEdge(const EdgeAttributeSet* const edge);
+  void AddInEdge(const EdgeAttributeDelete* const edge);
   
   const HTMLNodeList& ChildNodes() const;
   GraphMLXML GetGraphMLTag() const override;
 
  protected:
-  NodeHTMLElement(const PageGraph* graph, const PageGraphId id,
-    const DOMNodeId node_id,  const std::string& tag_name);
+  NodeHTMLElement(PageGraph* const graph, const DOMNodeId node_id,
+    const std::string& tag_name);
   ItemDesc GetDescBody() const override;
   void MarkNodeDeleted() override;
-  void PlaceChildNodeAfterSiblingNode(NodeHTML* child,
-    NodeHTML* sibling);
-  void RemoveChildNode(NodeHTML* child);
+  void PlaceChildNodeAfterSiblingNode(NodeHTML* const child,
+    NodeHTML* const sibling);
+  void RemoveChildNode(NodeHTML* const child);
   GraphMLXMLList GraphMLAttributes() const override;
 
   const std::string tag_name_;
-  std::map<const std::string, const std::string> current_attributes_;
+  AttributeMap current_attributes_;
+  AttributeMap current_inline_styles_;
   HTMLNodeList child_nodes_;
 };
 

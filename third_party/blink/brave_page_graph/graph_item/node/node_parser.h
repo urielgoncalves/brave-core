@@ -23,7 +23,7 @@ friend class PageGraph;
   bool IsParser() const override;
 
  protected:
-  NodeParser(const PageGraph*, const PageGraphId id);
+  NodeParser(PageGraph* const graph);
   GraphMLXMLList GraphMLAttributes() const override;
 };
 

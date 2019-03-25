@@ -22,8 +22,8 @@ friend class PageGraph;
   EdgeNode() = delete;
 
  protected:
-  EdgeNode(const PageGraph* graph, const PageGraphId id,
-    const NodeActor* const out_node, const NodeHTML* const in_node);
+  EdgeNode(PageGraph* const graph, const NodeActor* const out_node,
+    const NodeHTML* const in_node);
 };
 
 }  // namespace brave_page_graph

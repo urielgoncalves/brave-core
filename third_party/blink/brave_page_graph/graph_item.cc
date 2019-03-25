@@ -10,9 +10,9 @@
 
 namespace brave_page_graph {
 
-GraphItem::GraphItem(const PageGraph* graph, const PageGraphId id) :
+GraphItem::GraphItem(PageGraph* const graph) :
     graph_(graph),
-    id_(id) {}
+    id_(graph ? ++(graph->id_counter_) : 0) {}
 
 GraphItem::~GraphItem() {}
 

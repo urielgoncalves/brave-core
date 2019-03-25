@@ -24,8 +24,8 @@ friend class PageGraph;
   ItemName GetItemName() const override;
 
  protected:
-  EdgeNodeRemove(const PageGraph* graph, const PageGraphId id,
-    const NodeScript* const out_node, const NodeHTML* const in_node);
+  EdgeNodeRemove(PageGraph* const graph, const NodeScript* const out_node,
+    const NodeHTML* const in_node);
   GraphMLXMLList GraphMLAttributes() const override;
 };
 

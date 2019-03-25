@@ -15,9 +15,8 @@ using ::std::to_string;
 
 namespace brave_page_graph {
 
-NodeHTML::NodeHTML(const PageGraph* graph, const PageGraphId id,
-    const DOMNodeId node_id) :
-      Node(graph, id),
+NodeHTML::NodeHTML(PageGraph* const graph, const DOMNodeId node_id) :
+      Node(graph),
       node_id_(node_id),
       is_deleted_(false),
       parent_node_(nullptr) {}

@@ -13,9 +13,8 @@ using ::std::to_string;
 
 namespace brave_page_graph {
 
-NodeWebAPI::NodeWebAPI(const PageGraph* graph, const PageGraphId id,
-    const MethodName method) :
-      Node(graph, id),
+NodeWebAPI::NodeWebAPI(PageGraph* const graph, const MethodName method) :
+      Node(graph),
       method_name_(method) {}
 
 NodeWebAPI::~NodeWebAPI() {}

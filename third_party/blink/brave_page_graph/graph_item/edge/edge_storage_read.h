@@ -26,9 +26,8 @@ friend class PageGraph;
   ItemName GetItemName() const override;
 
  protected:
-  EdgeStorageRead(const PageGraph* graph, const PageGraphId id,
-    const NodeActor* const out_node, const NodeStorage* const in_node,
-    const std::string& key);
+  EdgeStorageRead(PageGraph* const graph, const NodeActor* const out_node,
+    const NodeStorage* const in_node, const std::string& key);
   GraphMLXMLList GraphMLAttributes() const override;
 };
 

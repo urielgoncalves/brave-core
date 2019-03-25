@@ -25,8 +25,8 @@ friend class PageGraph;
   ItemName GetItemName() const override;
 
  protected:
-  EdgeHTML(const PageGraph* graph, const PageGraphId id,
-    const NodeHTMLElement* const out_node, const NodeHTML* const in_node);
+  EdgeHTML(PageGraph* const graph, const NodeHTMLElement* const out_node,
+    const NodeHTML* const in_node);
 
   // Only used for generating edges during GraphML export.
   EdgeHTML(const NodeHTMLElement* const out_node,

@@ -17,10 +17,10 @@ using ::std::string;
 
 namespace brave_page_graph {
 
-EdgeAttributeSet::EdgeAttributeSet(const PageGraph* graph, const PageGraphId id,
+EdgeAttributeSet::EdgeAttributeSet(PageGraph* const graph,
     const NodeActor* const out_node, const NodeHTMLElement* const in_node,
-    const string& name, const string& value) :
-      EdgeAttribute(graph, id, out_node, in_node, name),
+    const string& name, const string& value, const bool is_style) :
+      EdgeAttribute(graph, out_node, in_node, name, is_style),
       value_(value) {}
 
 EdgeAttributeSet::~EdgeAttributeSet() {}
@@ -34,7 +34,7 @@ const string& EdgeAttributeSet::AttributeValue() const {
 }
 
 ItemDesc EdgeAttributeSet::GetDescBody() const {
-  return GetItemName() + " [" + AttributeName() + "=" + AttributeValue() + "]";
+  return GetItemName() + " [" + GetAttributeName() + "=" + AttributeValue() + "]";
 }
 
 GraphMLXMLList EdgeAttributeSet::GraphMLAttributes() const {

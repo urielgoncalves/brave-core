@@ -23,8 +23,8 @@ friend class PageGraph;
   ItemName GetItemName() const override;
 
  protected:
-  EdgeNodeCreate(const PageGraph* graph, const PageGraphId id,
-    const NodeActor* const out_node, const NodeHTML* const in_node);
+  EdgeNodeCreate(PageGraph* const graph, const NodeActor* const out_node,
+    const NodeHTML* const in_node);
   GraphMLXMLList GraphMLAttributes() const override;
 };
 

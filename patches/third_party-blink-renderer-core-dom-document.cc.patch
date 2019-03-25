@@ -1,5 +1,5 @@
 diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink/renderer/core/dom/document.cc
-index e5d02bd5288267372a37bb4924d144abcf9a312c..d8ef07be91dbdb79ae09ba03aee091bde4360709 100644
+index e5d02bd5288267372a37bb4924d144abcf9a312c..5b1b9bec8ad81c7cec9a8be6fd2acb33afbcc7b9 100644
 --- a/third_party/blink/renderer/core/dom/document.cc
 +++ b/third_party/blink/renderer/core/dom/document.cc
 @@ -301,6 +301,11 @@ using WeakDocumentSet = blink::HeapHashSet<blink::WeakMember<blink::Document>>;
@@ -33,7 +33,7 @@ index e5d02bd5288267372a37bb4924d144abcf9a312c..d8ef07be91dbdb79ae09ba03aee091bd
  }
  
  Document::~Document() {
-@@ -780,7 +788,23 @@ Document::~Document() {
+@@ -780,8 +788,23 @@ Document::~Document() {
    DCHECK(!ax_object_cache_);
  
    InstanceCounters::DecrementCounter(InstanceCounters::kDocumentCounter);
@@ -43,17 +43,17 @@ index e5d02bd5288267372a37bb4924d144abcf9a312c..d8ef07be91dbdb79ae09ba03aee091bd
 +    page_graph_ = nullptr;
 +  }
 +#endif
-+}
-+
+ }
+ 
 +#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
 +brave_page_graph::PageGraph* Document::GetPageGraph() {
-+  if (page_graph_ == nullptr && Url().ProtocolIsInHTTPFamily()) {
++  if (page_graph_ == nullptr) {
 +    page_graph_ = new brave_page_graph::PageGraph();
 +  }
 +  return page_graph_;
- }
++}
 +#endif
 +
- 
  Range* Document::CreateRangeAdjustedToTreeScope(const TreeScope& tree_scope,
                                                  const Position& position) {
+   DCHECK(position.IsNotNull());

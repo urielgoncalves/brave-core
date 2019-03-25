@@ -21,7 +21,7 @@ friend class PageGraph;
   ItemName GetItemName() const override;
 
  protected:
-  NodeStorageLocalStorage(const PageGraph* graph, const PageGraphId id);
+  NodeStorageLocalStorage(PageGraph* const graph);
   GraphMLXMLList GraphMLAttributes() const override;
 };
 

@@ -27,7 +27,7 @@ friend class PageGraph;
   GraphMLXML GetGraphMLTag() const override;
 
  protected:
-  Node(const PageGraph* graph, const PageGraphId id);
+  Node(PageGraph* const graph);
   ItemDesc GetDescPrefix() const override;
   ItemDesc GetDescSuffix() const override;
 

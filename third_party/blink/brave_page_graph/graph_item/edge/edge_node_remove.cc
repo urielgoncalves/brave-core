@@ -15,9 +15,9 @@
 
 namespace brave_page_graph {
 
-EdgeNodeRemove::EdgeNodeRemove(const PageGraph* graph, const PageGraphId id,
+EdgeNodeRemove::EdgeNodeRemove(PageGraph* const graph,
     const NodeScript* const out_node, const NodeHTML* const in_node) :
-      EdgeNode(graph, id, out_node, in_node) {}
+      EdgeNode(graph, out_node, in_node) {}
 
 EdgeNodeRemove::~EdgeNodeRemove() {}
 

@@ -22,10 +22,10 @@ using ::std::vector;
 
 namespace brave_page_graph {
 
-EdgeCall::EdgeCall(const PageGraph* graph, const PageGraphId id,
-    const NodeScript* const out_node, const NodeWebAPI* const in_node,
-    const string& method, const vector<const string>& arguments) :
-      Edge(graph, id, out_node, in_node),
+EdgeCall::EdgeCall(PageGraph* const graph, const NodeScript* const out_node,
+    const NodeWebAPI* const in_node, const string& method,
+    const vector<const string>& arguments) :
+      Edge(graph, out_node, in_node),
       method_(method),
       arguments_(arguments) {}
 

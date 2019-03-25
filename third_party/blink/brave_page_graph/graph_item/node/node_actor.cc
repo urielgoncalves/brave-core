@@ -10,8 +10,8 @@
 
 namespace brave_page_graph {
 
-NodeActor::NodeActor(const PageGraph* graph, const PageGraphId id) :
-      Node(graph, id) {}
+NodeActor::NodeActor(PageGraph* const graph) :
+      Node(graph) {}
 
 NodeActor::~NodeActor() {}
 

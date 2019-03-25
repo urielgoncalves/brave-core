@@ -20,7 +20,7 @@ friend class PageGraph;
   virtual bool IsParser() const;
  
  protected:
-  NodeActor(const PageGraph* graph, const PageGraphId id);
+  NodeActor(PageGraph* const graph);
 };
 
 }  // namespace brave_page_graph

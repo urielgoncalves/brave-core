@@ -21,7 +21,7 @@ friend class PageGraph;
   ItemName GetItemName() const override;
 
  protected:
-  NodeStorageCookieJar(const PageGraph* graph, const PageGraphId id);
+  NodeStorageCookieJar(PageGraph* const graph);
   GraphMLXMLList GraphMLAttributes() const override;
 };
 

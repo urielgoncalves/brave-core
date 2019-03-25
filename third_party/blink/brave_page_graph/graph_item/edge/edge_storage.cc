@@ -17,10 +17,10 @@ using ::std::string;
 
 namespace brave_page_graph {
 
-EdgeStorage::EdgeStorage(const PageGraph* graph, const PageGraphId id,
+EdgeStorage::EdgeStorage(PageGraph* const graph,
     const NodeActor* const out_node, const NodeStorage* const in_node,
     const string& key) :
-      Edge(graph, id, out_node, in_node),
+      Edge(graph, out_node, in_node),
       key_(key) {}
 
 ItemName EdgeStorage::GetDescBody() const {

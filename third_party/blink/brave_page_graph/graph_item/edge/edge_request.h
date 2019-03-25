@@ -23,9 +23,8 @@ friend class PageGraph;
   ItemName GetItemName() const override;
 
  protected:
-  EdgeRequest(const PageGraph* graph, const PageGraphId id,
-    const Node* const out_node, const Node* const in_node,
-    const std::string& url, const RequestType type);
+  EdgeRequest(PageGraph* const graph, const Node* const out_node,
+    const Node* const in_node, const std::string& url, const RequestType type);
   ItemDesc GetDescBody() const override;
   GraphMLXMLList GraphMLAttributes() const override;
 

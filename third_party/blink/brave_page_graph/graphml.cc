@@ -39,6 +39,8 @@ namespace {
   GraphMLAttr* call_args = new GraphMLAttr(kGraphMLAttrForTypeEdge, "args");
   GraphMLAttr* edge_type = new GraphMLAttr(kGraphMLAttrForTypeEdge,
     "edge type");
+  GraphMLAttr* is_style_attr = new GraphMLAttr(kGraphMLAttrForTypeEdge,
+    "is style", kGraphMLAttrTypeBoolean);
   GraphMLAttr* key_attr = new GraphMLAttr(kGraphMLAttrForTypeEdge, "key");
   GraphMLAttr* method_attr = new GraphMLAttr(kGraphMLAttrForTypeEdge, "method");
   GraphMLAttr* tag_attr = new GraphMLAttr(kGraphMLAttrForTypeNode, "tag name");
@@ -58,11 +60,11 @@ namespace {
     "request type");
   GraphMLAttr* value_attr = new GraphMLAttr(kGraphMLAttrForTypeEdge, "value");
 
-  const int num_attrs = 17;
+  const int num_attrs = 18;
   GraphMLAttr* all_attrs[num_attrs] = {attr_name, attr_value, before_node_attr,
     call_args, edge_type, key_attr, method_attr, tag_attr, node_id_attr,
     node_text, node_type, parent_node_attr, script_type, success_attr, url_attr,
-    request_type_attr, value_attr};
+    request_type_attr, value_attr, is_style_attr};
 }
 
 GraphMLXML graphml_for_page_graph(const PageGraph* const graph) noexcept {
@@ -149,6 +151,8 @@ GraphMLAttr* graphml_attr_def_for_type(const GraphMLAttrDef type) noexcept {
       return call_args;
     case kGraphMLAttrDefEdgeType:
       return edge_type;
+    case kGraphMLAttrDefIsStyle:
+      return is_style_attr;
     case kGraphMLAttrDefKey:
       return key_attr;
     case kGraphMLAttrDefMethodName:

@@ -26,7 +26,7 @@ friend class PageGraph;
   ItemName GetItemName() const override;
 
  protected:
-  EdgeStorageSet(const PageGraph* graph, const PageGraphId id,
+  EdgeStorageSet(PageGraph* const graph,
     const NodeActor* const out_node, const NodeStorage* const in_node,
     const std::string& key, const std::string& value);
   ItemDesc GetDescBody() const override;

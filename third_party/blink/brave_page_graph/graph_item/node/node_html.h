@@ -24,8 +24,7 @@ friend class NodeHTMLText;
   ~NodeHTML() override;
 
  protected:
-  NodeHTML(const PageGraph* graph, const PageGraphId id,
-    const DOMNodeId node_id);
+  NodeHTML(PageGraph* const graph, const DOMNodeId node_id);
   virtual void MarkNodeDeleted();
   GraphMLXMLList GraphMLAttributes() const override;
 

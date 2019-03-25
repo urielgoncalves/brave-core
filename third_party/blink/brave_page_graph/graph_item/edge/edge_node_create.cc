@@ -17,9 +17,9 @@ using ::std::to_string;
 
 namespace brave_page_graph {
 
-EdgeNodeCreate::EdgeNodeCreate(const PageGraph* graph, const PageGraphId id,
+EdgeNodeCreate::EdgeNodeCreate(PageGraph* const graph,
     const NodeActor* const out_node, const NodeHTML* const in_node) :
-      EdgeNode(graph, id, out_node, in_node) {}
+      EdgeNode(graph, out_node, in_node) {}
 
 EdgeNodeCreate::~EdgeNodeCreate() {}
 

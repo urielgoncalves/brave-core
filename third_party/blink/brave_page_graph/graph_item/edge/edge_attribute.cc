@@ -16,20 +16,31 @@ using ::std::string;
 
 namespace brave_page_graph {
 
-EdgeAttribute::EdgeAttribute(const PageGraph* graph, const PageGraphId id,
+EdgeAttribute::EdgeAttribute(PageGraph* const graph,
     const NodeActor* const out_node, const Node* const in_node,
-    const string& name) :
-      Edge(graph, id, out_node, in_node),
+    const string& name, const bool is_style) :
+      Edge(graph, out_node, in_node),
+      is_style_(is_style),
       name_(name) {}
 
-const string& EdgeAttribute::AttributeName() const {
+const string& EdgeAttribute::GetAttributeName() const {
   return name_;
+}
+
+bool EdgeAttribute::GetIsStyle() const {
+  return is_style_;
 }
 
 GraphMLXMLList EdgeAttribute::GraphMLAttributes() const {
   GraphMLXMLList attrs;
   attrs.push_back(
-    graphml_attr_def_for_type(kGraphMLAttrDefKey)->ToValue(AttributeName()));
+    graphml_attr_def_for_type(kGraphMLAttrDefKey)->ToValue(GetAttributeName()));
+  
+  if (is_style_) {
+    attrs.push_back(
+      graphml_attr_def_for_type(kGraphMLAttrDefIsStyle)->ToValue(true));
+  }
+
   return attrs;
 }
 

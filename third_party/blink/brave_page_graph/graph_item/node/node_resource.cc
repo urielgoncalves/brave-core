@@ -14,9 +14,9 @@ using ::std::to_string;
 
 namespace brave_page_graph {
 
-NodeResource::NodeResource(const PageGraph *graph, const PageGraphId id,
-    const ResourceType type, const bool is_successful) :
-      Node(graph, id),
+NodeResource::NodeResource(PageGraph* const graph, const ResourceType type,
+    const bool is_successful) :
+      Node(graph),
       type_(type),
       successful_(is_successful) {}
 
