@@ -117,3 +117,9 @@ declare namespace chrome.braveShields {
   const javascript: any
   const plugins: any
 }
+
+type ThemeType = 'Light' | 'Dark'
+
+declare namespace chrome.braveTheme {
+  const getBraveThemeType: (callback: (themeType: ThemeType) => void) => void
+}

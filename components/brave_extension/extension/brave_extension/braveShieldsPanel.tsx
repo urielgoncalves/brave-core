@@ -5,7 +5,8 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 
-import Theme from 'brave-ui/theme/brave-default'
+import shieldsDarkTheme from 'brave-ui/theme/shields-dark'
+import shieldsLightTheme from 'brave-ui/theme/shields-light'
 import { ThemeProvider } from 'brave-ui/theme'
 
 import { Provider } from 'react-redux'
@@ -14,24 +15,28 @@ import BraveShields from './containers/braveShields'
 require('../../../fonts/muli.css')
 require('../../../fonts/poppins.css')
 
-chrome.storage.local.get('state', (obj) => {
-  const store: any = new Store({
-    portName: 'BRAVE'
-  })
+const store: any = new Store({
+  portName: 'BRAVE'
+})
 
-  store.ready()
-    .then(() => {
-      const mountNode: HTMLElement | null = document.querySelector('#root')
-      ReactDOM.render(
-        <Provider store={store}>
-          <ThemeProvider theme={Theme}>
-            <BraveShields />
-          </ThemeProvider>
-        </Provider>,
-        mountNode
-      )
-    })
-    .catch(() => {
-      console.error('Problem mounting brave shields')
-    })
+Promise.all([
+  store.ready(),
+  new Promise(resolve => chrome.braveTheme.getBraveThemeType(resolve))
+])
+.then(([ , braveTheme ]) => {
+  const mountNode: HTMLElement | null = document.querySelector('#root')
+  // For an extension panel, we only need to infer theme at init
+  const selectedShieldsTheme = braveTheme === 'Dark' ? shieldsDarkTheme : shieldsLightTheme
+  ReactDOM.render(
+    <Provider store={store}>
+      <ThemeProvider theme={selectedShieldsTheme}>
+        <BraveShields />
+      </ThemeProvider>
+    </Provider>,
+    mountNode
+  )
+})
+.catch((e) => {
+  console.error('Problem mounting brave shields')
+  console.error(e)
 })
