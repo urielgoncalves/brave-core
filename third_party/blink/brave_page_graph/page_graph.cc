@@ -62,7 +62,6 @@ void write_to_disk(int signal) {
 }
 
 PageGraph::PageGraph() :
-    id_counter_(0),
     parser_node_(new NodeParser(this)),
     shields_node_(new NodeShields(this)),
     cookie_jar_node_(new NodeStorageCookieJar(this)),
@@ -74,6 +73,7 @@ PageGraph::PageGraph() :
   AddNode(cookie_jar_node_);
   AddNode(local_storage_node_);
   AddNode(html_root_node_);
+  element_nodes_.emplace(kRootNodeId, html_root_node_);
   yuck = this;
   signal(30, &write_to_disk);
 }
@@ -81,7 +81,6 @@ PageGraph::PageGraph() :
 PageGraph::~PageGraph() {}
 
 NodeHTML* PageGraph::GetHTMLNode(const DOMNodeId node_id) const {
-  log(to_string(element_nodes_.count(node_id) + text_nodes_.count(node_id)) + " " + to_string(node_id));
   LOG_ASSERT(element_nodes_.count(node_id) + text_nodes_.count(node_id) == 1);
   if (element_nodes_.count(node_id) == 1) {
     return element_nodes_.at(node_id);
@@ -167,18 +166,20 @@ void PageGraph::RegisterHTMLElementNodeInserted(const DOMNodeId node_id,
 
 void PageGraph::RegisterHTMLTextNodeInserted(const DOMNodeId node_id,
     const DOMNodeId parent_node_id, const DOMNodeId before_sibling_id) {
-  if (parent_node_id == 0 && before_sibling_id == 0) {
-    return;
-  }
+
+  const DOMNodeId inserted_parent_node_id = (parent_node_id) 
+    ? parent_node_id
+    : kRootNodeId;
+
   log("RegisterHTMLTextNodeInserted: (" + to_string(node_id) + "), " +
-    to_string(parent_node_id) + ", " + to_string(before_sibling_id));
+    to_string(inserted_parent_node_id) + ", " + to_string(before_sibling_id));
   LOG_ASSERT(text_nodes_.count(node_id) == 1);
   NodeHTMLText* const inserted_node = text_nodes_.at(node_id);
 
   NodeActor* const acting_node = GetCurrentActingNode();
 
   const EdgeNodeInsert* const edge = new EdgeNodeInsert(this,
-    acting_node, inserted_node, parent_node_id, before_sibling_id);
+    acting_node, inserted_node, inserted_parent_node_id, before_sibling_id);
   AddEdge(edge);
 
   inserted_node->AddInEdge(edge);
@@ -287,7 +288,7 @@ void PageGraph::RegisterRequestStartFromElm(const DOMNodeId node_id,
     const RequestUrl url, const RequestType type) {
   // For now, explode if we're getting duplicate requests for the same
   // URL in the same document.  This might need to be changed.
-  LOG_ASSERT(in_air_requests_.count(url) == 0);
+  // LOG_ASSERT(in_air_requests_.count(url) == 0);
   LOG_ASSERT(element_nodes_.count(node_id) == 1);
   NodeHTMLElement* node = element_nodes_.at(node_id);
   in_air_requests_.emplace(url, make_unique<InAirRequest>(url, type, node));

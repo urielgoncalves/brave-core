@@ -99,7 +99,7 @@ friend GraphItem;
 
   // Monotonically increasing counter, used so that we can replay the
   // the graph's construction if needed.
-  PageGraphId id_counter_;
+  PageGraphId id_counter_ = 0;
 
   // These vectors owns the all the items that are shared and indexed across
   // the rest of the graph.  All the other pointers (the weak pointers)
