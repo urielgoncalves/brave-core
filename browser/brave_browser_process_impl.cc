@@ -24,6 +24,7 @@
 #include "brave/components/brave_shields/browser/https_everywhere_service.h"
 #include "brave/components/brave_shields/browser/local_data_files_service.h"
 #include "brave/components/brave_shields/browser/referrer_whitelist_service.h"
+#include "brave/components/brave_shields/browser/site_specific_script_service.h"
 #include "brave/components/brave_shields/browser/tracking_protection_service.h"
 #include "chrome/browser/io_thread.h"
 #include "chrome/common/chrome_paths.h"
@@ -153,6 +154,15 @@ BraveBrowserProcessImpl::referrer_whitelist_service() {
       brave_shields::ReferrerWhitelistServiceFactory();
   }
   return referrer_whitelist_service_.get();
+}
+
+brave_shields::SiteSpecificScriptService*
+BraveBrowserProcessImpl::site_specific_script_service() {
+  if (!site_specific_script_service_) {
+    site_specific_script_service_ =
+      brave_shields::SiteSpecificScriptServiceFactory();
+  }
+  return site_specific_script_service_.get();
 }
 
 brave_shields::TrackingProtectionService*

@@ -29,6 +29,7 @@ class ExtensionWhitelistService;
 class HTTPSEverywhereService;
 class LocalDataFilesService;
 class ReferrerWhitelistService;
+class SiteSpecificScriptService;
 class TrackingProtectionService;
 }  // namespace brave_shields
 
@@ -54,6 +55,7 @@ class BraveBrowserProcessImpl : public BrowserProcessImpl {
   brave_shields::AutoplayWhitelistService* autoplay_whitelist_service();
   brave_shields::ExtensionWhitelistService* extension_whitelist_service();
   brave_shields::ReferrerWhitelistService* referrer_whitelist_service();
+  brave_shields::SiteSpecificScriptService* site_specific_script_service();
   brave_shields::TrackingProtectionService* tracking_protection_service();
   brave_shields::HTTPSEverywhereService* https_everywhere_service();
   brave_shields::LocalDataFilesService* local_data_files_service();
@@ -76,6 +78,8 @@ class BraveBrowserProcessImpl : public BrowserProcessImpl {
       extension_whitelist_service_;
   std::unique_ptr<brave_shields::ReferrerWhitelistService>
       referrer_whitelist_service_;
+  std::unique_ptr<brave_shields::SiteSpecificScriptService>
+      site_specific_script_service_;
   std::unique_ptr<brave_shields::TrackingProtectionService>
       tracking_protection_service_;
   std::unique_ptr<brave_shields::HTTPSEverywhereService>

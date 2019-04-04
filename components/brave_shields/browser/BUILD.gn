@@ -43,6 +43,8 @@ source_set("brave_shields") {
     "local_data_files_service.h",
     "referrer_whitelist_service.cc",
     "referrer_whitelist_service.h",
+    "site_specific_script_service.cc",
+    "site_specific_script_service.h",
     "tracking_protection_service.cc",
     "tracking_protection_service.h",
   ]
