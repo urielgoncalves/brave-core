@@ -94,8 +94,6 @@ class RewardsServiceImpl : public RewardsService,
                          const std::string& promotionId) const override;
   void GetWalletPassphrase(
       const GetWalletPassphraseCallback& callback) override;
-  void GetExcludedPublishersNumber(
-      const GetExcludedPublishersNumberCallback& callback) override;
   void RecoverWallet(const std::string passPhrase) const override;
   void GetContentSiteList(
       uint32_t start,
@@ -104,6 +102,7 @@ class RewardsServiceImpl : public RewardsService,
       uint64_t reconcile_stamp,
       bool allow_non_verified,
       uint32_t min_visits,
+      bool fetch_excluded,
       const GetContentSiteListCallback& callback) override;
   void OnGetContentSiteList(
       const GetContentSiteListCallback& callback,
@@ -149,6 +148,7 @@ class RewardsServiceImpl : public RewardsService,
                               const std::string& publisher_id) override;
   void ExcludePublisher(const std::string publisherKey) const override;
   void RestorePublishers() override;
+  void RestorePublisher(const std::string publisherKey) const override;
   void GetAllBalanceReports(
       const GetAllBalanceReportsCallback& callback) override;
   void GetCurrentBalanceReport() override;
@@ -421,13 +421,6 @@ class RewardsServiceImpl : public RewardsService,
 
   void SaveNormalizedPublisherList(
       const ledger::PublisherInfoListStruct& list) override;
-
-  void GetExcludedPublishersNumberDB(
-      ledger::GetExcludedPublishersNumberDBCallback callback) override;
-
-  void OnGetExcludedPublishersNumberDB(
-      ledger::GetExcludedPublishersNumberDBCallback callback,
-      int number);
 
   // URLFetcherDelegate impl
   void OnURLFetchComplete(const net::URLFetcher* source) override;

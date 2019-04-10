@@ -57,7 +57,6 @@ interface BatLedger {
   FetchGrants(string lang, string payment_id);
   GetGrantCaptcha(string promotion_id, string promotion_type);
   GetWalletPassphrase() => (string wallet_passphrase);
-  GetExcludedPublishersNumber() => (uint32 num_excluded_sites);
   RecoverWallet(string passPhrase);
   SolveGrantCaptcha(string solution, string promotionId);
 
@@ -187,6 +186,4 @@ interface BatLedgerClient {
   ResetState(string name) => (int32 result);
   SetConfirmationsIsReady(bool is_ready);
   ConfirmationsTransactionHistoryDidChange();
-
-  GetExcludedPublishersNumberDB() => (uint32 number);
 };

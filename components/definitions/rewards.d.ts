@@ -41,9 +41,9 @@ declare namespace Rewards {
     enabledAds: boolean
     enabledContribute: boolean
     enabledMain: boolean
+    excludedList: ExcludedPublisher[]
     firstLoad: boolean | null
     grants?: Grant[]
-    excludedPublishersNumber: number
     pendingContributionTotal: number
     reconcileStamp: number
     recoveryKey: string
@@ -129,6 +129,15 @@ declare namespace Rewards {
     favIcon: string
     id: string
     tipDate?: number
+  }
+
+  export interface ExcludedPublisher {
+    id: string
+    verified: boolean
+    url: string
+    name: string
+    provider: string
+    favIcon: string
   }
 
   export interface Report {

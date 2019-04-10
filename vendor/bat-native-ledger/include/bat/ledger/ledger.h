@@ -59,7 +59,6 @@ using WalletAddressesCallback =
     std::function<void(std::map<std::string, std::string> addresses)>;
 using ConfirmationsHistoryCallback = std::function<void(
     std::unique_ptr<ledger::TransactionsInfo> info)>;
-using GetExcludedPublishersNumberDBCallback = std::function<void(uint32_t)>;
 using OnWalletPropertiesCallback = std::function<void(const ledger::Result,
                                   std::unique_ptr<ledger::WalletInfo>)>;
 
@@ -188,9 +187,6 @@ class LEDGER_EXPORT Ledger {
   virtual uint64_t GetPublisherMinVisitTime() const = 0;  // In milliseconds
 
   virtual unsigned int GetPublisherMinVisits() const = 0;
-
-  virtual void GetExcludedPublishersNumber(
-      ledger::GetExcludedPublishersNumberDBCallback callback) const = 0;
 
   virtual bool GetPublisherAllowNonVerified() const = 0;
 

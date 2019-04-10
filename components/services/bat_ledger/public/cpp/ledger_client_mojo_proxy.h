@@ -123,9 +123,6 @@ class LedgerClientMojoProxy : public mojom::BatLedgerClient,
 
   void ConfirmationsTransactionHistoryDidChange() override;
 
-  void GetExcludedPublishersNumberDB(
-      GetExcludedPublishersNumberDBCallback callback) override;
-
  private:
   // workaround to pass base::OnceCallback into std::bind
   // also serves as a wrapper for passing ledger::LedgerCallbackHandler*
@@ -229,10 +226,6 @@ class LedgerClientMojoProxy : public mojom::BatLedgerClient,
   static void OnResetState(
       CallbackHolder<ResetStateCallback>* holder,
       ledger::Result result);
-
-  static void OnGetExcludedPublishersNumberDB(
-      CallbackHolder<GetExcludedPublishersNumberDBCallback>* holder,
-      uint32_t number);
 
   static void OnGetOneTimeTips(
       CallbackHolder<GetOneTimeTipsCallback>* holder,

@@ -72,11 +72,15 @@ class RewardsDOMHandler : public WebUIMessageHandler,
   void OnContentSiteList(
       std::unique_ptr<brave_rewards::ContentSiteList>,
       uint32_t record);
+  void OnExcludedSiteList(
+      std::unique_ptr<brave_rewards::ContentSiteList>,
+      uint32_t record);
   void OnGetAllBalanceReports(
       const std::map<std::string, brave_rewards::BalanceReport>& reports);
   void GetBalanceReports(const base::ListValue* args);
   void ExcludePublisher(const base::ListValue* args);
   void RestorePublishers(const base::ListValue* args);
+  void RestorePublisher(const base::ListValue* args);
   void WalletExists(const base::ListValue* args);
   void GetContributionAmount(const base::ListValue* args);
   void RemoveRecurringTip(const base::ListValue* args);
@@ -91,7 +95,6 @@ class RewardsDOMHandler : public WebUIMessageHandler,
   void OnGetContributionAmount(double amount);
   void OnGetAddresses(const std::string func_name,
                       const std::map<std::string, std::string>& addresses);
-  void OnGetExcludedPublishersNumber(uint32_t num);
   void OnGetAutoContributeProps(
       int error_code,
       std::unique_ptr<brave_rewards::WalletProperties> wallet_properties,
@@ -110,7 +113,6 @@ class RewardsDOMHandler : public WebUIMessageHandler,
   void OnGetRewardsMainEnabled(bool enabled);
   void OnAdsIsSupportedRegion(bool is_supported);
 
-  void GetExcludedPublishersNumber(const base::ListValue* args);
   void AdsIsSupportedRegion(const base::ListValue* args);
 
   void OnConfirmationsHistory(int total_viewed, double estimated_earnings);
@@ -250,6 +252,9 @@ void RewardsDOMHandler::RegisterMessages() {
   web_ui()->RegisterMessageCallback("brave_rewards.restorePublishers",
       base::BindRepeating(&RewardsDOMHandler::RestorePublishers,
       base::Unretained(this)));
+  web_ui()->RegisterMessageCallback("brave_rewards.restorePublisher",
+      base::BindRepeating(&RewardsDOMHandler::RestorePublisher,
+      base::Unretained(this)));
   web_ui()->RegisterMessageCallback("brave_rewards.checkWalletExistence",
       base::BindRepeating(&RewardsDOMHandler::WalletExists,
       base::Unretained(this)));
@@ -293,9 +298,6 @@ void RewardsDOMHandler::RegisterMessages() {
       base::Unretained(this)));
   web_ui()->RegisterMessageCallback("brave_rewards.getRewardsMainEnabled",
       base::BindRepeating(&RewardsDOMHandler::GetRewardsMainEnabled,
-      base::Unretained(this)));
-  web_ui()->RegisterMessageCallback("brave_rewards.getExcludedPublishersNumber",
-      base::BindRepeating(&RewardsDOMHandler::GetExcludedPublishersNumber,
       base::Unretained(this)));
   web_ui()->RegisterMessageCallback("brave_rewards.getAdsIsSupportedRegion",
       base::BindRepeating(&RewardsDOMHandler::AdsIsSupportedRegion,
@@ -629,7 +631,18 @@ void RewardsDOMHandler::OnAutoContributePropsReady(
       props->reconcile_stamp,
       props->contribution_non_verified,
       props->contribution_min_visits,
+      false,
       base::Bind(&RewardsDOMHandler::OnContentSiteList,
+                 weak_factory_.GetWeakPtr()));
+  rewards_service_->GetContentSiteList(
+      0,
+      0,
+      props->contribution_min_time,
+      props->reconcile_stamp,
+      props->contribution_non_verified,
+      props->contribution_min_visits,
+      true,
+      base::Bind(&RewardsDOMHandler::OnExcludedSiteList,
                  weak_factory_.GetWeakPtr()));
 }
 
@@ -640,20 +653,12 @@ void RewardsDOMHandler::OnContentSiteUpdated(
         weak_factory_.GetWeakPtr()));
 }
 
-void RewardsDOMHandler::OnGetExcludedPublishersNumber(uint32_t num) {
-  if (web_ui()->CanCallJavascript()) {
-    web_ui()->CallJavascriptFunctionUnsafe("brave_rewards.excludedNumber",
-        base::Value(std::to_string(num)));
-  }
-}
 void RewardsDOMHandler::OnExcludedSitesChanged(
     brave_rewards::RewardsService* rewards_service,
     std::string publisher_id,
     bool excluded) {
   if (rewards_service_)
-    rewards_service_->GetExcludedPublishersNumber(
-        base::Bind(&RewardsDOMHandler::OnGetExcludedPublishersNumber,
-                   weak_factory_.GetWeakPtr()));
+    OnContentSiteUpdated(rewards_service);
 }
 
 void RewardsDOMHandler::OnNotificationAdded(
@@ -732,6 +737,14 @@ void RewardsDOMHandler::RestorePublishers(const base::ListValue *args) {
   }
 }
 
+void RewardsDOMHandler::RestorePublisher(const base::ListValue *args) {
+  if (rewards_service_) {
+    std::string publisherKey;
+    args->GetString(0, &publisherKey);
+    rewards_service_->RestorePublisher(publisherKey);
+  }
+}
+
 void RewardsDOMHandler::OnContentSiteList(
     std::unique_ptr<brave_rewards::ContentSiteList> list,
     uint32_t record) {
@@ -756,6 +769,26 @@ void RewardsDOMHandler::OnContentSiteList(
   }
 }
 
+void RewardsDOMHandler::OnExcludedSiteList(
+    std::unique_ptr<brave_rewards::ContentSiteList> list,
+    uint32_t record) {
+  if (web_ui()->CanCallJavascript()) {
+    auto publishers = std::make_unique<base::ListValue>();
+    for (auto const& item : *list) {
+      auto publisher = std::make_unique<base::DictionaryValue>();
+      publisher->SetString("id", item.id);
+      publisher->SetBoolean("verified", item.verified);
+      publisher->SetString("name", item.name);
+      publisher->SetString("provider", item.provider);
+      publisher->SetString("url", item.url);
+      publisher->SetString("favIcon", item.favicon_url);
+      publishers->Append(std::move(publisher));
+    }
+
+    web_ui()->CallJavascriptFunctionUnsafe(
+        "brave_rewards.excludedList", *publishers);
+  }
+}
 
 void RewardsDOMHandler::GetBalanceReports(const base::ListValue* args) {
   GetAllBalanceReports();
@@ -1038,15 +1071,6 @@ void RewardsDOMHandler::OnGetRewardsMainEnabled(
   if (web_ui()->CanCallJavascript()) {
     web_ui()->CallJavascriptFunctionUnsafe("brave_rewards.rewardsEnabled",
         base::Value(enabled));
-  }
-}
-
-void RewardsDOMHandler::GetExcludedPublishersNumber(
-    const base::ListValue* args) {
-  if (rewards_service_) {
-    rewards_service_->GetExcludedPublishersNumber(
-        base::Bind(&RewardsDOMHandler::OnGetExcludedPublishersNumber,
-                   weak_factory_.GetWeakPtr()));
   }
 }
 

@@ -91,6 +91,10 @@ export const onContributeList = (list: Rewards.Publisher[]) => action(types.ON_C
   list
 })
 
+export const onExcludedList = (list: Rewards.ExcludedPublisher[]) => action(types.ON_EXCLUDED_LIST, {
+  list
+})
+
 export const onBalanceReports = (reports: Record<string, Rewards.Report>) => action(types.ON_BALANCE_REPORTS, {
   reports
 })
@@ -108,10 +112,6 @@ export const onWalletExists = (exists: boolean) => action(types.ON_WALLET_EXISTS
 })
 
 export const restorePublishers = () => action(types.ON_RESTORE_PUBLISHERS)
-
-export const onExcludedNumber = (num: number) => action(types.ON_EXCLUDED_PUBLISHERS_NUMBER, {
-  num
-})
 
 export const onContributionAmount = (amount: number) => action(types.ON_CONTRIBUTION_AMOUNT, {
   amount
@@ -184,8 +184,6 @@ export const getConfirmationsHistory = () => action(types.GET_CONFIRMATIONS_HIST
 
 export const onConfirmationsHistoryChanged = () => action(types.ON_CONFIRMATIONS_HISTORY_CHANGED)
 
-export const getExcludedPublishersNumber = () => action(types.GET_EXCLUDED_PUBLISHERS_NUMBER)
-
 export const getAdsIsSupportedRegion = () => action(types.GET_ADS_IS_SUPPORTED_REGION)
 
 export const onAdsIsSupportedRegion = (supported: boolean) => action(types.ON_ADS_IS_SUPPORTED_REGION, {
@@ -206,3 +204,7 @@ export const onContributionSaved = (properties: Rewards.ContributionSaved) =>
   action(types.ON_CONTRIBUTION_SAVED, {
     properties
   })
+
+export const restorePublisher = (publisherKey: string) => action(types.ON_RESTORE_PUBLISHER, {
+  publisherKey
+})
