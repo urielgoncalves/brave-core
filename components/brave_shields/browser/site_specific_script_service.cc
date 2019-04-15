@@ -10,6 +10,7 @@
 
 #include "base/base_paths.h"
 #include "base/bind.h"
+#include "base/files/file_util.h"
 #include "base/json/json_reader.h"
 #include "base/logging.h"
 #include "base/macros.h"
@@ -38,31 +39,29 @@ SiteSpecificScriptService::SiteSpecificScriptRule::SiteSpecificScriptRule(
 SiteSpecificScriptService::SiteSpecificScriptRule::~SiteSpecificScriptRule() =
   default;
 
+bool SiteSpecificScriptService::ScriptsFor(const GURL& primary_url, std::vector<std::string>* scripts) {
+  bool any = false;
+  scripts->clear();
+  for (const auto& rule : rules_) {
+    for (const auto& pattern : rule.urls) {
+      if (pattern.MatchesURL(primary_url)) {
+        for (const auto& path : rule.scripts) {
+          std::string contents;
+          if (base::ReadFileToString(path, &contents)) {
+            scripts->push_back(contents);
+          }
+        }
+        any = true;
+        break;
+      }
+    }
+  }
+  return any;
+}
+
 void SiteSpecificScriptService::OnDATFileDataReady() {
   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
   rules_.clear();
-  file_contents_ = "[\
-    {\
-        \"urls\": [\
-            \"https://www.twitter.com/*\",\
-            \"https://tweetdeck.twitter.com/*\"\
-        ],\
-        \"scripts\": [\
-            \"twitter/add-tipping-button-to-dom.js\"\
-        ]\
-\
-},\
-    {\
-        \"urls\": [\
-            \"https://www.facebook.*/*\"\
-        ],\
-        \"scripts\": [\
-            \"facebook/brave-unbreak.js\"\
-            \"facebook/add-tipping-button-to-dom.js\",\
-        ]\
-\
-}\
-]";
   if (file_contents_.empty()) {
     LOG(ERROR) << "Could not obtain site-specific script configuration";
     return;
@@ -82,14 +81,16 @@ void SiteSpecificScriptService::OnDATFileDataReady() {
     base::ListValue* urls_value = nullptr;
     rule_dict->GetList("urls", &urls_value);
     for (const auto& urls_it : urls_value->GetList()) {
-      rule.urls.push_back(
-        URLPattern(URLPattern::SCHEME_HTTP|URLPattern::SCHEME_HTTPS,
-                   urls_it.GetString()));
+      URLPattern pattern;
+      pattern.SetValidSchemes(URLPattern::SCHEME_HTTP|URLPattern::SCHEME_HTTPS);
+      pattern.Parse(urls_it.GetString(), URLPattern::ALLOW_WILDCARD_FOR_EFFECTIVE_TLD);
+      rule.urls.push_back(pattern);
     }
     base::ListValue* scripts_value = nullptr;
     rule_dict->GetList("scripts", &scripts_value);
     for (const auto& scripts_it : scripts_value->GetList()) {
       base::FilePath script_path = install_dir_.AppendASCII(
+        SITE_SPECIFIC_SCRIPT_CONFIG_FILE_VERSION).AppendASCII(
         scripts_it.GetString());
       if (script_path.ReferencesParent()) {
         LOG(ERROR) << "Malformed site-specific script configuration";

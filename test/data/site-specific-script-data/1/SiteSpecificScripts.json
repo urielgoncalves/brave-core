@@ -1,0 +1,18 @@
+[
+    {
+        "urls": [
+            "https://www.example.com/*"
+        ],
+        "scripts": [
+            "scripts/example-com.js"
+        ]
+    },
+    {
+        "urls": [
+            "https://www.example.*/*"
+        ],
+        "scripts": [
+            "scripts/example-star.js"
+        ]
+    }
+]

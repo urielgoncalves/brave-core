@@ -24,8 +24,10 @@
 #include "extensions/common/url_pattern.h"
 #include "url/gurl.h"
 
-#define SITE_SPECIFIC_SCRIPT_CONFIG_FILE "SiteSpecificScript.json"
+#define SITE_SPECIFIC_SCRIPT_CONFIG_FILE "SiteSpecificScripts.json"
 #define SITE_SPECIFIC_SCRIPT_CONFIG_FILE_VERSION "1"
+
+class SiteSpecificScriptServiceTest;
 
 namespace brave_shields {
 
@@ -35,6 +37,8 @@ class SiteSpecificScriptService : public BaseLocalDataFilesObserver {
   SiteSpecificScriptService();
   ~SiteSpecificScriptService() override;
 
+  bool ScriptsFor(const GURL& primary_url, std::vector<std::string>* scripts);
+
   scoped_refptr<base::SequencedTaskRunner> GetTaskRunner();
 
   // implementation of BaseLocalDataFilesObserver
@@ -43,6 +47,8 @@ class SiteSpecificScriptService : public BaseLocalDataFilesObserver {
                         const std::string& manifest) override;
 
  private:
+  friend class ::SiteSpecificScriptServiceTest;
+
   void OnDATFileDataReady();
 
   struct SiteSpecificScriptRule {
