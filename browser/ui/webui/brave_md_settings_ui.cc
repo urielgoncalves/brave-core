@@ -7,7 +7,6 @@
 
 #include <string>
 #include "base/command_line.h"
-#include "brave/browser/extensions/brave_component_loader.h"
 #include "brave/browser/resources/settings/grit/brave_settings_resources.h"
 #include "brave/browser/resources/settings/grit/brave_settings_resources_map.h"
 #include "brave/browser/ui/webui/settings/brave_default_extensions_handler.h"
@@ -47,8 +46,6 @@ void BraveMdSettingsUI::AddResources(content::WebUIDataSource* html_source,
                                  kBraveSettingsResources[i].value);
   }
 
-  html_source->AddBoolean("isPdfjsDisabled",
-                          extensions::BraveComponentLoader::IsPdfjsDisabled());
   const base::CommandLine& command_line =
       *base::CommandLine::ForCurrentProcess();
   html_source->AddBoolean("isSyncDisabled",
