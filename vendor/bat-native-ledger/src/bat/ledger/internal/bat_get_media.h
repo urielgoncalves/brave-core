@@ -12,6 +12,7 @@
 
 #include "bat/ledger/internal/bat_helper.h"
 #include "bat/ledger/internal/media/twitch.h"
+#include "bat/ledger/internal/media/vimeo.h"
 #include "bat/ledger/internal/media/youtube.h"
 #include "bat/ledger/ledger.h"
 
@@ -48,6 +49,7 @@ class BatGetMedia {
   bat_ledger::LedgerImpl* ledger_;  // NOT OWNED
   std::unique_ptr<braveledger_media::MediaYouTube> media_youtube_;
   std::unique_ptr<braveledger_media::MediaTwitch> media_twitch_;
+  std::unique_ptr<braveledger_media::MediaVimeo> media_vimeo_;
 };
 
 }  // namespace braveledger_bat_get_media

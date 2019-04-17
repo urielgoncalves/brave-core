@@ -63,6 +63,7 @@
 
 #define YOUTUBE_MEDIA_TYPE              "youtube"
 #define TWITCH_MEDIA_TYPE               "twitch"
+#define VIMEO_MEDIA_TYPE                "vimeo"
 #define YOUTUBE_PROVIDER_URL            "https://www.youtube.com/oembed"
 #define TWITCH_PROVIDER_URL             "https://api.twitch.tv/v5/oembed"
 #define YOUTUBE_TLD                     "youtube.com"
