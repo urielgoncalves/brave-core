@@ -722,7 +722,7 @@ bool Ledger::IsMediaLink(const std::string& url,
       first_party_url,
       referrer);
 
-  return type == TWITCH_MEDIA_TYPE;
+  return type == TWITCH_MEDIA_TYPE || type == VIMEO_MEDIA_TYPE;
 }
 
 PendingContribution::PendingContribution() {}

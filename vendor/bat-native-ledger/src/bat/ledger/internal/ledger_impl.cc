@@ -10,6 +10,7 @@
 #include <utility>
 #include <vector>
 
+#include "base/json/json_reader.h"
 #include "base/task/post_task.h"
 #include "base/task/task_scheduler/task_scheduler.h"
 #include "bat/ads/issuers_info.h"
@@ -202,11 +203,41 @@ void LedgerImpl::OnPostData(
     return;
   }
 
-  std::vector<std::map<std::string, std::string>> twitchParts;
-  if (TWITCH_MEDIA_TYPE == type) {
+  if (type == TWITCH_MEDIA_TYPE) {
+    std::vector<std::map<std::string, std::string>> twitchParts;
     braveledger_media::GetTwitchParts(post_data, &twitchParts);
     for (size_t i = 0; i < twitchParts.size(); i++) {
       bat_get_media_->ProcessMedia(twitchParts[i], type, visit_data);
+    }
+    return;
+  }
+
+  if (type == VIMEO_MEDIA_TYPE) {
+    base::Optional<base::Value> data = base::JSONReader::Read(post_data);
+    if (!data || !data->is_list()) {
+      return;
+    }
+
+    for (auto& item : data->GetList()) {
+      if (item.is_dict()) {
+        std::map<std::string, std::string> parts;
+        auto* name = item.FindKey("name");
+        if (name) {
+          parts.emplace('name', name->GetString());
+        }
+
+        auto* clip_id = item.FindKey("clip_id");
+        if (clip_id) {
+          parts.emplace('clip_id', std::to_string(clip_id->GetInt()));
+        }
+
+        auto* video_time = item.FindKey("video_time");
+        if (video_time) {
+          parts.emplace('video_time', std::to_string(clip_id->GetDouble()));
+        }
+
+        bat_get_media_->ProcessMedia(parts, type, visit_data);
+      }
     }
   }
 }

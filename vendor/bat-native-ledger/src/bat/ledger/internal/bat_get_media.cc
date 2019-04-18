@@ -56,6 +56,11 @@ void BatGetMedia::ProcessMedia(const std::map<std::string, std::string>& parts,
     media_twitch_->ProcessMedia(parts, visit_data);
     return;
   }
+
+  if (type == VIMEO_MEDIA_TYPE) {
+    media_vimeo_->ProcessMedia(parts, visit_data);
+    return;
+  }
 }
 
 void BatGetMedia::GetMediaActivityFromUrl(

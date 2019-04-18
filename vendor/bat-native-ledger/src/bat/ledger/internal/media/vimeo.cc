@@ -21,7 +21,13 @@ MediaVimeo::~MediaVimeo() {
 
 // static
 std::string MediaVimeo::GetLinkType(const std::string& url) {
-  std::string type = VIMEO_MEDIA_TYPE;
+  const std::string api = "https://fresnel.vimeocdn.com/add/player-stats?";
+    std::string type;
+
+  if (url.find(api) != std::string::npos) {
+    type = VIMEO_MEDIA_TYPE;
+  }
+
   return type;
 }
 
