@@ -8,10 +8,6 @@ import './background/events/tabEvents'
 import batIconOn18Url from './img/rewards-on.png'
 import batIconOn36Url from './img/rewards-on@2x.png'
 import batIconOn54Url from './img/rewards-on@3x.png'
-// TODO: display 'off' icon at appropriate time
-// import batIconOff18Url from './img/rewards-off.png'
-// import batIconOff36Url from './img/rewards-off@2x.png'
-// import batIconOff54Url from './img/rewards-off@3x.png'
 
 const iconOn = {
   path: {
@@ -20,14 +16,6 @@ const iconOn = {
     54: batIconOn54Url
   }
 }
-
-// const iconOff = {
-//   path: {
-//     18: batIconOff18Url,
-//     36: batIconOff36Url,
-//     54: batIconOff54Url
-//   }
-// }
 
 chrome.browserAction.setBadgeBackgroundColor({ color: '#FB542B' })
 chrome.browserAction.setIcon(iconOn)

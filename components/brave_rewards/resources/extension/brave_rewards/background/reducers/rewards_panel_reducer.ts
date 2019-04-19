@@ -5,6 +5,28 @@
 import { types } from '../../constants/rewards_panel_types'
 import * as storage from '../storage'
 import { getTabData } from '../api/tabs_api'
+import batIconVerified18Url from '../../img/rewards-verified.png'
+import batIconVerified36Url from '../../img/rewards-verified@2x.png'
+import batIconVerified54Url from '../../img/rewards-verified@3x.png'
+import batIconOn18Url from '../../img/rewards-on.png'
+import batIconOn36Url from '../../img/rewards-on@2x.png'
+import batIconOn54Url from '../../img/rewards-on@3x.png'
+
+const iconOn = {
+  path: {
+    18: batIconOn18Url,
+    36: batIconOn36Url,
+    54: batIconOn54Url
+  }
+}
+
+const iconVerified = {
+  path: {
+    18: batIconVerified18Url,
+    36: batIconVerified36Url,
+    54: batIconVerified54Url
+  }
+}
 
 function setBadgeText (state: RewardsExtension.State): void {
   let text = ''
@@ -101,7 +123,8 @@ export const rewardsPanelReducer = (state: RewardsExtension.State | undefined, a
         }
 
         publishers[id] = {
-          tabUrl: tab.url
+          tabUrl: tab.url,
+          tabId: tab.id
         }
       }
       state = {
@@ -119,6 +142,20 @@ export const rewardsPanelReducer = (state: RewardsExtension.State | undefined, a
         delete publishers[id]
       } else {
         publishers[id] = { ...publishers[id], ...publisher }
+        const newPublisher = publishers[id]
+
+        if (newPublisher.tabId) {
+          let icons = iconOn
+          if (newPublisher.verified) {
+            icons = iconVerified
+          }
+
+          // set bat logo
+          chrome.browserAction.setIcon({
+            ...icons,
+            tabId: newPublisher.tabId
+          })
+        }
       }
 
       state = {
