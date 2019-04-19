@@ -27,7 +27,7 @@ index 58f3d1285ccb685ac9cec62e9cf1b4e1e6b7f024..3d192250cd74b8178594dfcc6ae6d26c
 +  virtual uint8_t auth_method();
 +  virtual int Authenticate(int result,
 +                           NetLogWithSource& net_log,
-+                           CompletionCallback& callback);
++                           CompletionRepeatingCallback& callback);
  
    // Writes the SOCKS handshake buffer into |handshake|
    // and return OK on success.
