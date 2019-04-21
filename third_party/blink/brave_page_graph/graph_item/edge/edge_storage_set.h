@@ -7,7 +7,7 @@
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_STORAGE_SET_H_
 
 #include <string>
-#include "brave/third_party/blink/brave_page_graph/graph_item/edge.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_storage.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
@@ -27,7 +27,7 @@ friend class PageGraph;
 
  protected:
   EdgeStorageSet(PageGraph* const graph,
-    const NodeActor* const out_node, const NodeStorage* const in_node,
+    NodeActor* const out_node, NodeStorage* const in_node,
     const std::string& key, const std::string& value);
   ItemDesc GetDescBody() const override;
   GraphMLXMLList GraphMLAttributes() const override;

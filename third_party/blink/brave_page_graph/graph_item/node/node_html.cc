@@ -7,7 +7,7 @@
 #include <string>
 #include "base/logging.h"
 #include "brave/third_party/blink/brave_page_graph/graphml.h"
-#include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/node/node.h"
 #include "brave/third_party/blink/brave_page_graph/page_graph.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
@@ -31,7 +31,7 @@ void NodeHTML::MarkNodeDeleted() {
 GraphMLXMLList NodeHTML::GraphMLAttributes() const {
   return {
     graphml_attr_def_for_type(kGraphMLAttrDefNodeId)
-      ->ToValue(node_id_)
+      ->ToValue(node_id_ == kRootNodeId ? 0 : node_id_)
   };
 }
 

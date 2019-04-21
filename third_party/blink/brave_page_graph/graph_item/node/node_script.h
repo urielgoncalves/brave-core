@@ -22,7 +22,7 @@ friend class PageGraph;
   bool IsScript() const override;
 
  protected:
-   NodeScript(PageGraph* const graph, const ScriptId script_id,
+  NodeScript(PageGraph* const graph, const ScriptId script_id,
     const ScriptType type);
   ItemDesc GetDescBody() const override;
   GraphMLXMLList GraphMLAttributes() const override;

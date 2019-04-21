@@ -1,8 +1,8 @@
 diff --git a/third_party/blink/renderer/core/html/html_frame_owner_element.cc b/third_party/blink/renderer/core/html/html_frame_owner_element.cc
-index 9eb9c7c7c9d37973879d18b3bcfa275edf5a0ae2..21f537dfd09b18a867c08b93204ff0d2604c7148 100644
+index 9eb9c7c7c9d37973879d18b3bcfa275edf5a0ae2..8d6653c08f45fd346f7231f9c77f2862f49ff7a8 100644
 --- a/third_party/blink/renderer/core/html/html_frame_owner_element.cc
 +++ b/third_party/blink/renderer/core/html/html_frame_owner_element.cc
-@@ -50,6 +50,13 @@
+@@ -50,6 +50,12 @@
  #include "third_party/blink/renderer/platform/runtime_enabled_features.h"
  #include "third_party/blink/renderer/platform/weborigin/security_origin.h"
  
@@ -10,24 +10,22 @@ index 9eb9c7c7c9d37973879d18b3bcfa275edf5a0ae2..21f537dfd09b18a867c08b93204ff0d2
 +#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
 +#include "third_party/blink/renderer/core/dom/document.h"
 +#include "third_party/blink/renderer/core/dom/dom_node_ids.h"
-+#include "brave/third_party/blink/brave_page_graph/page_graph.h"
 +#endif
 +
  namespace blink {
  
  namespace {
-@@ -452,6 +459,14 @@ bool HTMLFrameOwnerElement::LoadOrRedirectSubframe(
-     }
-   }
+@@ -384,6 +390,13 @@ bool HTMLFrameOwnerElement::LoadOrRedirectSubframe(
  
+   LocalFrame* child_frame =
+       GetDocument().GetFrame()->Client()->CreateFrame(frame_name, this);
 +#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
 +  if (GetDocument().GetPageGraph() != nullptr) {
-+    GetDocument().GetPageGraph()->RegisterRequestStartFromElm(
-+      DOMNodeIds::IdForNode(this), request.Url().GetString().Utf8().data(),
-+      brave_page_graph::kRequestTypeDocument);
++    const DOMNodeId dom_node_id = DOMNodeIds::IdForNode(this);
++    child_frame->SetPageGraphNodeIdInParentDocument(dom_node_id);
 +  }
 +#endif
 +
-   child_frame->Loader().StartNavigation(
-       FrameLoadRequest(&GetDocument(), request), child_load_type);
- 
+   DCHECK_EQ(ContentFrame(), child_frame);
+   if (!child_frame)
+     return false;

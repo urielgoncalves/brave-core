@@ -7,7 +7,7 @@
 #include <string>
 #include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_node.h"
-#include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/node/node.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_html_element.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_html.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_actor.h"
@@ -20,7 +20,7 @@ using ::std::to_string;
 namespace brave_page_graph {
 
 EdgeNodeInsert::EdgeNodeInsert(PageGraph* const graph,
-    const NodeActor* const out_node, const NodeHTML* const in_node,
+    NodeActor* const out_node, NodeHTML* const in_node,
     const DOMNodeId parent_id, const DOMNodeId prior_sibling_id) :
       EdgeNode(graph, out_node, in_node),
       parent_id_(parent_id),

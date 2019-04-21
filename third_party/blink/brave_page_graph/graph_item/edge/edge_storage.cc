@@ -6,8 +6,8 @@
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_storage.h"
 #include <string>
 #include "brave/third_party/blink/brave_page_graph/graphml.h"
-#include "brave/third_party/blink/brave_page_graph/graph_item/edge.h"
-#include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/node/node.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_actor.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_storage.h"
 #include "brave/third_party/blink/brave_page_graph/page_graph.h"
@@ -18,7 +18,7 @@ using ::std::string;
 namespace brave_page_graph {
 
 EdgeStorage::EdgeStorage(PageGraph* const graph,
-    const NodeActor* const out_node, const NodeStorage* const in_node,
+    NodeActor* const out_node, NodeStorage* const in_node,
     const string& key) :
       Edge(graph, out_node, in_node),
       key_(key) {}

@@ -6,7 +6,7 @@
 #ifndef BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_HTML_H_
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_HTML_H_
 
-#include "brave/third_party/blink/brave_page_graph/graph_item/edge.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
 namespace brave_page_graph {
@@ -25,12 +25,12 @@ friend class PageGraph;
   ItemName GetItemName() const override;
 
  protected:
-  EdgeHTML(PageGraph* const graph, const NodeHTMLElement* const out_node,
-    const NodeHTML* const in_node);
+  EdgeHTML(PageGraph* const graph, NodeHTMLElement* const out_node,
+    NodeHTML* const in_node);
 
   // Only used for generating edges during GraphML export.
-  EdgeHTML(const NodeHTMLElement* const out_node,
-    const NodeHTML* const in_node);
+  EdgeHTML(NodeHTMLElement* const out_node,
+    NodeHTML* const in_node);
   GraphMLXML GetGraphMLTag() const override;
   GraphMLXMLList GraphMLAttributes() const override;
 };

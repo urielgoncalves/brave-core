@@ -3,11 +3,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include "brave/third_party/blink/brave_page_graph/graph_item/edge.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge.h"
 #include <sstream>
 #include <string>
-#include "brave/third_party/blink/brave_page_graph/graph_item.h"
-#include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/graph_item.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/node/node.h"
 #include "brave/third_party/blink/brave_page_graph/page_graph.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
@@ -18,7 +18,7 @@ using ::std::to_string;
 namespace brave_page_graph {
 
 Edge::Edge(PageGraph* const graph,
-    const Node* const out_node, const Node* const in_node) :
+    Node* const out_node, Node* const in_node) :
       GraphItem(graph),
       out_node_(out_node),
       in_node_(in_node) {}

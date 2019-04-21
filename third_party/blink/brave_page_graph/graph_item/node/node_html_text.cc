@@ -6,7 +6,7 @@
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_html_text.h"
 #include <string>
 #include "base/logging.h"
-#include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/node/node.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_html.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_html_element.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_node_remove.h"

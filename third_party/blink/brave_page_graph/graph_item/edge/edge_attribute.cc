@@ -6,8 +6,8 @@
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_attribute.h"
 #include <string>
 #include "brave/third_party/blink/brave_page_graph/graphml.h"
-#include "brave/third_party/blink/brave_page_graph/graph_item/edge.h"
-#include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/node/node.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_actor.h"
 #include "brave/third_party/blink/brave_page_graph/page_graph.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
@@ -17,7 +17,7 @@ using ::std::string;
 namespace brave_page_graph {
 
 EdgeAttribute::EdgeAttribute(PageGraph* const graph,
-    const NodeActor* const out_node, const Node* const in_node,
+    NodeActor* const out_node, Node* const in_node,
     const string& name, const bool is_style) :
       Edge(graph, out_node, in_node),
       is_style_(is_style),

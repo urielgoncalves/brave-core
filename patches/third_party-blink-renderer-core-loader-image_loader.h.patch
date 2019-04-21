@@ -1,0 +1,41 @@
+diff --git a/third_party/blink/renderer/core/loader/image_loader.h b/third_party/blink/renderer/core/loader/image_loader.h
+index 1cde362805bd4b60be970ffe609a646ca089850b..9fedd6116ccc9fe5b4c55df79cfd1beb52ff0786 100644
+--- a/third_party/blink/renderer/core/loader/image_loader.h
++++ b/third_party/blink/renderer/core/loader/image_loader.h
+@@ -36,6 +36,12 @@
+ #include "third_party/blink/renderer/platform/wtf/hash_set.h"
+ #include "third_party/blink/renderer/platform/wtf/text/atomic_string.h"
+ 
++#include "brave/third_party/blink/brave_page_graph/buildflags/buildflags.h"
++#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++#include "brave/third_party/blink/brave_page_graph/types.h"
++#include "brave/third_party/blink/brave_page_graph/page_graph.h"
++#endif
++
+ namespace blink {
+ 
+ class IncrementLoadEventDelayCount;
+@@ -128,6 +134,12 @@ class CORE_EXPORT ImageLoader : public GarbageCollectedFinalized<ImageLoader>,
+ 
+   void LoadDeferredImage(network::mojom::ReferrerPolicy);
+ 
++#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  ::brave_page_graph::RequestId GetPageGraphRequestId() const {
++    return page_graph_request_id_;
++  }
++#endif
++
+  protected:
+   void ImageChanged(ImageResourceContent*, CanDeferInvalidation) override;
+   void ImageNotifyFinished(ImageResourceContent*) override;
+@@ -238,6 +250,10 @@ class CORE_EXPORT ImageLoader : public GarbageCollectedFinalized<ImageLoader>,
+ 
+   LazyImageLoadState lazy_image_load_state_;
+ 
++#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  ::brave_page_graph::RequestId page_graph_request_id_;
++#endif
++
+   // DecodeRequest represents a single request to the Decode() function. The
+   // decode requests have one of the following states:
+   //

@@ -1,20 +1,21 @@
 diff --git a/third_party/blink/renderer/core/dom/document.h b/third_party/blink/renderer/core/dom/document.h
-index f0f751197c365f2f5bf02ac1a03dc87a80e7f045..e55b9297f4d417e6f5767acd7b4c7807df4b89a0 100644
+index f0f751197c365f2f5bf02ac1a03dc87a80e7f045..d6f28be5ae7b8b9acae5ee9e7a282710b84a675c 100644
 --- a/third_party/blink/renderer/core/dom/document.h
 +++ b/third_party/blink/renderer/core/dom/document.h
-@@ -73,6 +73,11 @@
+@@ -73,6 +73,12 @@
  #include "third_party/blink/renderer/platform/wtf/casting.h"
  #include "third_party/blink/renderer/platform/wtf/hash_set.h"
  
 +#include "brave/third_party/blink/brave_page_graph/buildflags/buildflags.h"
 +#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
 +#include "brave/third_party/blink/brave_page_graph/page_graph.h"
++#include "brave/third_party/blink/brave_page_graph/types.h"
 +#endif
 +
  namespace base {
  class SingleThreadTaskRunner;
  }
-@@ -1520,6 +1525,10 @@ class CORE_EXPORT Document : public ContainerNode,
+@@ -1520,6 +1526,10 @@ class CORE_EXPORT Document : public ContainerNode,
    // associated Web App Manifest, it will return false.
    bool IsInWebAppScope() const;
  
@@ -25,7 +26,7 @@ index f0f751197c365f2f5bf02ac1a03dc87a80e7f045..e55b9297f4d417e6f5767acd7b4c7807
   protected:
    void DidUpdateSecurityOrigin() final;
  
-@@ -1532,6 +1541,10 @@ class CORE_EXPORT Document : public ContainerNode,
+@@ -1532,6 +1542,10 @@ class CORE_EXPORT Document : public ContainerNode,
      return parser_sync_policy_;
    }
  

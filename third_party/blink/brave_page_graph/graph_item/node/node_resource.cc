@@ -5,7 +5,7 @@
 
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_resource.h"
 #include <string>
-#include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/node/node.h"
 #include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/page_graph.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
@@ -14,11 +14,9 @@ using ::std::to_string;
 
 namespace brave_page_graph {
 
-NodeResource::NodeResource(PageGraph* const graph, const ResourceType type,
-    const bool is_successful) :
+NodeResource::NodeResource(PageGraph* const graph, const RequestUrl url) :
       Node(graph),
-      type_(type),
-      successful_(is_successful) {}
+      url_(url) {}
 
 NodeResource::~NodeResource() {}
 
@@ -26,25 +24,20 @@ ItemName NodeResource::GetItemName() const {
   return "NodeResource#" + to_string(id_);
 }
 
-ResourceType NodeResource::GetResourceType() const {
-  return type_;
-}
-
-bool NodeResource::IsSuccessful() const {
-  return successful_;
+RequestUrl NodeResource::GetUrl() const {
+  return url_;
 }
 
 ItemDesc NodeResource::GetDescBody() const {
-  return GetItemName() + " [RequestType:" + request_type_to_string(type_)
-      + ", success:" + to_string(successful_) + "]";
+  return GetItemName() + " [url: " + url_ + "]";
 }
 
 GraphMLXMLList NodeResource::GraphMLAttributes() const {
   return {
     graphml_attr_def_for_type(kGraphMLAttrDefNodeType)
       ->ToValue("resource"),
-    graphml_attr_def_for_type(kGraphMLAttrDefSuccess)
-      ->ToValue(successful_)
+    graphml_attr_def_for_type(kGraphMLAttrDefUrl)
+      ->ToValue(url_)
   };
 }
 

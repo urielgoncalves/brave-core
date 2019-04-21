@@ -6,23 +6,26 @@
 #ifndef BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_PAGE_GRAPH_H_
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_PAGE_GRAPH_H_
 
+#include <atomic>
 #include <map>
 #include <memory>
 #include <string>
 #include <vector>
+#include "brave/third_party/blink/brave_page_graph/script_tracker.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
 namespace brave_page_graph {
 
 class Edge;
+class EdgeRequestStart;
 class GraphItem;
-class InAirRequest;
 class Node;
 class NodeActor;
 class NodeHTML;
 class NodeHTMLElement;
 class NodeHTMLText;
 class NodeParser;
+class NodeResource;
 class NodeScript;
 class NodeShields;
 class NodeStorageCookieJar;
@@ -60,16 +63,25 @@ friend GraphItem;
     const std::string& attr_name);
 
   void RegisterRequestStartFromElm(const DOMNodeId node_id,
-    const RequestUrl url, const RequestType type);
+    const NetworkRequestId request_id, const RequestUrl url,
+    const RequestType type);
   void RegisterRequestStartFromCurrentScript(const RequestUrl url,
     const RequestType type);
 
-  // Local scripts are scripts that define their code inline.
-  void RegisterLocalScript(const DOMNodeId node_id, const SourceCodeHash hash);
-  // Remote scripts are scripts that reference remote code (eg src=...).
-  void RegisterRemoteScript(const DOMNodeId node_id, const UrlHash hash);
+  void RegisterRequestComplete(const NetworkRequestId request_id,
+    const ResourceType type);
+  void RegisterRequestError(const NetworkRequestId request_id);
 
-  void RegisterLocalScriptCompilation(const SourceCodeHash hash,
+  // Methods for handling the registration of script units in the document,
+  // and v8 script executing.
+
+  // Local scripts are scripts that define their code inline.
+  void RegisterLocalScript(const DOMNodeId node_id,
+    const SourceCodeHash code_hash);
+  // Remote scripts are scripts that reference remote code (eg src=...).
+  void RegisterRemoteScript(const DOMNodeId node_id, const UrlHash url_hash);
+
+  void RegisterLocalScriptCompilation(const SourceCodeHash code_hash,
     const ScriptId script_id);
   void RegisterRemoteScriptCompilation(const UrlHash url_hash,
     const SourceCodeHash code_hash, const ScriptId script_id);
@@ -85,6 +97,9 @@ friend GraphItem;
   const std::vector<std::unique_ptr<Node> >& Nodes() const;
   const std::vector<std::unique_ptr<const Edge> >& Edges() const;
   const std::vector<const GraphItem*>& GraphItems() const;
+
+  NetworkRequestId GetNewRequestId();
+  ChildFrameId GetNewChildFrameId();
 
  protected:
   void AddNode(Node* const node);
@@ -133,49 +148,24 @@ friend GraphItem;
   // This map does not own the references.
   std::map<ScriptId, NodeScript* const> script_nodes_;
 
-  // Map to keep track of requests that are still "in the air".
-  // Once we know if a request succeeded, failed, or was
-  // blocked by shields, its removed from here.  Note that this
-  // assumes only one request per URL will be made at a time.  If this turns
-  // out to be frequently wrong, this will need to be redone.
-  std::map<RequestUrl, const std::unique_ptr<InAirRequest> > in_air_requests_;
+  // Request handling
+  // ---
+  std::atomic<NetworkRequestId> current_max_request_id_;
+  std::atomic<ChildFrameId> current_max_child_frame_id_;
+  // Tracks requests that have started, but have not completed yet.
+  std::map<NetworkRequestId, EdgeRequestStart* const> current_requests_;
+  // Makes sure we don't have more than one node in the graph representing
+  // a single URL (not required for correctness, but keeps things tidier
+  // and makes some kinds of queries nicer).
+  std::map<RequestUrl, NodeResource* const> resource_nodes_;
 
   // Keeps track of which scripts are running, and conceptually mirrors the
   // JS stack.
   std::vector<ScriptId> active_script_stack_;
 
-  // Tracking <script> elements to compiled V8 code units.
-  // ---
-  // The following eight maps are all used for keeping track of which
-  // script unit belongs to which page element.  Because different pieces
-  // of information are available at different points in time (and processed
-  // away at other points), we need this semi-convoluted system.  At
-  // a high level, we do the following (indexed and reverse indexed):
-  //   1) Associate the <script> element with the JS code unit (either
-  //      by the code itself, for inline script, or the URL of the code
-  //      for remote code).
-  //   2) For remote fetched code, associate the fetched / compiled JS
-  //      with the URL it came from.
-  //   3) Associate the compiled JS code with the V8 assigned "script id"
-  //      (the identifer v8 uses internally for referring to each script within
-  //      a context).
-  // 
-  // Maps used for step 1.  Maps are from node id to multiple script hashes
-  // because its possible that the text of a script tag could change over time,
-  // (e.g. changing the src attr of the script element to point to a new
-  // URL, changing the innerText of the <script> element).
-  std::map<DOMNodeId, std::vector<UrlHash>> node_id_to_script_url_hashes_;
-  std::map<UrlHash, std::vector<DOMNodeId>> script_src_hash_to_node_ids_;
-  std::map<DOMNodeId, std::vector<SourceCodeHash>> node_id_to_source_hashes_;
-  std::map<SourceCodeHash, std::vector<DOMNodeId>> source_hash_to_node_ids_;
-
-  //  Maps used for step 2.
-  std::map<UrlHash, SourceCodeHash> script_url_hash_to_source_hash_;
-  std::map<SourceCodeHash, UrlHash> source_hash_to_script_url_hash_;
-
-  //  Maps used for step 3.
-  std::map<SourceCodeHash, ScriptId> source_hash_to_script_id_;
-  std::map<ScriptId, SourceCodeHash> script_id_to_source_hash_;
+  // Data structure used for mapping HTML script elements (and other
+  // sources of script in a document) to v8 script units.
+  ScriptTracker script_tracker_;
 };
 
 }  // namespace brave_page_graph

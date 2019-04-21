@@ -1,0 +1,27 @@
+diff --git a/third_party/blink/renderer/core/loader/frame_loader.h b/third_party/blink/renderer/core/loader/frame_loader.h
+index f7df56fded5a55f4d20a3b87f9e9083ed0d72d50..a9c54807558fe19c9865ccd211c2c9aefad41cd2 100644
+--- a/third_party/blink/renderer/core/loader/frame_loader.h
++++ b/third_party/blink/renderer/core/loader/frame_loader.h
+@@ -52,6 +52,11 @@
+ 
+ #include <memory>
+ 
++#include "brave/third_party/blink/brave_page_graph/buildflags/buildflags.h"
++#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++#include "brave/third_party/blink/brave_page_graph/types.h"
++#endif
++
+ namespace blink {
+ 
+ class Document;
+@@ -317,6 +322,10 @@ class CORE_EXPORT FrameLoader final {
+   Member<ContentSecurityPolicy> last_origin_document_csp_;
+ 
+   DISALLOW_COPY_AND_ASSIGN(FrameLoader);
++
++#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  ::brave_page_graph::RequestId current_request_id_;
++#endif
+ };
+ 
+ }  // namespace blink

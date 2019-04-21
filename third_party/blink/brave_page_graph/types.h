@@ -8,6 +8,7 @@
 
 #include <map>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace brave_page_graph {
@@ -16,8 +17,6 @@ class Element;
 class Edge;
 class Node;
 class NodeHTML;
-
-typedef std::string RequestUrl;
 
 typedef std::vector<const Edge*> EdgeList;
 typedef std::vector<Node*> NodeList;
@@ -42,8 +41,11 @@ typedef enum {
   kGraphMLAttrDefNodeText,
   kGraphMLAttrDefNodeType,
   kGraphMLAttrDefParentNodeId,
+  kGraphMLAttrDefRequestId,
   kGraphMLAttrDefRequestType,
+  kGraphMLAttrDefResourceType,
   kGraphMLAttrDefScriptType,
+  kGraphMLAttrDefStatus,
   kGraphMLAttrDefSuccess,
   kGraphMLAttrDefUrl,
   kGraphMLAttrDefValue,
@@ -94,7 +96,7 @@ typedef enum {
   kResourceTypeSVG,
   kResourceTypeUnknown
 } ResourceType;
-std::string request_type_to_string(const ResourceType type) noexcept;
+std::string resource_type_to_string(const ResourceType type) noexcept;
 
 typedef enum {
   kScriptTypeClassic = 0,
@@ -103,6 +105,14 @@ typedef enum {
   kScriptTypeUnknown
 } ScriptType;
 std::string script_type_to_string(const ScriptType type) noexcept;
+
+typedef enum {
+  kRequestStatusStart = 0,
+  kRequestStatusComplete,
+  kRequestStatusError,
+  kRequestStatusBlocked
+} RequestStatus;
+std::string request_status_to_string(const RequestStatus status) noexcept;
 
 enum NodeType {
   kElementNode = 1,
@@ -122,6 +132,13 @@ typedef uint64_t ScriptId;
 typedef uint64_t DOMNodeId;
 typedef uint64_t PageGraphId;
 typedef std::string MethodName;
+
+typedef std::string RequestUrl;
+
+typedef uint64_t NetworkRequestId;
+typedef uint64_t ChildFrameId;
+
+const DOMNodeId kRootNodeId = ULLONG_MAX;
 
 }  // namespace brave_page_graph
 

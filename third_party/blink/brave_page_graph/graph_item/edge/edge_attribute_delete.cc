@@ -5,11 +5,11 @@
 
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_attribute_delete.h"
 #include <string>
-#include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_attribute.h"
-#include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/node/node.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_html_element.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_script.h"
+#include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/page_graph.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
@@ -19,7 +19,7 @@ using ::std::to_string;
 namespace brave_page_graph {
 
 EdgeAttributeDelete::EdgeAttributeDelete(PageGraph* const graph,
-    const NodeActor* const out_node, const NodeHTMLElement* const in_node,
+    NodeActor* const out_node, NodeHTMLElement* const in_node,
     const string& name, const bool is_style) :
       EdgeAttribute(graph, out_node, in_node, name, is_style) {}
 

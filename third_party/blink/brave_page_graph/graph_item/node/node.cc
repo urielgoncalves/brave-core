@@ -3,13 +3,13 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/node/node.h"
 #include <ostream>
 #include <sstream>
 #include <string>
 #include <vector>
-#include "brave/third_party/blink/brave_page_graph/graph_item/edge.h"
-#include "brave/third_party/blink/brave_page_graph/graph_item.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/graph_item.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
 using ::std::string;

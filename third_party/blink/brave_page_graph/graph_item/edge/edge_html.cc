@@ -8,7 +8,7 @@
 #include <sstream>
 #include <string>
 #include "brave/third_party/blink/brave_page_graph/graphml.h"
-#include "brave/third_party/blink/brave_page_graph/graph_item/edge.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_html.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_html_element.h"
 #include "brave/third_party/blink/brave_page_graph/graphml.h"
@@ -21,12 +21,12 @@ using ::std::to_string;
 
 namespace brave_page_graph {
 
-EdgeHTML::EdgeHTML(PageGraph* const graph,
-    const NodeHTMLElement* const out_node, const NodeHTML* const in_node) :
+EdgeHTML::EdgeHTML(PageGraph* const graph, NodeHTMLElement* const out_node,
+    NodeHTML* const in_node) :
       Edge(graph, out_node, in_node) {}
 
-EdgeHTML::EdgeHTML(const NodeHTMLElement* const out_node,
-    const NodeHTML* const in_node) :
+EdgeHTML::EdgeHTML(NodeHTMLElement* const out_node,
+    NodeHTML* const in_node) :
       Edge(nullptr, out_node, in_node) {}
 
 EdgeHTML::~EdgeHTML() {}

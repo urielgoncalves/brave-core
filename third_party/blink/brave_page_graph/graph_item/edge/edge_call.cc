@@ -7,8 +7,8 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include "brave/third_party/blink/brave_page_graph/graph_item/edge.h"
-#include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/node/node.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_script.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_webapi.h"
 #include "brave/third_party/blink/brave_page_graph/graphml.h"
@@ -22,8 +22,8 @@ using ::std::vector;
 
 namespace brave_page_graph {
 
-EdgeCall::EdgeCall(PageGraph* const graph, const NodeScript* const out_node,
-    const NodeWebAPI* const in_node, const string& method,
+EdgeCall::EdgeCall(PageGraph* const graph, NodeScript* const out_node,
+    NodeWebAPI* const in_node, const string& method,
     const vector<const string>& arguments) :
       Edge(graph, out_node, in_node),
       method_(method),

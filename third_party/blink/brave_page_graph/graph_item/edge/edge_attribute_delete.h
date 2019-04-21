@@ -7,7 +7,7 @@
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_ATTRIBUTE_DELETE_H_
 
 #include <string>
-#include "brave/third_party/blink/brave_page_graph/graph_item/edge.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_attribute.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
@@ -26,8 +26,8 @@ friend class PageGraph;
   ItemName GetItemName() const override;
 
  protected:
-  EdgeAttributeDelete(PageGraph* const graph, const NodeActor* const out_node,
-    const NodeHTMLElement* const in_node, const std::string& name,
+  EdgeAttributeDelete(PageGraph* const graph, NodeActor* const out_node,
+    NodeHTMLElement* const in_node, const std::string& name,
     const bool is_style = false);
   ItemDesc GetDescBody() const override;
   GraphMLXMLList GraphMLAttributes() const override;

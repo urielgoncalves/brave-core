@@ -15,7 +15,10 @@
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_node_delete.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_node_insert.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_node_remove.h"
-#include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/edge/request/edge_request_complete.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/edge/request/edge_request_error.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/edge/request/edge_request_start.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/node/node.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_html.h"
 #include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/page_graph.h"
@@ -98,7 +101,7 @@ GraphMLXML NodeHTMLElement::GetGraphMLTag() const {
   stringstream builder;
   builder << Node::GetGraphMLTag();
 
-  for (const NodeHTML* const child_node : child_nodes_) {
+  for (NodeHTML* const child_node : child_nodes_) {
     EdgeHTML html_edge(this, child_node);
     builder << html_edge.GetGraphMLTag();
   }

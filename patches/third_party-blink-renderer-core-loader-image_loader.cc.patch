@@ -1,15 +1,16 @@
 diff --git a/third_party/blink/renderer/core/loader/image_loader.cc b/third_party/blink/renderer/core/loader/image_loader.cc
-index 81a68656eeff73515430ea71d9a3a25361897eeb..28f49fce4130aa899baa536c1f7eced7a38e9366 100644
+index 81a68656eeff73515430ea71d9a3a25361897eeb..53adba7b2963cdd7cf03deb8f6e8a434aa94993c 100644
 --- a/third_party/blink/renderer/core/loader/image_loader.cc
 +++ b/third_party/blink/renderer/core/loader/image_loader.cc
-@@ -65,6 +65,14 @@
+@@ -65,6 +65,15 @@
  #include "third_party/blink/renderer/platform/weborigin/security_origin.h"
  #include "third_party/blink/renderer/platform/weborigin/security_policy.h"
  
 +#include "brave/third_party/blink/brave_page_graph/buildflags/buildflags.h"
 +#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
-+#include "third_party/blink/renderer/core/dom/document.h"
++#include <atomic>
 +#include "third_party/blink/renderer/core/dom/dom_node_ids.h"
++#include "brave/third_party/blink/brave_page_graph/types.h"
 +#include "brave/third_party/blink/brave_page_graph/page_graph.h"
 +#endif
 +
@@ -17,17 +18,78 @@ index 81a68656eeff73515430ea71d9a3a25361897eeb..28f49fce4130aa899baa536c1f7eced7
  namespace blink {
  
  namespace {
-@@ -413,6 +421,13 @@ inline void ImageLoader::EnqueueImageLoadingMicroTask(
-   pending_task_ = task->GetWeakPtr();
-   Microtask::EnqueueMicrotask(
-       WTF::Bind(&Task::Run, WTF::Passed(std::move(task))));
+@@ -190,6 +199,8 @@ ImageLoader::ImageLoader(Element* element)
+       suppress_error_events_(false),
+       lazy_image_load_state_(LazyImageLoadState::kNone) {
+   RESOURCE_LOADING_DVLOG(1) << "new ImageLoader " << this;
++  page_graph_request_id_ = element_
++    ->GetDocument().GetPageGraph()->GetNewRequestId();
+ }
+ 
+ ImageLoader::~ImageLoader() = default;
+@@ -457,6 +468,16 @@ void ImageLoader::DoUpdateFromElement(
+   if (!document.IsActive())
+     return;
+ 
 +#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
 +  if (element_->GetDocument().GetPageGraph() != nullptr) {
 +    element_->GetDocument().GetPageGraph()->RegisterRequestStartFromElm(
-+      DOMNodeIds::IdForNode(element_), request_url.GetString().Utf8().data(),
++      DOMNodeIds::IdForNode(element_), 
++      GetPageGraphRequestId(),
++      url.GetString().Utf8().data(),
 +      brave_page_graph::kRequestTypeImage);
 +  }
 +#endif
-   delay_until_do_update_from_element_ =
-       IncrementLoadEventDelayCount::Create(element_->GetDocument());
- }
++
+   AtomicString image_source_url = element_->ImageSourceURL();
+   ImageResourceContent* new_image_content = nullptr;
+   if (!url.IsNull() && !url.IsEmpty()) {
+@@ -775,6 +796,14 @@ void ImageLoader::ImageNotifyFinished(ImageResourceContent* resource) {
+     return;
+   }
+ 
++#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  if (element_->GetDocument().GetPageGraph() != nullptr) {
++    element_->GetDocument().GetPageGraph()->RegisterRequestComplete(
++      GetPageGraphRequestId(),
++      brave_page_graph::kRequestTypeImage);
++  }
++#endif
++
+   if (resource->ErrorOccurred()) {
+     pending_load_event_.Cancel();
+ 
+@@ -851,8 +880,15 @@ void ImageLoader::DispatchPendingLoadEvent(
+   if (!image_content_)
+     return;
+   CHECK(image_complete_);
+-  if (GetElement()->GetDocument().GetFrame())
++  if (GetElement()->GetDocument().GetFrame()) {
++#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++    if (GetElement()->GetDocument().GetPageGraph() != nullptr) {
++      GetElement()->GetDocument().GetPageGraph()->RegisterRequestComplete(
++        GetPageGraphRequestId(), brave_page_graph::kResourceTypeImage);
++    }
++#endif
+     DispatchLoadEvent();
++  }
+ 
+   // Checks Document's load event synchronously here for performance.
+   // This is safe because DispatchPendingLoadEvent() is called asynchronously.
+@@ -861,8 +897,15 @@ void ImageLoader::DispatchPendingLoadEvent(
+ 
+ void ImageLoader::DispatchPendingErrorEvent(
+     std::unique_ptr<IncrementLoadEventDelayCount> count) {
+-  if (GetElement()->GetDocument().GetFrame())
++  if (GetElement()->GetDocument().GetFrame()) {
++#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++    if (GetElement()->GetDocument().GetPageGraph() != nullptr) {
++      GetElement()->GetDocument().GetPageGraph()->RegisterRequestError(
++        GetPageGraphRequestId());
++    }
++#endif
+     GetElement()->DispatchEvent(*Event::Create(event_type_names::kError));
++  }
+ 
+   // Checks Document's load event synchronously here for performance.
+   // This is safe because DispatchPendingErrorEvent() is called asynchronously.

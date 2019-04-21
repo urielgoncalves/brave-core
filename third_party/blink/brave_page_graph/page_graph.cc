@@ -20,29 +20,33 @@
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_node_delete.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_node_insert.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_node_remove.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/edge/request/edge_request.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/edge/request/edge_request_start.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/edge/request/edge_request_error.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/edge/request/edge_request_complete.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_actor.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_html.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_html_element.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_html_text.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_parser.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/node/node_resource.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_script.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_shields.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_storage_cookiejar.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_storage_localstorage.h"
-#include "brave/third_party/blink/brave_page_graph/requests/in_air_request.h"
+#include "brave/third_party/blink/brave_page_graph/script_tracker.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
 using ::std::endl;
 using ::std::make_unique;
 using ::std::map;
+using ::std::move;
 using ::std::string;
 using ::std::to_string;
 using ::std::unique_ptr;
 using ::std::vector;
 
 namespace brave_page_graph {
-
-const DOMNodeId kRootNodeId = ULLONG_MAX;
 
 namespace {
   PageGraph* yuck = nullptr;
@@ -285,63 +289,106 @@ void PageGraph::RegisterAttributeDelete(const DOMNodeId node_id,
 }
 
 void PageGraph::RegisterRequestStartFromElm(const DOMNodeId node_id,
-    const RequestUrl url, const RequestType type) {
+    const NetworkRequestId request_id, const RequestUrl url,
+    const RequestType type) {
   // For now, explode if we're getting duplicate requests for the same
   // URL in the same document.  This might need to be changed.
-  // LOG_ASSERT(in_air_requests_.count(url) == 0);
+  log("RegisterRequestStartFromElm: " + to_string(node_id)
+    + ", request id: " + to_string(request_id) +
+    + ", url:" + url
+    + ", type: " + to_string(type));
+
+  // We should know about the node thats issuing the request.
   LOG_ASSERT(element_nodes_.count(node_id) == 1);
-  NodeHTMLElement* node = element_nodes_.at(node_id);
-  in_air_requests_.emplace(url, make_unique<InAirRequest>(url, type, node));
+  // We should also not have seen a request with this id before.
+  LOG_ASSERT(current_requests_.count(request_id) == 0);
+
+  NodeHTMLElement* const requesting_node = element_nodes_.at(node_id);
+  NodeResource* requested_node;
+  if (resource_nodes_.count(url) == 0) {
+    log("RegisterRequestStartFromElm: First time seeing request for " + url);
+    requested_node = new NodeResource(this, url);
+    AddNode(requested_node);
+    resource_nodes_.emplace(url, requested_node);
+  } else {
+    requested_node = resource_nodes_.at(url);
+  }
+
+  const EdgeRequest* const edge = new EdgeRequestStart(this, requesting_node,
+    requested_node, request_id, type);
+  current_requests_.emplace(request_id, edge);
+  AddEdge(edge);
+
+  requesting_node->AddOutEdge(edge);
+  requested_node->AddInEdge(edge);
 }
+
+void PageGraph::RegisterRequestComplete(const NetworkRequestId request_id,
+    const ResourceType type) {
+  log("RegisterRequestComplete: " + to_string(request_id) +
+    ", successful: " + resource_type_to_string(type));
+  // There should be an outstanding request that is being closed here,
+  // otherwise, there is a request we didn't correctly register being sent.
+  LOG_ASSERT(current_requests_.count(request_id) == 1);
+
+  EdgeRequestStart* const request_edge = current_requests_.at(request_id);
+  NodeResource* const resource_node = request_edge->GetResourceNode();
+  Node* const requesting_node = request_edge->GetRequestingNode();
+
+  const EdgeRequestComplete* const request_edge = new EdgeRequestComplete(
+    this, resource_node, requesting_node, request_id, type);
+  current_requests_.erase(request_id);
+  AddEdge(request_edge);
+
+  resource_node->AddOutEdge(request_edge);
+  requesting_node->AddInEdge(request_edge);
+}
+
+void PageGraph::RegisterRequestError(const NetworkRequestId request_id) {
+  log("RegisterRequestError: " + to_string(request_id));
+  // There should be an outstanding request that is being closed here,
+  // otherwise, there is a request we didn't correctly register being sent.
+  LOG_ASSERT(current_requests_.count(request_id) == 1);
+
+  EdgeRequestStart* const request_edge = current_requests_.at(request_id);
+  NodeResource* const resource_node = request_edge->GetResourceNode();
+  Node* const requesting_node = request_edge->GetRequestingNode();
+
+  const EdgeRequestError* const request_edge = new EdgeRequestError(
+    this, resource_node, requesting_node, request_id);
+  current_requests_.erase(request_id);
+  AddEdge(request_edge);
+
+  resource_node->AddOutEdge(request_edge);
+  requesting_node->AddInEdge(request_edge);
+}
+
 
 void PageGraph::RegisterRequestStartFromCurrentScript(const RequestUrl url,
     const RequestType type) {
-  NodeActor* const current_script = GetCurrentActingNode();
-  LOG_ASSERT(current_script->IsScript());
-  unique_ptr<InAirRequest> ptr = make_unique<InAirRequest>(url, type,
-    static_cast<NodeScript*>(current_script));
-  in_air_requests_.emplace(url, std::move(ptr));
+  // This isn't implemented yet...
+  LOG_ASSERT(false);
 }
 
 void PageGraph::RegisterLocalScript(const DOMNodeId node_id,
-    const SourceCodeHash hash) {
-  if (node_id_to_source_hashes_.count(node_id) == 0) {
-    node_id_to_source_hashes_.emplace(node_id, vector<SourceCodeHash>());
-  }
-  node_id_to_source_hashes_.at(node_id).push_back(hash);
-
-  if (source_hash_to_node_ids_.count(hash) == 0) {
-    source_hash_to_node_ids_.emplace(hash, vector<DOMNodeId>());
-  }
-  source_hash_to_node_ids_.at(hash).push_back(node_id);
+    const SourceCodeHash code_hash) {
+  script_tracker_.AddScriptSourceForElm(node_id, code_hash);
 }
 
 void PageGraph::RegisterRemoteScript(const DOMNodeId node_id,
-    const UrlHash hash) {
-  if (node_id_to_script_url_hashes_.count(node_id) == 0) {
-    node_id_to_script_url_hashes_.emplace(node_id, vector<UrlHash>());
-  }
-  node_id_to_script_url_hashes_.at(node_id).push_back(hash);
-
-  if (script_src_hash_to_node_ids_.count(hash) == 0) {
-    script_src_hash_to_node_ids_.emplace(hash, vector<DOMNodeId>());
-  }
-  script_src_hash_to_node_ids_.at(hash).push_back(node_id);
+    const UrlHash url_hash) {
+  script_tracker_.AddScriptUrlForElm(node_id, url_hash);
 }
 
-void PageGraph::RegisterLocalScriptCompilation(const SourceCodeHash hash,
+void PageGraph::RegisterLocalScriptCompilation(const SourceCodeHash code_hash,
     const ScriptId script_id) {
-  source_hash_to_script_id_.emplace(hash, script_id);
-  script_id_to_source_hash_.emplace(script_id, hash);
+  script_tracker_.SetScriptIdForCompliedCode(script_id, code_hash);
 }
 
 void PageGraph::RegisterRemoteScriptCompilation(const UrlHash url_hash,
     const SourceCodeHash code_hash, const ScriptId script_id) {
-  script_url_hash_to_source_hash_.emplace(url_hash, code_hash);
-  source_hash_to_script_url_hash_.emplace(code_hash, url_hash);
-
-  source_hash_to_script_id_.emplace(code_hash, script_id);
-  script_id_to_source_hash_.emplace(script_id, code_hash);
+  script_tracker_.AddHashOfFetchedSourceFromUrl(code_hash, url_hash);
+  script_tracker_.SetScriptIdForCompliedCode(script_id, code_hash);
 }
 
 void PageGraph::RegisterScriptExecStart(const ScriptId script_id) {
@@ -377,6 +424,14 @@ const vector<const GraphItem*>& PageGraph::GraphItems() const {
   return graph_items_;
 }
 
+NetworkRequestId PageGraph::GetNewRequestId() {
+  return ++current_max_request_id_;
+}
+
+ChildFrameId PageGraph::GetNewChildFrameId() {
+  return ++current_max_child_frame_id_;
+}
+
 void PageGraph::AddNode(Node* const node) {
   nodes_.push_back(unique_ptr<Node>(node));
   graph_items_.push_back(node);
@@ -388,47 +443,11 @@ void PageGraph::AddEdge(const Edge* const edge) {
 }
 
 vector<DOMNodeId> PageGraph::NodeIdsForScriptId(const ScriptId script_id) const {
-  SourceCodeHash code_hash = script_id_to_source_hash_.at(script_id);
-  vector<DOMNodeId> node_ids;
-
-  if (source_hash_to_node_ids_.count(code_hash) == 1) {
-    for (DOMNodeId const &node_id : source_hash_to_node_ids_.at(code_hash)) {
-      node_ids.push_back(node_id);
-    }
-  }
-
-  if (source_hash_to_script_url_hash_.count(code_hash) == 1) {
-    UrlHash script_url_hash = source_hash_to_script_url_hash_.at(code_hash);
-
-    if (script_src_hash_to_node_ids_.count(script_url_hash) == 1) {
-      for (const DOMNodeId &node_id : script_src_hash_to_node_ids_.at(script_url_hash)) {
-        node_ids.push_back(node_id);
-      }
-    }
-  }
-
-  return node_ids;
+  script_tracker_.GetElmsForScriptId(script_id);
 }
 
 vector<ScriptId> PageGraph::ScriptIdsForNodeId(const DOMNodeId node_id) const {
-  vector<ScriptId> script_ids;
-
-  if (node_id_to_source_hashes_.count(node_id) == 1) {
-    for (const ScriptId &a_script_id : node_id_to_source_hashes_.at(node_id)) {
-      script_ids.push_back(a_script_id);
-    }
-  }
-
-  if (node_id_to_script_url_hashes_.count(node_id) == 1) {
-    for (const ScriptId &url_hash: node_id_to_script_url_hashes_.at(node_id)) {
-      if (script_url_hash_to_source_hash_.count(url_hash) == 1) {
-        ScriptId script_id_for_url = script_url_hash_to_source_hash_.at(url_hash);
-        script_ids.push_back(script_id_for_url);
-      }
-    }
-  }
-
-  return script_ids;
+  script_tracker_.GetScriptIdsForElm(node_id);
 }
 
 void PageGraph::PushActiveScript(const ScriptId script_id) {

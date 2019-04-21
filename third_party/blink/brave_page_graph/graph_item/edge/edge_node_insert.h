@@ -27,8 +27,8 @@ friend class PageGraph;
   NodeHTML* GetPriorSiblingNode() const;
 
  protected:
-  EdgeNodeInsert(PageGraph* const graph, const NodeActor* const out_node,
-    const NodeHTML* const in_node, const DOMNodeId parent_id = 0,
+  EdgeNodeInsert(PageGraph* const graph, NodeActor* const out_node,
+    NodeHTML* const in_node, const DOMNodeId parent_id = 0,
     const DOMNodeId prior_sibling_id = 0);
   ItemDesc GetDescBody() const override;
   GraphMLXMLList GraphMLAttributes() const override;

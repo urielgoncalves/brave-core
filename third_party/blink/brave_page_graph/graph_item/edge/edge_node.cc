@@ -4,8 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_node.h"
-#include "brave/third_party/blink/brave_page_graph/graph_item/edge.h"
-#include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/node/node.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_actor.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_html.h"
 #include "brave/third_party/blink/brave_page_graph/page_graph.h"
@@ -13,8 +13,8 @@
 
 namespace brave_page_graph {
 
-EdgeNode::EdgeNode(PageGraph* const graph, const NodeActor* const out_node,
-    const NodeHTML* const in_node) :
+EdgeNode::EdgeNode(PageGraph* const graph, NodeActor* const out_node,
+    NodeHTML* const in_node) :
       Edge(graph, out_node, in_node) {}
 
 }  // namespace brave_page_graph

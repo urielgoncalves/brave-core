@@ -7,7 +7,7 @@
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_ATTRIBUTE_H_
 
 #include <string>
-#include "brave/third_party/blink/brave_page_graph/graph_item/edge.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
 namespace brave_page_graph {
@@ -24,8 +24,8 @@ friend class PageGraph;
   bool GetIsStyle() const;
 
  protected:
-  EdgeAttribute(PageGraph* const graph, const NodeActor* const out_node,
-    const Node* const in_node, const std::string& name,
+  EdgeAttribute(PageGraph* const graph, NodeActor* const out_node,
+    Node* const in_node, const std::string& name,
     const bool is_style = false);
   GraphMLXMLList GraphMLAttributes() const override;
 

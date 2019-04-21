@@ -6,20 +6,25 @@
 #ifndef BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_NODE_HTML_ELEMENT_H_
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_NODE_HTML_ELEMENT_H_
 
+#include <map>
 #include <string>
-#include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/node/node.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_html.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
 namespace brave_page_graph {
 
 class PageGraph;
+class EdgeAttributeDelete;
+class EdgeAttributeSet;
 class EdgeNodeCreate;
 class EdgeNodeDelete;
 class EdgeNodeInsert;
 class EdgeNodeRemove;
-class EdgeAttributeDelete;
-class EdgeAttributeSet;
+class EdgeRequestComplete;
+class EdgeRequestError;
+class EdgeRequestStart;
+class NodeResource;
 
 class NodeHTMLElement final : public NodeHTML {
 friend class PageGraph;
@@ -37,7 +42,13 @@ friend class NodeHTML;
   void AddInEdge(const EdgeNodeDelete* const edge);
   void AddInEdge(const EdgeAttributeSet* const edge);
   void AddInEdge(const EdgeAttributeDelete* const edge);
+  void AddOutEdge(const EdgeAttributeDelete* const edge);
   
+  using Node::AddOutEdge;
+  void AddOutEdge(const EdgeRequestComplete* const edge);
+  void AddOutEdge(const EdgeRequestError* const edge);
+  void AddOutEdge(const EdgeRequestStart* const edge);
+
   const HTMLNodeList& ChildNodes() const;
   GraphMLXML GetGraphMLTag() const override;
 

@@ -10,11 +10,11 @@
 #include <sstream>
 #include <string>
 #include "base/logging.h"
-#include "brave/third_party/blink/brave_page_graph/graph_item.h"
-#include "brave/third_party/blink/brave_page_graph/graph_item/edge.h"
-#include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/graph_item.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/node/node.h"
 #include "brave/third_party/blink/brave_page_graph/graphml.h"
-#include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/node/node.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_html_element.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_html.h"
 #include "brave/third_party/blink/brave_page_graph/page_graph.h"
@@ -35,7 +35,7 @@ namespace {
   GraphMLAttr* attr_value = new GraphMLAttr(kGraphMLAttrForTypeEdge,
     "attr value");
   GraphMLAttr* before_node_attr = new GraphMLAttr(kGraphMLAttrForTypeEdge,
-    "before", kGraphMLAttrTypeInt);
+    "before", kGraphMLAttrTypeLong);
   GraphMLAttr* call_args = new GraphMLAttr(kGraphMLAttrForTypeEdge, "args");
   GraphMLAttr* edge_type = new GraphMLAttr(kGraphMLAttrForTypeEdge,
     "edge type");
@@ -45,26 +45,32 @@ namespace {
   GraphMLAttr* method_attr = new GraphMLAttr(kGraphMLAttrForTypeEdge, "method");
   GraphMLAttr* tag_attr = new GraphMLAttr(kGraphMLAttrForTypeNode, "tag name");
   GraphMLAttr* node_id_attr = new GraphMLAttr(kGraphMLAttrForTypeNode,
-    "node id", kGraphMLAttrTypeInt);
+    "node id", kGraphMLAttrTypeLong);
   GraphMLAttr* node_text = new GraphMLAttr(kGraphMLAttrForTypeNode, "text");
   GraphMLAttr* node_type = new GraphMLAttr(kGraphMLAttrForTypeNode,
     "node type");
   GraphMLAttr* parent_node_attr = new GraphMLAttr(kGraphMLAttrForTypeEdge,
-    "parent", kGraphMLAttrTypeInt);
+    "parent", kGraphMLAttrTypeLong);
   GraphMLAttr* script_type = new GraphMLAttr(kGraphMLAttrForTypeNode,
     "script type");
+  GraphMLAttr* status_type = new GraphMLAttr(kGraphMLAttrForTypeEdge, "status");
   GraphMLAttr* success_attr = new GraphMLAttr(kGraphMLAttrForTypeNode,
     "is success", kGraphMLAttrTypeBoolean);
-  GraphMLAttr* url_attr = new GraphMLAttr(kGraphMLAttrForTypeEdge, "url");
+  GraphMLAttr* url_attr = new GraphMLAttr(kGraphMLAttrForTypeNode, "url");
+  GraphMLAttr* request_id_attr = new GraphMLAttr(kGraphMLAttrForTypeEdge,
+    "request id", kGraphMLAttrTypeLong);
   GraphMLAttr* request_type_attr = new GraphMLAttr(kGraphMLAttrForTypeEdge,
     "request type");
+  GraphMLAttr* resource_type_attr = new GraphMLAttr(kGraphMLAttrForTypeEdge,
+    "resource type");
   GraphMLAttr* value_attr = new GraphMLAttr(kGraphMLAttrForTypeEdge, "value");
 
-  const int num_attrs = 18;
+  const int num_attrs = 21;
   GraphMLAttr* all_attrs[num_attrs] = {attr_name, attr_value, before_node_attr,
     call_args, edge_type, key_attr, method_attr, tag_attr, node_id_attr,
-    node_text, node_type, parent_node_attr, script_type, success_attr, url_attr,
-    request_type_attr, value_attr, is_style_attr};
+    node_text, node_type, parent_node_attr, script_type, status_type,
+    success_attr, url_attr, request_id_attr, request_type_attr,
+    resource_type_attr, value_attr, is_style_attr};
 }
 
 GraphMLXML graphml_for_page_graph(const PageGraph* const graph) noexcept {
@@ -134,7 +140,7 @@ GraphMLXML GraphMLAttr::ToValue(const string& value) const {
 }
 
 GraphMLXML GraphMLAttr::ToValue(const DOMNodeId value) const {
-  LOG_ASSERT(type_ == kGraphMLAttrTypeInt);
+  LOG_ASSERT(type_ == kGraphMLAttrTypeLong);
   return "<data key=\"" + GetGraphMLId() + "\">" + to_string(value) + "</data>";
 }
 
@@ -167,10 +173,16 @@ GraphMLAttr* graphml_attr_def_for_type(const GraphMLAttrDef type) noexcept {
       return node_type;
     case kGraphMLAttrDefParentNodeId:
       return parent_node_attr;
+    case kGraphMLAttrDefRequestId:
+      return request_id_attr;
     case kGraphMLAttrDefRequestType:
       return request_type_attr;
+    case kGraphMLAttrDefResourceType:
+      return resource_type_attr;
     case kGraphMLAttrDefScriptType:
       return script_type;
+    case kGraphMLAttrDefStatus:
+      return status_type;
     case kGraphMLAttrDefSuccess:
       return success_attr;
     case kGraphMLAttrDefUrl:

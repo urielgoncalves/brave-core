@@ -6,7 +6,7 @@
 #ifndef BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_NODE_H_
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_NODE_H_
 
-#include "brave/third_party/blink/brave_page_graph/graph_item/edge.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
 namespace brave_page_graph {
@@ -22,8 +22,8 @@ friend class PageGraph;
   EdgeNode() = delete;
 
  protected:
-  EdgeNode(PageGraph* const graph, const NodeActor* const out_node,
-    const NodeHTML* const in_node);
+  EdgeNode(PageGraph* const graph, NodeActor* const out_node,
+    NodeHTML* const in_node);
 };
 
 }  // namespace brave_page_graph

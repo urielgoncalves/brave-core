@@ -6,7 +6,7 @@
 #ifndef BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_NODE_RESOURCE_H_
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_NODE_RESOURCE_H_
 
-#include "brave/third_party/blink/brave_page_graph/graph_item/node.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/node/node.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
 namespace brave_page_graph {
@@ -19,17 +19,14 @@ friend class PageGraph;
   NodeResource() = delete;
   ~NodeResource() override;
   ItemName GetItemName() const override;
-  ResourceType GetResourceType() const;
-  bool IsSuccessful() const;
+  RequestUrl GetUrl() const;
 
  protected:
-  NodeResource(PageGraph* const graph, const ResourceType type,
-    const bool is_successful);
+  NodeResource(PageGraph* const graph, const RequestUrl url);
   ItemDesc GetDescBody() const override;
   GraphMLXMLList GraphMLAttributes() const override;
 
-  const ResourceType type_;
-  const bool successful_;
+  const RequestUrl url_;
 };
 
 }  // namespace brave_page_graph

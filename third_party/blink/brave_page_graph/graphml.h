@@ -26,8 +26,8 @@ class GraphMLAttr {
   GraphMLXML ToDefinition() const;
   GraphMLXML ToValue(const char* value) const;
   GraphMLXML ToValue(const std::string& value) const;
-  GraphMLXML ToValue(const DOMNodeId value) const;
   GraphMLXML ToValue(const bool value) const;
+  GraphMLXML ToValue(const uint64_t value) const;
 
  protected:
   const uint64_t id_;

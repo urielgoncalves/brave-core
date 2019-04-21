@@ -8,7 +8,7 @@
 
 #include <string>
 #include <vector>
-#include "brave/third_party/blink/brave_page_graph/graph_item/edge.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
 namespace brave_page_graph {
@@ -28,8 +28,8 @@ friend class PageGraph;
   std::string GetArgumentsString() const;
 
  protected:
-  EdgeCall(PageGraph* const graph, const NodeScript* const out_node,
-    const NodeWebAPI* const in_node, const std::string& method,
+  EdgeCall(PageGraph* const graph, NodeScript* const out_node,
+    NodeWebAPI* const in_node, const std::string& method,
     const std::vector<const std::string>& arguments);
   ItemDesc GetDescBody() const override;
   GraphMLXMLList GraphMLAttributes() const override;

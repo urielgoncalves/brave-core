@@ -68,12 +68,12 @@ string request_type_to_string(const RequestType type) noexcept {
   }
 }
 
-string request_type_to_string(const ResourceType type) noexcept {
+string resource_type_to_string(const ResourceType type) noexcept {
   switch (type) {
     case kResourceTypeAudio:
       return "audio";
     case kResourceTypeCSS:
-      return "cSS";
+      return "CSS";
     case kResourceTypeDocument:
       return "document";
     case kResourceTypeFont:
@@ -85,7 +85,7 @@ string request_type_to_string(const ResourceType type) noexcept {
     case kResourceTypeScript:
       return "script";
     case kResourceTypeSVG:
-      return "sVG";
+      return "SVG";
     case kResourceTypeUnknown:
       return "unknown";
   }
@@ -94,14 +94,27 @@ string request_type_to_string(const ResourceType type) noexcept {
 string script_type_to_string(const ScriptType type) noexcept {
   switch (type) {
     case kScriptTypeClassic:
-      return "Classic";
+      return "classic";
     case kScriptTypeModule:
-      return "Module";
+      return "module";
     case kScriptTypeExtension:
-      return "Extension";
+      return "extension";
     case kScriptTypeUnknown:
     default:
-      return "Unknown";
+      return "unknown";
+  }
+}
+
+string request_status_to_string(const RequestStatus status) noexcept {
+  switch (status) {
+    case kRequestStatusStart:
+      return "started";
+    case kRequestStatusComplete:
+      return "complete";
+    case kRequestStatusError:
+      return "error";
+    case kRequestStatusBlocked:
+      return "blocked";
   }
 }
 
