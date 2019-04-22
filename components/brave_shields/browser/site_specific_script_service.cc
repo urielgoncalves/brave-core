@@ -39,7 +39,8 @@ SiteSpecificScriptService::SiteSpecificScriptRule::SiteSpecificScriptRule(
 SiteSpecificScriptService::SiteSpecificScriptRule::~SiteSpecificScriptRule() =
   default;
 
-bool SiteSpecificScriptService::ScriptsFor(const GURL& primary_url, std::vector<std::string>* scripts) {
+bool SiteSpecificScriptService::ScriptsFor(const GURL& primary_url,
+                                           std::vector<std::string>* scripts) {
   bool any = false;
   scripts->clear();
   for (const auto& rule : rules_) {
@@ -83,7 +84,8 @@ void SiteSpecificScriptService::OnDATFileDataReady() {
     for (const auto& urls_it : urls_value->GetList()) {
       URLPattern pattern;
       pattern.SetValidSchemes(URLPattern::SCHEME_HTTP|URLPattern::SCHEME_HTTPS);
-      pattern.Parse(urls_it.GetString(), URLPattern::ALLOW_WILDCARD_FOR_EFFECTIVE_TLD);
+      pattern.Parse(urls_it.GetString(),
+                    URLPattern::ALLOW_WILDCARD_FOR_EFFECTIVE_TLD);
       rule.urls.push_back(pattern);
     }
     base::ListValue* scripts_value = nullptr;
