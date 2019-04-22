@@ -12,10 +12,12 @@
 #include <vector>
 
 #include "base/strings/utf_string_conversions.h"
+#include "brave/browser/brave_browser_process_impl.h"
 #include "brave/common/extensions/api/brave_shields.h"
 #include "brave/common/pref_names.h"
 #include "brave/common/render_messages.h"
 #include "brave/components/brave_shields/browser/brave_shields_util.h"
+#include "brave/components/brave_shields/browser/site_specific_script_service.h"
 #include "brave/components/brave_shields/common/brave_shield_constants.h"
 #include "brave/content/common/frame_messages.h"
 #include "chrome/browser/content_settings/host_content_settings_map_factory.h"
@@ -35,6 +37,7 @@
 #include "content/public/browser/render_process_host.h"
 #include "content/public/browser/web_contents.h"
 #include "content/public/browser/web_contents_user_data.h"
+#include "content/public/common/isolated_world_ids.h"
 #include "extensions/browser/event_router.h"
 #include "extensions/browser/extension_api_frame_id_map.h"
 #include "ipc/ipc_message_macros.h"
@@ -105,6 +108,8 @@ std::map<BraveShieldsWebContentsObserver::RenderFrameIdKey, GURL>
     BraveShieldsWebContentsObserver::frame_key_to_tab_url_;
 std::map<int, GURL>
     BraveShieldsWebContentsObserver::frame_tree_node_id_to_tab_url_;
+const int kSiteSpecificScriptWorldID =
+  content::ISOLATED_WORLD_ID_CONTENT_END + 2;
 
 BraveShieldsWebContentsObserver::RenderFrameIdKey::RenderFrameIdKey()
     : render_process_id(content::ChildProcessHost::kInvalidUniqueID),
@@ -186,6 +191,22 @@ void BraveShieldsWebContentsObserver::DidFinishNavigation(
   base::AutoLock lock(frame_data_map_lock_);
   frame_key_to_tab_url_[{process_id, routing_id}] = web_contents()->GetURL();
   frame_tree_node_id_to_tab_url_[tree_node_id] = web_contents()->GetURL();
+}
+
+void BraveShieldsWebContentsObserver::DocumentLoadedInFrame(
+  RenderFrameHost* render_frame_host) {
+  const GURL& url = render_frame_host->GetLastCommittedURL();
+  std::vector<std::string> scripts;
+  if (!g_brave_browser_process->site_specific_script_service()->ScriptsFor(
+        url, &scripts))
+    return;
+
+  for (auto script : scripts) {
+    render_frame_host->ExecuteJavaScriptInIsolatedWorld(
+      base::UTF8ToUTF16(script),
+      base::DoNothing(),
+      kSiteSpecificScriptWorldID);
+  }
 }
 
 // static
