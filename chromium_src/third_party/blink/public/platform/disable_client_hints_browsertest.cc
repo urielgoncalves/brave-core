@@ -9,8 +9,8 @@
 #include "brave/common/brave_paths.h"
 #include "chrome/test/base/in_process_browser_test.h"
 #include "chrome/test/base/ui_test_utils.h"
-#include "net/http/http_request_headers.h"
 #include "net/dns/mock_host_resolver.h"
+#include "net/http/http_request_headers.h"
 #include "net/test/embedded_test_server/embedded_test_server.h"
 #include "net/test/embedded_test_server/http_request.h"
 #include "third_party/blink/public/common/client_hints/client_hints.h"
@@ -33,14 +33,12 @@ class ClientHintsBrowserTest : public InProcessBrowserTest {
 
     EXPECT_TRUE(https_server_.Start());
 
-    ch_url_ = https_server_.GetURL(kClientHints);
+    client_hints_url_ = https_server_.GetURL(kClientHints);
   }
 
   ~ClientHintsBrowserTest() override {}
 
-  void SetUp() override {
-    InProcessBrowserTest::SetUp();
-  }
+  void SetUp() override { InProcessBrowserTest::SetUp(); }
 
   void SetUpOnMainThread() override {
     host_resolver()->AddRule("*", "127.0.0.1");
@@ -49,9 +47,7 @@ class ClientHintsBrowserTest : public InProcessBrowserTest {
 
   void TearDownOnMainThread() override {}
 
-  const GURL& ch_url() const {
-    return ch_url_;
-  }
+  const GURL& client_hints_url() const { return client_hints_url_; }
 
   size_t count_client_hints_headers_seen() const {
     return count_client_hints_headers_seen_;
@@ -62,21 +58,20 @@ class ClientHintsBrowserTest : public InProcessBrowserTest {
     for (size_t i = 0; i < blink::kClientHintsMappingsCount; ++i) {
       if (base::ContainsKey(request.headers,
                             blink::kClientHintsHeaderMapping[i])) {
-          count_client_hints_headers_seen_++;
-        }
+        count_client_hints_headers_seen_++;
       }
     }
+  }
 
   net::EmbeddedTestServer https_server_;
-  GURL ch_url_;
+  GURL client_hints_url_;
   size_t count_client_hints_headers_seen_;
 
   DISALLOW_COPY_AND_ASSIGN(ClientHintsBrowserTest);
 };
 
-
 IN_PROC_BROWSER_TEST_F(ClientHintsBrowserTest, ClientHintsDisabled) {
-  ui_test_utils::NavigateToURL(browser(), ch_url());
+  ui_test_utils::NavigateToURL(browser(), client_hints_url());
   base::RunLoop().RunUntilIdle();
   EXPECT_EQ(0u, count_client_hints_headers_seen());
 }

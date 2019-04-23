@@ -15,9 +15,8 @@ namespace blink {
 struct WebEnabledClientHints {
   WebEnabledClientHints() = default;
 
-  bool IsEnabled(mojom::WebClientHintsType type) const {
-    return false;;
-  }
+  bool IsEnabled(mojom::WebClientHintsType type) const { return false; }
+
   void SetIsEnabled(mojom::WebClientHintsType type, bool should_send) {
     enabled_types_[static_cast<int>(type)] = false;
   }
