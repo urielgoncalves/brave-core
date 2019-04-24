@@ -1,0 +1,55 @@
+diff --git a/third_party/blink/renderer/core/script/script_loader.cc b/third_party/blink/renderer/core/script/script_loader.cc
+index c58812ff1d73209bfb19e565a91dc535f4036797..2e1d922ca119166d453149060708294170626bf5 100644
+--- a/third_party/blink/renderer/core/script/script_loader.cc
++++ b/third_party/blink/renderer/core/script/script_loader.cc
+@@ -62,6 +62,13 @@
+ #include "third_party/blink/renderer/platform/wtf/text/string_builder.h"
+ #include "third_party/blink/renderer/platform/wtf/text/string_hash.h"
+ 
++#include "brave/third_party/blink/brave_page_graph/buildflags/buildflags.h"
++#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++#include "third_party/blink/renderer/core/dom/dom_node_ids.h"
++#include "brave/third_party/blink/brave_page_graph/types.h"
++#include "brave/third_party/blink/brave_page_graph/page_graph.h"
++#endif
++
+ namespace blink {
+ 
+ ScriptLoader::ScriptLoader(ScriptElementBase* element,
+@@ -484,6 +491,17 @@ bool ScriptLoader::PrepareScript(const TextPosition& script_start_position,
+       else
+         encoding = element_document.Encoding();
+ 
++#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++      {
++        ::brave_page_graph::PageGraph* page_graph = context_document->GetFrame()
++          ->GetDocument()->GetPageGraph();
++        if (page_graph != nullptr) {
++          page_graph->RegisterElmForRemoteScript(
++            DOMNodeIds::IdForNode(static_cast<Node*>(element_)),
++            url);
++        }
++      }
++#endif
+       // <spec step="24.6.A">"classic"
+       //
+       // Fetch a classic script given url, settings object, options, classic
+@@ -562,6 +580,18 @@ bool ScriptLoader::PrepareScript(const TextPosition& script_start_position,
+         // <spec step="25.2.A.3">The script is ready.</spec>
+         //
+         // Implemented by ClassicPendingScript.
++
++#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++        {
++          ::brave_page_graph::PageGraph* page_graph = context_document
++            ->GetFrame()->GetDocument()->GetPageGraph();
++          if (page_graph != nullptr) {
++            ClassicScript* classic_script = prepared_pending_script_->GetSource(base_url);
++            page_graph->RegisterElmForLocalScript(DOMNodeIds::IdForNode(element_),
++              classic_script.GetScriptSourceCode());
++          }
++        }
++#endif
+         break;
+       }
+ 

@@ -11,6 +11,17 @@
 #include <utility>
 #include <vector>
 
+namespace blink {
+using DOMNodeId = uint64_t;
+class KURL;
+enum class ResourceType : uint8_t;
+class ScriptSourceCode;
+}  // namespace blink
+
+namespace WTF {
+class String;
+}  // namespace WTF
+
 namespace brave_page_graph {
 
 class Element;
@@ -44,6 +55,7 @@ typedef enum {
   kGraphMLAttrDefRequestId,
   kGraphMLAttrDefRequestType,
   kGraphMLAttrDefResourceType,
+  kGraphMLAttrDefScriptId,
   kGraphMLAttrDefScriptType,
   kGraphMLAttrDefStatus,
   kGraphMLAttrDefSuccess,
@@ -85,18 +97,7 @@ typedef enum {
 } RequestType;
 std::string request_type_to_string(const RequestType type) noexcept;
 
-typedef enum {
-  kResourceTypeAudio = 0,
-  kResourceTypeCSS,
-  kResourceTypeDocument,
-  kResourceTypeFont,
-  kResourceTypeImage,
-  kResourceTypeVideo,
-  kResourceTypeScript,
-  kResourceTypeSVG,
-  kResourceTypeUnknown
-} ResourceType;
-std::string resource_type_to_string(const ResourceType type) noexcept;
+std::string resource_type_to_string(const blink::ResourceType type) noexcept;
 
 typedef enum {
   kScriptTypeClassic = 0,
@@ -114,31 +115,19 @@ typedef enum {
 } RequestStatus;
 std::string request_status_to_string(const RequestStatus status) noexcept;
 
-enum NodeType {
-  kElementNode = 1,
-  kAttributeNode = 2,
-  kTextNode = 3,
-  kCdataSectionNode = 4,
-  kProcessingInstructionNode = 7,
-  kCommentNode = 8,
-  kDocumentNode = 9,
-  kDocumentTypeNode = 10,
-  kDocumentFragmentNode = 11,
-};
-
 typedef unsigned SourceCodeHash;
 typedef unsigned UrlHash;
 typedef uint64_t ScriptId;
-typedef uint64_t DOMNodeId;
+
 typedef uint64_t PageGraphId;
 typedef std::string MethodName;
 
 typedef std::string RequestUrl;
 
-typedef uint64_t NetworkRequestId;
+typedef uint64_t InspectorId;
 typedef uint64_t ChildFrameId;
 
-const DOMNodeId kRootNodeId = ULLONG_MAX;
+const blink::DOMNodeId kRootNodeId = ULLONG_MAX;
 
 }  // namespace brave_page_graph
 

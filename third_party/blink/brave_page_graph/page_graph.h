@@ -38,58 +38,63 @@ friend GraphItem;
   PageGraph();
   ~PageGraph();
 
-  NodeHTML* GetHTMLNode(const DOMNodeId node_id) const;
-  NodeHTMLElement* GetHTMLElementNode(const DOMNodeId node_id) const;
-  NodeHTMLText* GetHTMLTextNode(const DOMNodeId node_id) const;
+  NodeHTML* GetHTMLNode(const blink::DOMNodeId node_id) const;
+  NodeHTMLElement* GetHTMLElementNode(const blink::DOMNodeId node_id) const;
+  NodeHTMLText* GetHTMLTextNode(const blink::DOMNodeId node_id) const;
 
-  void RegisterHTMLElementNodeCreated(const DOMNodeId node_id,
-    const std::string& tag_name);
-  void RegisterHTMLTextNodeCreated(const DOMNodeId node_id,
-    const std::string& text);
-  void RegisterHTMLElementNodeInserted(const DOMNodeId node_id,
-    const DOMNodeId parent_node_id, const DOMNodeId before_sibling_id);
-  void RegisterHTMLTextNodeInserted(const DOMNodeId node_id,
-    const DOMNodeId parent_node_id, const DOMNodeId before_sibling_id);
-  void RegisterHTMLElementNodeRemoved(const DOMNodeId node_id);
-  void RegisterHTMLTextNodeRemoved(const DOMNodeId node_id);
+  void RegisterHTMLElementNodeCreated(const blink::DOMNodeId node_id,
+    const WTF::String& tag_name);
+  void RegisterHTMLTextNodeCreated(const blink::DOMNodeId node_id,
+    const WTF::String& text);
+  void RegisterHTMLElementNodeInserted(const blink::DOMNodeId node_id,
+    const blink::DOMNodeId parent_node_id,
+    const blink::DOMNodeId before_sibling_id);
+  void RegisterHTMLTextNodeInserted(const blink::DOMNodeId node_id,
+    const blink::DOMNodeId parent_node_id,
+    const blink::DOMNodeId before_sibling_id);
+  void RegisterHTMLElementNodeRemoved(const blink::DOMNodeId node_id);
+  void RegisterHTMLTextNodeRemoved(const blink::DOMNodeId node_id);
 
-  void RegisterInlineStyleSet(const DOMNodeId node_id,
+  void RegisterInlineStyleSet(const blink::DOMNodeId node_id,
     const std::string& attr_name, const std::string& attr_value);
-  void RegisterInlineStyleDelete(const DOMNodeId node_id,
+  void RegisterInlineStyleDelete(const blink::DOMNodeId node_id,
     const std::string& attr_name);
-  void RegisterAttributeSet(const DOMNodeId node_id,
-    const std::string& attr_name, const std::string& attr_value);
-  void RegisterAttributeDelete(const DOMNodeId node_id,
-    const std::string& attr_name);
+  void RegisterAttributeSet(const blink::DOMNodeId node_id,
+    const WTF::String& attr_name, const WTF::String& attr_value);
+  void RegisterAttributeDelete(const blink::DOMNodeId node_id,
+    const WTF::String& attr_name);
 
-  void RegisterRequestStartFromElm(const DOMNodeId node_id,
-    const NetworkRequestId request_id, const RequestUrl url,
+  void RegisterRequestStartFromElm(const blink::DOMNodeId node_id,
+    const InspectorId request_id, const blink::KURL& url,
     const RequestType type);
-  void RegisterRequestStartFromCurrentScript(const RequestUrl url,
+  void RegisterRequestStartFromCurrentScript(const blink::KURL& url,
     const RequestType type);
 
-  void RegisterRequestComplete(const NetworkRequestId request_id,
-    const ResourceType type);
-  void RegisterRequestError(const NetworkRequestId request_id);
+  void RegisterRequestComplete(const InspectorId request_id,
+    const blink::ResourceType type);
+  void RegisterRequestError(const InspectorId request_id);
 
   // Methods for handling the registration of script units in the document,
   // and v8 script executing.
 
   // Local scripts are scripts that define their code inline.
-  void RegisterLocalScript(const DOMNodeId node_id,
-    const SourceCodeHash code_hash);
+  void RegisterElmForLocalScript(const blink::DOMNodeId node_id,
+    const blink::ScriptSourceCode& code);
   // Remote scripts are scripts that reference remote code (eg src=...).
-  void RegisterRemoteScript(const DOMNodeId node_id, const UrlHash url_hash);
-
-  void RegisterLocalScriptCompilation(const SourceCodeHash code_hash,
-    const ScriptId script_id);
-  void RegisterRemoteScriptCompilation(const UrlHash url_hash,
-    const SourceCodeHash code_hash, const ScriptId script_id);
+  void RegisterElmForRemoteScript(const blink::DOMNodeId node_id,
+    const blink::KURL& url);
+  void RegisterUrlForScriptSource(const blink::KURL& url, 
+    const blink::ScriptSourceCode& code);
+  void RegisterScriptCompilation(const blink::ScriptSourceCode& code,
+    const ScriptId script_id, const ScriptType type);
 
   void RegisterScriptExecStart(const ScriptId script_id);
   // The Script ID is only used here as a sanity check to make sure we're
   // correctly tracking script execution correctly.
   void RegisterScriptExecStop(const ScriptId script_id);
+
+  std::vector<blink::DOMNodeId> NodeIdsForScriptId(const ScriptId script_id) const;
+  std::vector<ScriptId> ScriptIdsForNodeId(const blink::DOMNodeId nodeId) const;
 
   GraphMLXML ToGraphML() const;
   NodeActor* GetCurrentActingNode() const;
@@ -98,19 +103,15 @@ friend GraphItem;
   const std::vector<std::unique_ptr<const Edge> >& Edges() const;
   const std::vector<const GraphItem*>& GraphItems() const;
 
-  NetworkRequestId GetNewRequestId();
   ChildFrameId GetNewChildFrameId();
-
- protected:
-  void AddNode(Node* const node);
-  void AddEdge(const Edge* const edge);
-
-  std::vector<DOMNodeId> NodeIdsForScriptId(const ScriptId script_id) const;
-  std::vector<ScriptId> ScriptIdsForNodeId(const DOMNodeId nodeId) const;
 
   void PushActiveScript(const ScriptId script_id);
   ScriptId PopActiveScript();
   ScriptId PeekActiveScript() const;
+
+ protected:
+  void AddNode(Node* const node);
+  void AddEdge(const Edge* const edge);
 
   // Monotonically increasing counter, used so that we can replay the
   // the graph's construction if needed.
@@ -141,8 +142,8 @@ friend GraphItem;
 
   // Index structure for looking up HTML nodes.
   // This map does not own the references.
-  std::map<DOMNodeId, NodeHTMLElement* const> element_nodes_;
-  std::map<DOMNodeId, NodeHTMLText* const> text_nodes_;
+  std::map<blink::DOMNodeId, NodeHTMLElement* const> element_nodes_;
+  std::map<blink::DOMNodeId, NodeHTMLText* const> text_nodes_;
 
   // Index structure for looking up script nodes.
   // This map does not own the references.
@@ -150,10 +151,9 @@ friend GraphItem;
 
   // Request handling
   // ---
-  std::atomic<NetworkRequestId> current_max_request_id_;
   std::atomic<ChildFrameId> current_max_child_frame_id_;
   // Tracks requests that have started, but have not completed yet.
-  std::map<NetworkRequestId, EdgeRequestStart* const> current_requests_;
+  std::map<InspectorId, const EdgeRequestStart* const> current_requests_;
   // Makes sure we don't have more than one node in the graph representing
   // a single URL (not required for correctness, but keeps things tidier
   // and makes some kinds of queries nicer).

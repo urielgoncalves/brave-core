@@ -8,7 +8,13 @@
 #include <vector>
 #include "base/logging.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
+#include "third_party/blink/renderer/bindings/core/v8/script_source_code.h"
+#include "third_party/blink/renderer/core/dom/dom_node_ids.h"
+#include "third_party/blink/renderer/platform/weborigin/kurl.h"
 
+using ::blink::DOMNodeId;
+using ::blink::KURL;
+using ::blink::ScriptSourceCode;
 using ::std::map;
 using ::std::vector;
 
@@ -18,8 +24,9 @@ ScriptTracker::ScriptTracker() {}
 
 ScriptTracker::~ScriptTracker() {}
 
-void ScriptTracker::AddScriptUrlForElm(const DOMNodeId node_id,
-    const UrlHash url_hash) {
+void ScriptTracker::AddScriptUrlForElm(const KURL& url,
+    const DOMNodeId node_id) {
+  const UrlHash url_hash(url.GetString().Impl()->GetHash());
   if (node_id_to_script_url_hashes_.count(node_id) == 0) {
     node_id_to_script_url_hashes_.emplace(node_id, vector<UrlHash>());
   }
@@ -31,8 +38,9 @@ void ScriptTracker::AddScriptUrlForElm(const DOMNodeId node_id,
   script_src_hash_to_node_ids_.at(url_hash).push_back(node_id);
 }
 
-void ScriptTracker::AddScriptSourceForElm(const DOMNodeId node_id,
-    const SourceCodeHash code_hash) {
+void ScriptTracker::AddScriptSourceForElm(const ScriptSourceCode& code,
+    const DOMNodeId node_id) {
+  const SourceCodeHash code_hash(code.Source().ToString().Impl()->GetHash());
   if (node_id_to_source_hashes_.count(node_id) == 0) {
     node_id_to_source_hashes_.emplace(node_id, vector<SourceCodeHash>());
   }
@@ -44,17 +52,22 @@ void ScriptTracker::AddScriptSourceForElm(const DOMNodeId node_id,
   source_hash_to_node_ids_.at(code_hash).push_back(node_id);
 }
 
-void ScriptTracker::AddHashOfFetchedSourceFromUrl(
-    const SourceCodeHash code_hash, const UrlHash url_hash) {
+void ScriptTracker::AddCodeFetchedFromUrl(
+    const ScriptSourceCode& code, const KURL& url) {
+  const UrlHash url_hash(url.GetString().Impl()->GetHash());
+  const SourceCodeHash code_hash(code.Source().ToString().Impl()->GetHash());
+
   // There should be no situations where we're receiving script code
   // from an unknown URL.
   LOG_ASSERT(script_src_hash_to_node_ids_.count(url_hash) > 0);
+
   script_url_hash_to_source_hash_.emplace(url_hash, code_hash);
   source_hash_to_script_url_hash_.emplace(code_hash, url_hash);
 }
 
-void ScriptTracker::SetScriptIdForCompliedCode(const ScriptId script_id,
-    const SourceCodeHash code_hash) {
+void ScriptTracker::SetScriptIdForCode(const ScriptId script_id,
+    const ScriptSourceCode& code) {
+  const SourceCodeHash code_hash(code.Source().ToString().Impl()->GetHash());
   // There should be no situtions where V8 has compiled source code that
   // we don't know about (TODO: handle cases of partial compilation,
   // eval, and similar).

@@ -51,6 +51,8 @@ namespace {
     "node type");
   GraphMLAttr* parent_node_attr = new GraphMLAttr(kGraphMLAttrForTypeEdge,
     "parent", kGraphMLAttrTypeLong);
+  GraphMLAttr* script_id_attr = new GraphMLAttr(kGraphMLAttrForTypeEdge,
+    "script id", kGraphMLAttrTypeLong);
   GraphMLAttr* script_type = new GraphMLAttr(kGraphMLAttrForTypeNode,
     "script type");
   GraphMLAttr* status_type = new GraphMLAttr(kGraphMLAttrForTypeEdge, "status");
@@ -65,7 +67,7 @@ namespace {
     "resource type");
   GraphMLAttr* value_attr = new GraphMLAttr(kGraphMLAttrForTypeEdge, "value");
 
-  const int num_attrs = 21;
+  const int num_attrs = 22;
   GraphMLAttr* all_attrs[num_attrs] = {attr_name, attr_value, before_node_attr,
     call_args, edge_type, key_attr, method_attr, tag_attr, node_id_attr,
     node_text, node_type, parent_node_attr, script_type, status_type,
@@ -139,7 +141,7 @@ GraphMLXML GraphMLAttr::ToValue(const string& value) const {
             "</data>";
 }
 
-GraphMLXML GraphMLAttr::ToValue(const DOMNodeId value) const {
+GraphMLXML GraphMLAttr::ToValue(const uint64_t value) const {
   LOG_ASSERT(type_ == kGraphMLAttrTypeLong);
   return "<data key=\"" + GetGraphMLId() + "\">" + to_string(value) + "</data>";
 }
@@ -179,6 +181,8 @@ GraphMLAttr* graphml_attr_def_for_type(const GraphMLAttrDef type) noexcept {
       return request_type_attr;
     case kGraphMLAttrDefResourceType:
       return resource_type_attr;
+    case kGraphMLAttrDefScriptId:
+      return script_id_attr;
     case kGraphMLAttrDefScriptType:
       return script_type;
     case kGraphMLAttrDefStatus:

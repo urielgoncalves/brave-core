@@ -28,7 +28,7 @@ friend class PageGraph;
 
  protected:
   EdgeRequestError(PageGraph* const graph, NodeResource* const out_node,
-    Node* const in_node, const NetworkRequestId request_id);
+    Node* const in_node, const InspectorId request_id);
   ItemDesc GetDescBody() const override;
 };
 

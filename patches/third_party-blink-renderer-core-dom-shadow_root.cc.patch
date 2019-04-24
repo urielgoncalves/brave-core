@@ -1,5 +1,5 @@
 diff --git a/third_party/blink/renderer/core/dom/shadow_root.cc b/third_party/blink/renderer/core/dom/shadow_root.cc
-index 39d2eed15fc4eb5b942525eb127070c5505bcc62..22aa1a03d4bb44aa692ba555815c7ce4076525f9 100644
+index 39d2eed15fc4eb5b942525eb127070c5505bcc62..400a789311d6ba4d549ad673a74cbd88b12343d2 100644
 --- a/third_party/blink/renderer/core/dom/shadow_root.cc
 +++ b/third_party/blink/renderer/core/dom/shadow_root.cc
 @@ -48,6 +48,13 @@
@@ -27,7 +27,7 @@ index 39d2eed15fc4eb5b942525eb127070c5505bcc62..22aa1a03d4bb44aa692ba555815c7ce4
 +  }
 +  if (document.GetPageGraph() != nullptr) {
 +    document.GetPageGraph()->RegisterHTMLElementNodeCreated(
-+      DOMNodeIds::IdForNode(this), nodeName().Utf8().data());
++      DOMNodeIds::IdForNode(this), nodeName());
 +  }
 +#endif
  }

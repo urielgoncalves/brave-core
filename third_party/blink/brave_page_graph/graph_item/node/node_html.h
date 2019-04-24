@@ -25,11 +25,11 @@ friend class NodeHTMLText;
   ~NodeHTML() override;
 
  protected:
-  NodeHTML(PageGraph* const graph, const DOMNodeId node_id);
+  NodeHTML(PageGraph* const graph, const blink::DOMNodeId node_id);
   virtual void MarkNodeDeleted();
   GraphMLXMLList GraphMLAttributes() const override;
 
-  const DOMNodeId node_id_;
+  const blink::DOMNodeId node_id_;
   bool is_deleted_;
   NodeHTMLElement* parent_node_;
 };

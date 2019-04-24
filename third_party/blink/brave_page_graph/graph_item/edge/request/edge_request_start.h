@@ -29,7 +29,7 @@ friend class PageGraph;
 
  protected:
   EdgeRequestStart(PageGraph* const graph, Node* const out_node,
-    NodeResource* const in_node, const NetworkRequestId request_id,
+    NodeResource* const in_node, const InspectorId request_id,
     const RequestType type);
   ItemDesc GetDescBody() const override;
   GraphMLXMLList GraphMLAttributes() const override;

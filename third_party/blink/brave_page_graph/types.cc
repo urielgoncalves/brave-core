@@ -5,6 +5,8 @@
 
 #include "brave/third_party/blink/brave_page_graph/types.h"
 #include <string>
+#include "third_party/blink/renderer/core/dom/dom_node_ids.h"
+#include "third_party/blink/renderer/platform/loader/fetch/resource.h"
 
 using ::std::string;
 
@@ -68,25 +70,35 @@ string request_type_to_string(const RequestType type) noexcept {
   }
 }
 
-string resource_type_to_string(const ResourceType type) noexcept {
+string resource_type_to_string(const blink::ResourceType type) noexcept {
   switch (type) {
-    case kResourceTypeAudio:
-      return "audio";
-    case kResourceTypeCSS:
-      return "CSS";
-    case kResourceTypeDocument:
-      return "document";
-    case kResourceTypeFont:
-      return "font";
-    case kResourceTypeImage:
+    case blink::ResourceType::kImage:
       return "image";
-    case kResourceTypeVideo:
-      return "video";
-    case kResourceTypeScript:
+    case blink::ResourceType::kCSSStyleSheet:
+      return "css";
+    case blink::ResourceType::kScript:
       return "script";
-    case kResourceTypeSVG:
-      return "SVG";
-    case kResourceTypeUnknown:
+    case blink::ResourceType::kFont:
+      return "font";
+    case blink::ResourceType::kRaw:
+      return "raw";
+    case blink::ResourceType::kSVGDocument:
+      return "svg";
+    case blink::ResourceType::kXSLStyleSheet:
+      return "XSL style sheet";
+    case blink::ResourceType::kLinkPrefetch:
+      return "link prefetch";
+    case blink::ResourceType::kTextTrack:
+      return "text track";
+    case blink::ResourceType::kImportResource:
+      return "import resource";
+    case blink::ResourceType::kAudio:
+      return "audio";
+    case blink::ResourceType::kVideo:
+      return "video";
+    case blink::ResourceType::kManifest:
+      return "manifest";
+    default:
       return "unknown";
   }
 }

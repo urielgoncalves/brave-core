@@ -35,7 +35,7 @@ friend class PageGraph;
   void AddInEdge(const EdgeNodeDelete* const edge);
 
  protected:
-  NodeHTMLText(PageGraph* const graph, const DOMNodeId node_id,
+  NodeHTMLText(PageGraph* const graph, const blink::DOMNodeId node_id,
     const std::string& text);
   ItemDesc GetDescBody() const override;
   GraphMLXMLList GraphMLAttributes() const override;

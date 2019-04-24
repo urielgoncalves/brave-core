@@ -15,7 +15,7 @@
 namespace brave_page_graph {
 
 EdgeRequest::EdgeRequest(PageGraph* const graph, Node* const out_node,
-    Node* const in_node, const NetworkRequestId request_id,
+    Node* const in_node, const InspectorId request_id,
     const RequestStatus status) :
       Edge(graph, out_node, in_node),
       request_id_(request_id),
@@ -23,7 +23,7 @@ EdgeRequest::EdgeRequest(PageGraph* const graph, Node* const out_node,
 
 EdgeRequest::~EdgeRequest() {}
 
-NetworkRequestId EdgeRequest::GetRequestId() const {
+InspectorId EdgeRequest::GetRequestId() const {
   return request_id_;
 }
 

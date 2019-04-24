@@ -1,5 +1,5 @@
 diff --git a/third_party/blink/renderer/core/dom/comment.cc b/third_party/blink/renderer/core/dom/comment.cc
-index d7476d197b825f1a13d92a708b84db849f7aacec..dea5d7502c54981e0bc5dd07b9476aabbfe1e492 100644
+index d7476d197b825f1a13d92a708b84db849f7aacec..d1676abc5d51e1cfa594543b5308f8b78d9c5fbc 100644
 --- a/third_party/blink/renderer/core/dom/comment.cc
 +++ b/third_party/blink/renderer/core/dom/comment.cc
 @@ -23,13 +23,29 @@
@@ -23,7 +23,7 @@ index d7476d197b825f1a13d92a708b84db849f7aacec..dea5d7502c54981e0bc5dd07b9476aab
 +  Comment* comment = MakeGarbageCollected<Comment>(document, text);
 +  if (document.GetPageGraph() != nullptr) {
 +    document.GetPageGraph()->RegisterHTMLTextNodeCreated(
-+      DOMNodeIds::IdForNode(comment), text.Utf8().data());
++      DOMNodeIds::IdForNode(comment), text);
 +  }
 +  return comment;
 +#else

@@ -1,5 +1,5 @@
 diff --git a/third_party/blink/renderer/core/dom/document_fragment.cc b/third_party/blink/renderer/core/dom/document_fragment.cc
-index b32f0044c3287ff9c563d91ecf8b49689673d064..c27973b8a5fde19190ba270368956f0248de075d 100644
+index b32f0044c3287ff9c563d91ecf8b49689673d064..22ca6ea93d7a2286a8b3dc83b0ac8e210855b00e 100644
 --- a/third_party/blink/renderer/core/dom/document_fragment.cc
 +++ b/third_party/blink/renderer/core/dom/document_fragment.cc
 @@ -28,11 +28,28 @@
@@ -25,7 +25,7 @@ index b32f0044c3287ff9c563d91ecf8b49689673d064..c27973b8a5fde19190ba270368956f02
 +  }
 +  if (document->GetPageGraph() != nullptr) {
 +    document->GetPageGraph()->RegisterHTMLElementNodeCreated(
-+      DOMNodeIds::IdForNode(this), nodeName().Utf8().data());
++      DOMNodeIds::IdForNode(this), nodeName());
 +  }
 +#endif
 +}

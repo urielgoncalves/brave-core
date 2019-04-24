@@ -1,5 +1,5 @@
 diff --git a/third_party/blink/renderer/core/dom/document_type.cc b/third_party/blink/renderer/core/dom/document_type.cc
-index e28838c63990ff1f1be26c7ae9c8faa63d939806..4a1b6c37db4db16397d1ee8753de3c923775724c 100644
+index e28838c63990ff1f1be26c7ae9c8faa63d939806..18fe6c42ad2f594f6fb097b7f60b376373e3a4e2 100644
 --- a/third_party/blink/renderer/core/dom/document_type.cc
 +++ b/third_party/blink/renderer/core/dom/document_type.cc
 @@ -25,6 +25,12 @@
@@ -24,7 +24,7 @@ index e28838c63990ff1f1be26c7ae9c8faa63d939806..4a1b6c37db4db16397d1ee8753de3c92
 +#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
 +  if (GetDocument().GetPageGraph() != nullptr) {
 +    GetDocument().GetPageGraph()->RegisterHTMLElementNodeCreated(
-+      DOMNodeIds::IdForNode(this), name.Utf8().data());
++      DOMNodeIds::IdForNode(this), name);
 +  }
 +#endif
 +}

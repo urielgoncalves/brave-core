@@ -23,7 +23,7 @@ friend class PageGraph;
   ~EdgeRequest() override;
   RequestUrl GetRequestUrl() const;
   RequestStatus GetRequestStatus() const;
-  NetworkRequestId GetRequestId() const;
+  InspectorId GetRequestId() const;
 
   // This is just a more-semantically meaningful alias for which
   // node is the requestor and which is the resource, which will differ
@@ -33,11 +33,11 @@ friend class PageGraph;
 
  protected:
   EdgeRequest(PageGraph* const graph, Node* const out_node,
-    Node* const in_node, const NetworkRequestId request_id,
+    Node* const in_node, const InspectorId request_id,
     const RequestStatus status);
   GraphMLXMLList GraphMLAttributes() const override;
 
-  const NetworkRequestId request_id_;
+  const InspectorId request_id_;
   const RequestStatus status_;
 };
 

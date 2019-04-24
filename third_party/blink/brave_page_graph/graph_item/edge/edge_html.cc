@@ -11,7 +11,6 @@
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_html.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_html_element.h"
-#include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/page_graph.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
@@ -25,7 +24,7 @@ EdgeHTML::EdgeHTML(PageGraph* const graph, NodeHTMLElement* const out_node,
     NodeHTML* const in_node) :
       Edge(graph, out_node, in_node) {}
 
-EdgeHTML::EdgeHTML(NodeHTMLElement* const out_node,
+EdgeHTML::EdgeHTML(const NodeHTMLElement* const out_node,
     NodeHTML* const in_node) :
       Edge(nullptr, out_node, in_node) {}
 

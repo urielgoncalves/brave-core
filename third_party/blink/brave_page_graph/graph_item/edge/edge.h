@@ -23,8 +23,13 @@ friend class PageGraph;
   GraphMLXML GetGraphMLTag() const override;
 
  protected:
-  Edge(PageGraph* const graph, Node* const out_node,
-    Node* const in_node);
+  Edge(PageGraph* const graph, Node* const out_node, Node* const in_node);
+
+  // This constructor is used by the GraphML generation pipeline, where
+  // we want to maintain const correctness and commit to not modifying
+  // the out node.  This should never be called otherwise.
+  Edge(PageGraph* const graph, const Node* const out_node, Node* const in_node);
+
   ItemDesc GetDescPrefix() const override;
   ItemDesc GetDescSuffix() const override;
 

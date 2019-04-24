@@ -22,19 +22,19 @@ friend class PageGraph;
   EdgeRequestComplete() = delete;
   ~EdgeRequestComplete() override;
   ItemName GetItemName() const override;
-  ResourceType GetResourceType() const;
+  blink::ResourceType GetResourceType() const;
 
   NodeResource* GetResourceNode() const override;
   Node* GetRequestingNode() const override;
 
  protected:
   EdgeRequestComplete(PageGraph* const graph, NodeResource* const out_node,
-    Node* const in_node, const NetworkRequestId request_id,
-    const ResourceType resource_type);
+    Node* const in_node, const InspectorId request_id,
+    const blink::ResourceType resource_type);
   ItemDesc GetDescBody() const override;
   GraphMLXMLList GraphMLAttributes() const override;
 
-  const ResourceType resource_type_;
+  const blink::ResourceType resource_type_;
 
 };
 

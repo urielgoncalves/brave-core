@@ -5,6 +5,7 @@
 
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/request/edge_request_complete.h"
 #include <string>
+#include "third_party/blink/renderer/platform/loader/fetch/resource.h"
 #include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_node.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/request/edge_request.h"
@@ -19,7 +20,7 @@ namespace brave_page_graph {
 
 EdgeRequestComplete::EdgeRequestComplete(PageGraph* const graph,
     NodeResource* const out_node, Node* const in_node,
-    const NetworkRequestId request_id, const ResourceType resource_type) : 
+    const InspectorId request_id, const blink::ResourceType resource_type) : 
       EdgeRequest(graph, out_node, in_node, request_id, kRequestStatusComplete),
       resource_type_(resource_type) {}
 
@@ -29,7 +30,7 @@ ItemName EdgeRequestComplete::GetItemName() const {
   return "EdgeRequestComplete#" + to_string(id_);
 }
 
-ResourceType EdgeRequestComplete::GetResourceType() const {
+blink::ResourceType EdgeRequestComplete::GetResourceType() const {
   return resource_type_;
 }
 

@@ -43,21 +43,23 @@ class ScriptTracker {
   ~ScriptTracker();
 
   // Public methods used for step 1 above.
-  void AddScriptUrlForElm(const DOMNodeId node_id,
-    const UrlHash url_hash);
-  void AddScriptSourceForElm(const DOMNodeId node_id,
-    const SourceCodeHash code_hash);
+  void AddScriptUrlForElm(const blink::KURL& url,
+    const blink::DOMNodeId node_id);
+  void AddScriptSourceForElm(const blink::ScriptSourceCode& code,
+    const blink::DOMNodeId node_id);
 
   // Method used for step 2 above.
-  void AddHashOfFetchedSourceFromUrl(const SourceCodeHash code_hash,
-    const UrlHash url_hash);
+  void AddCodeFetchedFromUrl(const blink::ScriptSourceCode& code,
+    const blink::KURL& url);
 
   // Method used for step 3 above.
-  void SetScriptIdForCompliedCode(const ScriptId script_id,
-    const SourceCodeHash code_hash);
+  void SetScriptIdForCode(const ScriptId script_id,
+    const blink::ScriptSourceCode& code);
 
-  std::vector<DOMNodeId> GetElmsForScriptId(const ScriptId script_id) const;
-  std::vector<ScriptId>  GetScriptIdsForElm(const DOMNodeId node_id) const;
+  std::vector<blink::DOMNodeId> GetElmsForScriptId(
+    const ScriptId script_id) const;
+  std::vector<ScriptId> GetScriptIdsForElm(
+    const blink::DOMNodeId node_id) const;
 
  private:
   // Data structures used for step 1 above (note that values are vectors
@@ -65,10 +67,10 @@ class ScriptTracker {
   // change in-place code over time).  Similarly, there can be multiple
   // <script> nodes on the page that point to the same URL (unlikely, but
   // valid).
-  std::map<DOMNodeId, std::vector<UrlHash>> node_id_to_script_url_hashes_;
-  std::map<UrlHash, std::vector<DOMNodeId>> script_src_hash_to_node_ids_;
-  std::map<DOMNodeId, std::vector<SourceCodeHash>> node_id_to_source_hashes_;
-  std::map<SourceCodeHash, std::vector<DOMNodeId>> source_hash_to_node_ids_;
+  std::map<blink::DOMNodeId, std::vector<UrlHash>> node_id_to_script_url_hashes_;
+  std::map<UrlHash, std::vector<blink::DOMNodeId>> script_src_hash_to_node_ids_;
+  std::map<blink::DOMNodeId, std::vector<SourceCodeHash>> node_id_to_source_hashes_;
+  std::map<SourceCodeHash, std::vector<blink::DOMNodeId>> source_hash_to_node_ids_;
 
   //  Maps used for step 2.
   std::map<UrlHash, SourceCodeHash> script_url_hash_to_source_hash_;

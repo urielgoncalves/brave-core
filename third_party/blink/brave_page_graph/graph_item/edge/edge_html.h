@@ -29,7 +29,7 @@ friend class PageGraph;
     NodeHTML* const in_node);
 
   // Only used for generating edges during GraphML export.
-  EdgeHTML(NodeHTMLElement* const out_node,
+  EdgeHTML(const NodeHTMLElement* const out_node,
     NodeHTML* const in_node);
   GraphMLXML GetGraphMLTag() const override;
   GraphMLXMLList GraphMLAttributes() const override;

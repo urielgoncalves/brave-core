@@ -53,13 +53,13 @@ friend class NodeHTML;
   GraphMLXML GetGraphMLTag() const override;
 
  protected:
-  NodeHTMLElement(PageGraph* const graph, const DOMNodeId node_id,
+  NodeHTMLElement(PageGraph* const graph, const blink::DOMNodeId node_id,
     const std::string& tag_name);
   ItemDesc GetDescBody() const override;
   void MarkNodeDeleted() override;
   void PlaceChildNodeAfterSiblingNode(NodeHTML* const child,
     NodeHTML* const sibling);
-  void RemoveChildNode(NodeHTML* const child);
+  void RemoveChildNode(NodeHTML* const child_node);
   GraphMLXMLList GraphMLAttributes() const override;
 
   const std::string tag_name_;

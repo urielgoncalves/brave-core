@@ -6,6 +6,7 @@
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_html.h"
 #include <string>
 #include "base/logging.h"
+#include "third_party/blink/renderer/core/dom/dom_node_ids.h"
 #include "brave/third_party/blink/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node.h"
 #include "brave/third_party/blink/brave_page_graph/page_graph.h"
@@ -15,7 +16,7 @@ using ::std::to_string;
 
 namespace brave_page_graph {
 
-NodeHTML::NodeHTML(PageGraph* const graph, const DOMNodeId node_id) :
+NodeHTML::NodeHTML(PageGraph* const graph, const blink::DOMNodeId node_id) :
       Node(graph),
       node_id_(node_id),
       is_deleted_(false),

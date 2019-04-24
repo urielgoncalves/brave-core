@@ -8,6 +8,7 @@
 #include <sstream>
 #include <string>
 #include "base/logging.h"
+#include "third_party/blink/renderer/core/dom/dom_node_ids.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_attribute_delete.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_attribute_set.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/edge/edge_html.h"
@@ -24,6 +25,7 @@
 #include "brave/third_party/blink/brave_page_graph/page_graph.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
+using ::blink::DOMNodeId;
 using ::std::find;
 using ::std::string;
 using ::std::stringstream;
@@ -170,8 +172,9 @@ void NodeHTMLElement::PlaceChildNodeAfterSiblingNode(NodeHTML* const child,
   child_nodes_.insert(sib_pos + 1, child);
 }
 
-void NodeHTMLElement::RemoveChildNode(NodeHTML* child) {
-  const auto child_pos = find(child_nodes_.begin(), child_nodes_.end(), child);
+void NodeHTMLElement::RemoveChildNode(NodeHTML* const child_node) {
+  const auto child_pos = find(child_nodes_.begin(), child_nodes_.end(),
+    child_node);
   LOG_ASSERT(child_pos != child_nodes_.end());
   child_nodes_.erase(child_pos);
 }

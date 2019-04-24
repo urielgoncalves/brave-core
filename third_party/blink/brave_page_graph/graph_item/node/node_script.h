@@ -6,6 +6,7 @@
 #ifndef BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_NODE_SCRIPT_H_
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_GRAPH_ITEM_NODE_NODE_SCRIPT_H_
 
+#include <string>
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_actor.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
@@ -19,16 +20,24 @@ friend class PageGraph;
   NodeScript() = delete;
   ~NodeScript() override;
   ItemName GetItemName() const override;
+  ScriptId GetScriptId() const;
+  ScriptType GetScriptType() const;
   bool IsScript() const override;
+  bool IsInline() const;
+  std::string GetUrl() const;
 
  protected:
   NodeScript(PageGraph* const graph, const ScriptId script_id,
     const ScriptType type);
+  NodeScript(PageGraph* const graph, const ScriptId script_id,
+    const ScriptType type, const std::string& url);
   ItemDesc GetDescBody() const override;
   GraphMLXMLList GraphMLAttributes() const override;
 
   const ScriptId script_id_;
   const ScriptType type_;
+  const std::string url_;
+  const bool is_inline_;
 };
 
 }  // namespace brave_page_graph

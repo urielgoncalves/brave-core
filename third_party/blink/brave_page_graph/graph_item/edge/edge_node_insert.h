@@ -28,13 +28,13 @@ friend class PageGraph;
 
  protected:
   EdgeNodeInsert(PageGraph* const graph, NodeActor* const out_node,
-    NodeHTML* const in_node, const DOMNodeId parent_id = 0,
-    const DOMNodeId prior_sibling_id = 0);
+    NodeHTML* const in_node, const blink::DOMNodeId parent_id = 0,
+    const blink::DOMNodeId prior_sibling_id = 0);
   ItemDesc GetDescBody() const override;
   GraphMLXMLList GraphMLAttributes() const override;
 
-  const DOMNodeId parent_id_;
-  const DOMNodeId prior_sibling_id_;
+  const blink::DOMNodeId parent_id_;
+  const blink::DOMNodeId prior_sibling_id_;
 };
 
 }  // namespace brave_page_graph

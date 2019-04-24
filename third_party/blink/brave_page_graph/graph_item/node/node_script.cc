@@ -11,6 +11,7 @@
 #include "brave/third_party/blink/brave_page_graph/page_graph.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
+using ::std::string;
 using ::std::to_string;
 
 namespace brave_page_graph {
@@ -19,7 +20,17 @@ NodeScript::NodeScript(PageGraph* const graph, const ScriptId script_id,
     const ScriptType type) :
       NodeActor(graph),
       script_id_(script_id),
-      type_(type) {}
+      type_(type),
+      url_(""),
+      is_inline_(true) {}
+
+NodeScript::NodeScript(PageGraph* const graph, const ScriptId script_id,
+    const ScriptType type, const std::string& url) :
+      NodeActor(graph),
+      script_id_(script_id),
+      type_(type),
+      url_(url),
+      is_inline_(true) {}
 
 NodeScript::~NodeScript() {}
 
@@ -27,17 +38,41 @@ ItemName NodeScript::GetItemName() const {
   return "NodeScript#" + to_string(id_);
 }
 
+ScriptId NodeScript::GetScriptId() const {
+  return script_id_;
+}
+
+ScriptType NodeScript::GetScriptType() const {
+  return type_;
+}
+
 bool NodeScript::IsScript() const {
   return true;
 }
 
+bool NodeScript::IsInline() const {
+  return is_inline_;
+}
+
+string NodeScript::GetUrl() const {
+  return url_;
+}
+
 GraphMLXMLList NodeScript::GraphMLAttributes() const {
-  return GraphMLXMLList({
-    graphml_attr_def_for_type(kGraphMLAttrDefNodeType)
-      ->ToValue("script"),
-    graphml_attr_def_for_type(kGraphMLAttrDefScriptType)
-      ->ToValue(script_type_to_string(type_))
-  });
+  GraphMLXMLList attrs;
+  attrs.push_back(graphml_attr_def_for_type(kGraphMLAttrDefNodeType)
+      ->ToValue("script"));
+  attrs.push_back(graphml_attr_def_for_type(kGraphMLAttrDefScriptId)
+      ->ToValue(script_id_));
+  attrs.push_back(graphml_attr_def_for_type(kGraphMLAttrDefScriptType)
+      ->ToValue(script_type_to_string(type_)));
+
+  if (IsInline() == false) {
+    attrs.push_back(graphml_attr_def_for_type(kGraphMLAttrDefUrl)
+      ->ToValue(GetUrl()));
+  }
+
+  return attrs;
 }
 
 ItemDesc NodeScript::GetDescBody() const {

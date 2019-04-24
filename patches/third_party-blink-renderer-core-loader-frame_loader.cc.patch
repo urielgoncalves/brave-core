@@ -1,17 +1,17 @@
 diff --git a/third_party/blink/renderer/core/loader/frame_loader.cc b/third_party/blink/renderer/core/loader/frame_loader.cc
-index b6bdefc799a8e306483feac5da543a46f2f30340..d5193841ce60e0bead3ceb740d789624db258c0a 100644
+index b6bdefc799a8e306483feac5da543a46f2f30340..61996dcb69ed8ced331ba1c7c384960c879b8c09 100644
 --- a/third_party/blink/renderer/core/loader/frame_loader.cc
 +++ b/third_party/blink/renderer/core/loader/frame_loader.cc
 @@ -112,6 +112,13 @@
  #include "third_party/blink/renderer/platform/wtf/text/cstring.h"
  #include "third_party/blink/renderer/platform/wtf/text/wtf_string.h"
  
-+#include "brave/third_party/blink/brave_page_graph/buildflags/buildflags.h"
-+#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
-+#include "third_party/blink/renderer/core/dom/document.h"
-+#include "third_party/blink/renderer/core/dom/dom_node_ids.h"
-+#include "brave/third_party/blink/brave_page_graph/page_graph.h"
-+#endif
++// #include "brave/third_party/blink/brave_page_graph/buildflags/buildflags.h"
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++// #include "third_party/blink/renderer/core/dom/document.h"
++// #include "third_party/blink/renderer/core/dom/dom_node_ids.h"
++// #include "brave/third_party/blink/brave_page_graph/page_graph.h"
++// #endif
 +
  namespace blink {
  
@@ -20,22 +20,22 @@ index b6bdefc799a8e306483feac5da543a46f2f30340..d5193841ce60e0bead3ceb740d789624
      return;
    }
  
-+#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
 +  // First see if there is a parent
-+  {
-+    Frame* parent_frame = frame_->Tree().Parent();
-+    if (parent_frame != nullptr &&
-+        parent_frame->IsLocalFrame() &&
-+        parent_frame->GetDocument()->GetPageGraph() != nullptr) {
-+      LocalFrame* local_parent_frame = static_cast<LocalFrame*>(parent_frame);
-+      const DOMNodeId node_id = frame_->GetPageGraphNodeIdInParentDocument();
-+      current_request_id_ = local_parent_frame->GetDocument()->GetPageGraph()->GetNewRequestId();
-+      local_parent_frame->GetDocument()->GetPageGraph()->RegisterRequestStartFromElm(
-+        node_id, current_request_id_, ::brave_page_graph::kRequestTypeDocument
-+      );
-+    }
-+  }
-+#endif
++  // {
++  //   Frame* parent_frame = frame_->Tree().Parent();
++  //   if (parent_frame != nullptr &&
++  //       parent_frame->IsLocalFrame() &&
++  //       parent_frame->GetDocument()->GetPageGraph() != nullptr) {
++  //     LocalFrame* local_parent_frame = static_cast<LocalFrame*>(parent_frame);
++  //     const DOMNodeId node_id = frame_->GetPageGraphNodeIdInParentDocument();
++  //     current_request_id_ = local_parent_frame->GetDocument()->GetPageGraph()->GetNewRequestId();
++  //     local_parent_frame->GetDocument()->GetPageGraph()->RegisterRequestStartFromElm(
++  //       node_id, current_request_id_, ::brave_page_graph::kRequestTypeDocument
++  //     );
++  //   }
++  // }
++// #endif
 +
    Client()->BeginNavigation(
        resource_request, origin_document, nullptr /* document_loader */,
@@ -44,20 +44,20 @@ index b6bdefc799a8e306483feac5da543a46f2f30340..d5193841ce60e0bead3ceb740d789624
        frame_load_type = WebFrameLoadType::kReplaceCurrentItem;
    }
  
-+#if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
-+  {
-+    Frame* parent_frame = frame_->Tree().Parent();
-+    if (parent_frame != nullptr &&
-+        parent_frame->IsLocalFrame() &&
-+        parent_frame->GetDocument()->GetPageGraph() != nullptr) {
-+      LocalFrame* local_parent_frame = static_cast<LocalFrame*>(parent_frame);
-+      LOG_ASSERT(current_request_id_ != 0);
-+      local_parent_frame->GetDocument()->GetPageGraph()->RegisterRequestComplete(
-+        current_request_id_, ::brave_page_graph::kRequestTypeDocument
-+      );
-+    }
-+  }
-+#endif
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  // {
++  //   Frame* parent_frame = frame_->Tree().Parent();
++  //   if (parent_frame != nullptr &&
++  //       parent_frame->IsLocalFrame() &&
++  //       parent_frame->GetDocument()->GetPageGraph() != nullptr) {
++  //     LocalFrame* local_parent_frame = static_cast<LocalFrame*>(parent_frame);
++  //     local_parent_frame->GetDocument()->GetPageGraph()->RegisterRequestComplete(
++  //       current_request_id_,
++  //       ::brave_page_graph::kRequestTypeDocument
++  //     );
++  //   }
++  // }
++// #endif
 +
    // Perform the same-document navigation.
    LoadInSameDocument(url, state_object, frame_load_type, history_item,

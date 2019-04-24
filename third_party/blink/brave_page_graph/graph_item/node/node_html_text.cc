@@ -6,6 +6,7 @@
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_html_text.h"
 #include <string>
 #include "base/logging.h"
+#include "third_party/blink/renderer/core/dom/dom_node_ids.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_html.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node_html_element.h"
@@ -16,6 +17,7 @@
 #include "brave/third_party/blink/brave_page_graph/page_graph.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 
+using ::blink::DOMNodeId;
 using ::std::string;
 using ::std::to_string;
 
